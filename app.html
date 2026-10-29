@@ -6,7 +6,7 @@
 <title>IndiFrame Help Desk</title>
 <style>
 :root{--navy:#173b70;--blue:#2457a7;--bg:#f3f6fb;--ink:#17243a;--muted:#6c7890;--line:#e3e9f2;--white:#fff;--green:#16845b;--red:#bd3c45}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}.message{margin-top:12px;font-size:13px}.message.error{color:var(--red)}.message.success{color:var(--green)}.login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px}.login-card{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 40px rgba(23,59,112,.08);padding:32px 28px;width:min(100%,420px)}.field{display:flex;flex-direction:column;gap:8px;margin-top:14px}.field label{font-size:14px;color:var(--muted);font-weight:600}.field input,.field select{border:1px solid var(--line);background:#fff;border-radius:10px;padding:12px 14px}.btn{border:none;border-radius:10px;padding:10px 16px;font-weight:600;transition:.15s ease}.btn-primary{background:var(--navy);color:#fff}.btn-primary:hover{background:var(--blue)}.btn-outline{background:transparent;border:1px solid var(--line);color:var(--navy)}.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;background:#fff;border-bottom:1px solid var(--line)}.brand{font-size:1.2rem;font-weight:700;color:var(--navy)}.subbrand{font-size:12px;color:var(--muted)}.wrap{max-width:1200px;margin:0 auto;padding:24px}.page-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.profile-row{display:flex;align-items:center;gap:10px}.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;display:grid;place-items:center;font-weight:700}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{background:#dfe9f7;border:none;color:var(--navy);padding:10px 14px;border-radius:10px;font-weight:600}.tab.active{background:var(--navy);color:#fff}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}.card,.section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}.section{margin-top:18px}.metric-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.metric-value{font-size:2rem;font-weight:700;margin-top:8px;color:var(--navy)}.metric-note{font-size:12px;color:var(--muted);margin-top:6px}.empty{color:var(--muted);font-size:13px;padding:8px 0}.chart-list{display:flex;flex-direction:column;gap:10px}.bar-row{display:grid;grid-template-columns:minmax(120px,1.3fr) 1fr;gap:12px;align-items:center;font-size:13px}.bar-track{height:10px;background:#edf1fa;border-radius:999px;overflow:hidden}.bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),#82a7f2);border-radius:999px}.table-wrap{overflow:auto}.table-wrap table{width:100%;border-collapse:collapse;margin-top:8px}.table-wrap th,.table-wrap td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.table-wrap th{background:#f6f8fd;color:var(--navy);font-size:12px;text-transform:uppercase;letter-spacing:.04em}.section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.filters{display:flex;gap:10px;flex-wrap:wrap}.filters input{border:1px solid var(--line);padding:9px 10px;border-radius:8px;min-width:160px}.upload-box{border:1px dashed var(--line);background:#f9fbff;border-radius:12px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px}.notice{background:#f7f9fe;border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--muted);margin-top:14px;line-height:1.5}.hint{font-size:13px;color:var(--muted)}.footer{padding:24px;text-align:center;color:var(--muted);font-size:12px}.report-section-block{margin-top:14px}.report-section-block h3{margin:0 0 8px}.sub-table{margin-top:0}.admin-only.hidden{display:none}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}.topbar{background:var(--navy);color:white;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:5;box-shadow:0 3px 12px #10284922}.brand{font-size:22px;font-weight:700;letter-spacing:.3px}.subbrand{font-size:12px;opacity:.8;margin-top:3px}.top-actions{display:flex;align-items:center;gap:10px}.pill{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;background:#eaf2ff;color:var(--navy);font-weight:700;font-size:12px}.btn{border:none;border-radius:10px;padding:10px 14px;font-weight:600;transition:.2s ease}.btn:disabled{opacity:.6;cursor:not-allowed}.btn-primary{background:var(--blue);color:white}.btn-primary:hover{background:#1d4b9a}.btn-outline{background:transparent;color:white;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.08)}.wrap{max-width:1200px;margin:0 auto;padding:22px 16px 40px}.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.login-card{width:100%;max-width:390px;background:white;border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:0 8px 30px rgba(27,54,91,.08)}.login-card h1{margin:0 0 8px;font-size:30px}.muted{color:var(--muted)}.field{margin-top:15px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.field input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}.field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(36,87,167,.12)}.message{min-height:20px;margin-top:12px;font-size:13px}.message.error{color:var(--red)}.message.success{color:var(--green)}.hint{font-size:12px;color:var(--muted);margin-top:16px;text-align:center}.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}.tab{background:#eaf0f8;border:1px solid var(--line);color:var(--ink);padding:10px 14px;border-radius:10px;font-weight:700}.tab.active{background:var(--navy);color:white;border-color:var(--navy)}.profile-row{display:flex;align-items:center;gap:12px}.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--blue));color:white;display:grid;place-items:center;font-weight:700}.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:20px}.page-head h1{font-size:25px;margin:0 0 5px}.page-head p{margin:0;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.card{background:white;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:0 4px 16px #1b365b08}.metric-label{font-size:12px;color:var(--muted);letter-spacing:.3px;text-transform:uppercase}.metric-value{font-size:28px;font-weight:700;margin-top:8px;line-height:1.2}.metric-note{font-size:12px;color:var(--muted);margin-top:6px}.section{margin-top:18px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 15px}.section-head h2,.card h2{font-size:18px;margin:0 0 12px}.filters{display:flex;gap:8px;flex-wrap:wrap}.filters input{padding:9px 10px;border:1px solid var(--line);border-radius:8px;min-width:170px}.chart-list{display:flex;flex-direction:column;gap:10px}.bar-row{display:grid;grid-template-columns:140px 1fr;align-items:center;gap:10px;font-size:13px}.bar-track{height:12px;background:#edf2fa;border-radius:999px;overflow:hidden}.bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),#6fa9ff);border-radius:999px}.table-wrap{overflow:auto}.table-wrap table{width:100%;border-collapse:collapse;font-size:13px}.table-wrap th,.table-wrap td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.table-wrap th{background:#f5f8ff;color:var(--ink);font-size:12px;text-transform:uppercase;letter-spacing:.25px}.empty{color:var(--muted);font-style:italic;padding:10px 0}.upload-box{margin-top:14px;border:2px dashed #bfd1f2;border-radius:14px;padding:18px;background:#f8fbff}.upload-box input[type=file]{display:block;width:100%}.upload-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.notice{margin-top:16px;padding:12px 14px;background:#f5f8ff;border:1px solid var(--line);border-radius:10px;color:var(--ink);font-size:13px;line-height:1.6}.footer{padding:20px 0 0;color:var(--muted);font-size:12px;text-align:center}.admin-only.hidden{display:none}.sub-table th,.sub-table td{padding:8px 10px;border:1px solid var(--line);font-size:12px}.sub-table{margin-top:8px}.report-section-block{margin-top:16px}.report-section-block h3{margin:0 0 8px;font-size:15px}.@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wrap{padding:17px 12px 30px}.topbar{padding:13px 14px}.metric-value{font-size:23px}}@media(max-width:420px){.grid{gap:9px}.card{padding:13px}.metric-value{font-size:21px}.brand{font-size:16px}.btn{padding:10px 11px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -50,11 +50,11 @@
       </div>
       <div class="section grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
         <div class="card"><h2>My performance snapshot</h2><div id="mySnapshot" class="empty">Admin report data has not been loaded in this browser.</div></div>
-        <div class="card"><h2>Quick notes</h2><p class="muted" style="font-size:13px;line-height:1.6;margin-bottom:0">Use Performance Reports to review daily and disposition-wise results. Admins can upload a spreadsheet or CSV to generate summary metrics.</p></div>
+        <div class="card"><h2>Quick notes</h2><p class="muted" style="font-size:13px;line-height:1.6;margin-bottom:0">Use Performance Reports to review daily and disposition-wise results. Admins can upload a daily report from the admin import tab and team members can then view their own KPI trend.</p></div>
       </div>
     </section>
     <section id="tab-reports" class="hidden">
-      <div class="section-head"><h2>Pre-Sales Performance Reports</h2><div class="filters"><input id="dateFilter" type="date" aria-label="Filter by date"><input id="agentFilter" placeholder="Filter by agent name" aria-label="Filter by agent name"></div></div>
+      <div class="section-head"><h2>Pre-Sales Performance Reports</h2><div class="filters"><input id="dateFilter" type="date" aria-label="Filter by date"><input id="agentFilter" placeholder="Filter by agent" aria-label="Filter by agent"></div></div>
       <div class="grid">
         <div class="card"><div class="metric-label">Connected Calls</div><div id="rConnected" class="metric-value">—</div></div>
         <div class="card"><div class="metric-label">Qualified Leads</div><div id="rQualified" class="metric-value">—</div></div>
@@ -68,22 +68,21 @@
       <div class="section"><h2>Imported records</h2><div class="table-wrap" id="recordsTable"><div class="empty">No report data yet.</div></div></div>
     </section>
     <section id="tab-attendance" class="hidden">
-      <div class="card"><h2>Attendance</h2><p class="muted" style="font-size:13px;line-height:1.6">Attendance screen is prepared in the portal. Check-in/check-out will be enabled after secure attendance integration is configured.</p></div>
+      <div class="card"><h2>Attendance</h2><p class="muted" style="font-size:13px;line-height:1.6">Attendance screen is prepared in the portal. Check-in/check-out will be enabled after secure attendance backend is available.</p>
       <div class="section grid">
         <div class="card"><div class="metric-label">Today</div><div class="metric-value">—</div><div class="metric-note">Awaiting attendance API</div></div>
         <div class="card"><div class="metric-label">Monthly Present Days</div><div class="metric-value">—</div><div class="metric-note">Awaiting attendance API</div></div>
       </div>
     </section>
     <section id="tab-quiz" class="hidden">
-      <div class="card"><h2>Weekly Quiz</h2><p class="muted" style="font-size:13px;line-height:1.6">Your quiz history can be connected to the existing API. Actual weekly questions, quiz submissions, and scoring are managed by the backend when available.</p></div>
+      <div class="card"><h2>Weekly Quiz</h2><p class="muted" style="font-size:13px;line-height:1.6">Your quiz history can be connected to the existing API. Actual weekly questions, quiz submission endpoints, and result history are managed outside this front-end template.</p></div>
     </section>
     <section id="tab-import" class="hidden">
       <div class="card">
         <h2>Upload daily pre-sales report</h2>
-        <p class="muted" style="font-size:13px;line-height:1.6">Upload a CSV or Excel (.xlsx, .xls) report exported from your calling/CRM system. The dashboard calculates team, agent, date, and disposition summaries from the imported data.</p>
-        <div class="upload-box"><input id="csvFile" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"><button id="importButton" class="btn btn-primary">Import</button><button id="clearButton" class="btn btn-outline">Clear</button></div>
-        <div id="importMessage" class="message" role="status"></div>
-        <div class="notice"><strong>Data handling:</strong> this frontend version processes the CSV or Excel file in your browser and keeps it only in this browser session. It does not upload the spreadsheet to a remote service.</div>
+        <p class="muted" style="font-size:13px;line-height:1.6">Upload a CSV or Excel (.xlsx, .xls) report exported from your calling/CRM system. The dashboard calculates team, agent, date, and disposition summaries automatically.</p>
+        <div class="upload-box"><input id="csvFile" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"><div class="upload-actions"><button id="importButton" class="btn btn-primary" type="button">Import report</button><button id="clearButton" class="btn btn-outline" type="button" style="background:#f2f5fa;color:var(--ink);border-color:var(--line)">Clear</button></div><div id="importMessage" class="message" role="status"></div></div>
+        <div class="notice"><strong>Data handling:</strong> this frontend version processes the CSV or Excel file in your browser and keeps it only in this browser session. It does not upload report rows to a backend API; admins can still use the report calculations in the browser for live review.</div>
       </div>
     </section>
     <div class="footer">IndiFrame Help Desk · Pre-Sales Team · Secure backend integration required for attendance and shared reporting</div>
@@ -94,35 +93,22 @@ const API = "https://indiframe-helpdesk-api.mukuls2302.workers.dev";
 let currentUser = null;
 let reportRows = [];
 let reportSections = [];
+let reportTotals = { blankDisposition: null, callsWithDisposition: null, totalCalls: null };
 let rawHeaders = [];
 const $ = id => document.getElementById(id);
 const norm = v => String(v ?? "").trim().toLowerCase().replace(/[^a-z0-9]/g,"");
 const REPORT_FIELD_ALIASES = {
-  agent: ["agent name","agent","employee name","employee","user","owner","agent id","team member","sales agent","caller","agentid","employeeid"],
+  agent: ["agent name","agent","employee name","employee","user","owner","agent id","employee id","team member","sales agent","caller","agentid","employeeid"],
   date: ["date","call date","activity date","created date","report date","date of call","call day","dial date","event date","day"],
   disposition: ["disposition","call disposition","status","outcome","lead status","result","call result","final status","last status","lead outcome","result status","sales outcome"],
   assigned: ["assigned leads","leads assigned","assigned","total leads","lead count","assigned count","assigned leads count","leads count","assigned qty","total assigned"],
   attempts: ["total attempts","attempts","call attempts","dial attempts","attempt count","attempts count","no of attempts","attempt count total","calls attempted","attempted calls"],
-  connected: ["connected calls","connects","connected","answered calls","connect count","connected count","connected calls count","calls connected","answered count","successful connects","connected count","connects count"],
-  leadId: ["lead id","leadid","prospect id","customer id","phone number","mobile","mobile number","phone","contact number","customer phone","lead phone","prospect phone","phone no","lead number","lead_number"],
+  connected: ["connected calls","connects","connected","answered calls","connect count","connected count","connected calls count","calls connected","answered count","successful connects","connected leads"],
+  leadId: ["lead id","leadid","prospect id","customer id","phone number","mobile","mobile number","phone","contact number","customer phone","lead phone","prospect phone","phone no","lead number","contact no","cell phone","telephone","lead telephone"],
   qualified: ["qualified leads","qualified","qualified count","sales qualified","qualified leads count","qualified count total","converted","qualification","qualified calls","sales qualified leads"]
 };
-const REQUIRED_WORKBOOK_SECTIONS = [
-  "Date-wise Call Performance",
-  "Agent-wise Summary",
-  "Date + Agent Analysis",
-  "Disposition by Agent",
-  "Day-wise Disposition Calls"
-];
-
-function normalizeTitle(value){
-  return String(value ?? "").replace(/\s+/g, " ").trim();
-}
-function normalizeSectionKey(value){
-  return normalizeTitle(value).toLowerCase().replace(/[^a-z0-9+ ]/g, "").replace(/\s+/g, " ").trim();
-}
 function normalizeHeaderKey(value){
-  return String(value ?? "").trim().toLowerCase().replace(/[\s_\-]+/g,"").replace(/[^a-z0-9]/g,"");
+  return String(value ?? "").trim().toLowerCase().replace(/[\s_\-.\/]+/g,"").replace(/[^a-z0-9]/g,"");
 }
 function headerAliasMatches(actualHeader, aliases){
   const actual = normalizeHeaderKey(actualHeader);
@@ -136,13 +122,10 @@ function resolveHeaderName(row, aliases){
   return keys.find(key => headerAliasMatches(key, aliases)) || null;
 }
 function findMissingMappedHeaders(rows){
-  const sampleRow = rows.find(r => Object.keys(r || {}).length) || {};
-  const available = Object.keys(sampleRow);
+  const sampleRow = rows.find(r => r && Object.keys(r).length) || {};
   const missing = [];
   for (const [field, aliases] of Object.entries(REPORT_FIELD_ALIASES)) {
-    if (!resolveHeaderName(sampleRow, aliases)) {
-      missing.push({ field, aliases, available });
-    }
+    if (!resolveHeaderName(sampleRow, aliases)) missing.push({ field, aliases });
   }
   return missing;
 }
@@ -159,41 +142,109 @@ function pick(row, names) {
   }
   return "";
 }
-function num(v){if(v==null||v=="")return 0;const n=Number(String(v).replace(/[, %]/g,""));return Number.isFinite(n)?n:0;}
-function dateKey(v){if(!v)return "Unknown";const s=String(v).trim();let d=new Date(s);if(!Number.isNaN(d.getTime()))return d.toISOString().slice(0,10);const m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(m){const [,a,b,c]=m;const y=c.length===2?`20${c}`:c;return new Date(`${y}-${a.padStart(2,"0")}-${b.padStart(2,"0")}`).toISOString().slice(0,10);}return s;}
-function parseCSV(text){
-  const rows=[];let row=[],field="",quoted=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i];
-    if(quoted){
-      if(c === '"' && text[i+1] === '"'){field+='"';i++;}
-      else if(c === '"'){quoted=false;}
-      else {field += c;}
-    } else {
-      if(c === '"'){quoted=true;}
-      else if(c === ','){row.push(field);field='';}
-      else if(c === '\n' || c === '\r'){
-        if(c === '\r' && text[i+1] === '\n') i++;
-        row.push(field);
-        if(row.some(x => String(x).trim() !== "")){rows.push(row);}
-        row=[];field='';
-      } else {
-        field += c;
-      }
+function parseNumber(v){
+  if(v==null||v===""||v==="-")return null;
+  const text=String(v).trim();
+  if(!text)return null;
+  const match=text.match(/-?\d[\d,\.\s]*/);
+  if(!match)return null;
+  const num=Number(match[0].replace(/,/g,"").trim());
+  return Number.isFinite(num)?num:null;
+}
+function extractWorkbookTotals(matrix){
+  const totals={ blankDisposition:null, callsWithDisposition:null, totalCalls:null };
+  for(const row of matrix){
+    const cells=row.map(v => String(v ?? "").trim()).filter(Boolean);
+    if(!cells.length) continue;
+    const joined = cells.join(" ");
+    const lower = joined.toLowerCase();
+    if(/blank\s*disposition/i.test(lower)){
+      const match = joined.match(/blank\s*disposition\s*[:=\-]?\s*([0-9,]+)/i) || joined.match(/([0-9,]+)\s*$/);
+      if(match) totals.blankDisposition = Number(String(match[1]).replace(/,/g, ""));
+    }
+    if(/calls?\s+with\s+disposition/i.test(lower)){
+      const match = joined.match(/calls?\s+with\s+disposition\s*[:=\-]?\s*([0-9,]+)/i) || joined.match(/([0-9,]+)\s*$/);
+      if(match) totals.callsWithDisposition = Number(String(match[1]).replace(/,/g, ""));
+    }
+    if(/total\s*calls?/i.test(lower)){
+      const match = joined.match(/total\s*calls?\s*[:=\-]?\s*([0-9,]+)/i) || joined.match(/([0-9,]+)\s*$/);
+      if(match) totals.totalCalls = Number(String(match[1]).replace(/,/g, ""));
     }
   }
-  row.push(field);
-  if(row.some(x => String(x).trim() !== "")){rows.push(row);}
-  if(rows.length < 2) throw new Error("CSV or Excel file must contain a header row and at least one data row.");
-  const headers=rows.shift().map(x => String(x).trim());
-  return rows.filter(r => r.some(x => String(x).trim() !== "")).map(r => Object.fromEntries(headers.map((h,i) => [h, String(r[i] ?? "").trim()])));
+  return totals;
+}
+function detectWorkbookSectionTitle(row){
+  const cells = row.map(v => String(v ?? "").trim()).filter(Boolean);
+  if(!cells.length) return null;
+  const text = cells.join(" ").replace(/\s+/g, " ").trim();
+  const lower = text.toLowerCase();
+  const sectionKeys = [
+    "call performance",
+    "date and agent analysis",
+    "date & agent analysis",
+    "date + agent analysis",
+    "agent wise summary",
+    "agent-wise summary",
+    "date + agent",
+    "date and agent",
+    "disposition",
+    "day-wise disposition calls",
+    "disposition by agent"
+  ];
+  for(const key of sectionKeys){
+    if(lower.includes(key)) return text;
+  }
+  return null;
+}
+function parseWorkbookSections(matrix){
+  const sections = [];
+  let current = null;
+  for(const row of matrix){
+    if(!row || !row.some(cell => String(cell ?? "").trim() !== "")) continue;
+    const title = detectWorkbookSectionTitle(row);
+    if(title){
+      if(current && current.headerRow) sections.push(current);
+      current = {title, headerRow:null, rows:[]};
+      continue;
+    }
+    if(!current) continue;
+    const cells = row.map(v => String(v ?? "").trim()).filter(Boolean);
+    if(current.headerRow === null && cells.length >= 2){
+      current.headerRow = cells;
+      continue;
+    }
+    current.rows.push(row);
+  }
+  if(current && current.headerRow) sections.push(current);
+  if(!sections.length) throw new Error("Unable to identify the workbook report sections. Please check the sheet structure.");
+  return sections.map(section => ({
+    title: section.title,
+    columns: section.headerRow || [],
+    rows: (section.rows || []).filter(r => r.some(cell => String(cell ?? "").trim() !== ""))
+  }));
+}
+function isMultiSectionWorkbook(rows){
+  if(!Array.isArray(rows) || !rows.length) return false;
+  const joined = rows.map(r => (Array.isArray(r) ? r : []).join(" ")).join(" ");
+  const lower = joined.toLowerCase();
+  return (lower.includes("call performance") || lower.includes("day-wise disposition") || lower.includes("date & agent analysis") || lower.includes("date + agent analysis") || lower.includes("agent-wise summary") || lower.includes("disposition by agent")) && joined.includes("|") === false;
+}
+function num(v){if(v==null||v=="")return 0;const n=Number(String(v).replace(/[, %]/g,""));return Number.isFinite(n)?n:0;}
+function dateKey(v){if(!v)return "Unknown";const s=String(v).trim();let d=new Date(s);if(!Number.isNaN(d.getTime()))return d.toISOString().slice(0,10);const m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(m){const a=Number(m[1]),b=Number(m[2]),c=Number(m[3]);if(c<100){const y=String(c).length===2?2000+c:c;return new Date(y,b-1,a).toISOString().slice(0,10);}return new Date(c,b-1,a).toISOString().slice(0,10);}const d2=new Date(s);return Number.isNaN(d2.getTime())?"Unknown":d2.toISOString().slice(0,10);} 
+function parseCSV(text){
+  const rows=[];let row=[],field="",quoted=false;
+  for(let i=0;i<text.length;i++){const c=text[i];if(quoted){if(c=='"'&&text[i+1]=='"'){field+='"';i++;}else if(c=='"')quoted=false;else field+=c;}else{if(c=='"')quoted=true;else if(c===","){row.push(field);field="";}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(field);if(row.some(x=>String(x).trim()!=="")){rows.push(row);}row=[];field="";}else field+=c;}}
+  if(field.length||row.length){row.push(field);if(row.some(x=>String(x).trim()!=="")){rows.push(row);}}
+  if(rows.length<2)throw new Error("CSV or Excel file must contain a header row and at least one data row.");
+  const headers=rows.shift().map(x=>x.trim());
+  return rows.filter(r=>r.some(x=>String(x).trim()!=="")).map(r=>Object.fromEntries(headers.map((h,i)=>[h,(r[i]??"").trim()])));
 }
 function normalizeRows(rows){
   const missing = findMissingMappedHeaders(rows);
   if (missing.length) {
     const missingList = missing.map(item => `${item.field} (expected: ${item.aliases.join(" / ")})`).join(", ");
     const available = Object.keys(rows.find(r => Object.keys(r || {}).length) || {}).join(", ") || "No headers detected";
-    throw new Error(`Import failed: missing required spreadsheet columns. Unmatched headers: ${missingList}. Available headers: ${available}. Map the file to these fields: Agent Name / Agent, Date, Disposition, Attempts, Connected Calls, Lead ID, Qualified Leads.`);
+    throw new Error(`Import failed: missing required spreadsheet columns. Unmatched headers: ${missingList}. Available headers: ${available}. Map the file to these fields: Agent Name / Agent, Date, Disposition, Assigned Leads, Attempts, Connected Calls, Lead ID / Phone, Qualified Leads.`);
   }
   return rows.map((r,i)=>{
     const agent=pick(r, REPORT_FIELD_ALIASES.agent) || "Unknown Agent";
@@ -208,89 +259,27 @@ function normalizeRows(rows){
     return {date,agent,disposition,assigned,attempts:attempts || (leadId ? 1 : 0),connected,leadId,qualified,source:r,rowNumber:i+1};
   });
 }
-function detectWorkbookSectionTitle(row){
-  const cells = row.map(cell => String(cell ?? "").trim()).filter(Boolean);
-  if (!cells.length) return null;
-  const joined = cells.join(" ");
-  const lookup = normalizeSectionKey(joined);
-  for (const title of REQUIRED_WORKBOOK_SECTIONS) {
-    const key = normalizeSectionKey(title);
-    if (lookup.includes(key) || key.includes(lookup)) return title;
-  }
-  return null;
-}
-function detectWorkbookSections(matrix){
-  const sections=[];
-  let current=null;
-  const detectedHeaders=[];
-  for (let i=0;i<matrix.length;i++){
-    const row = Array.isArray(matrix[i]) ? matrix[i] : [];
-    if (!row.some(cell => String(cell ?? "").trim() !== "")) {
-      if (current && current.headerRow) {
-        sections.push(current);
-        current = null;
-      }
-      continue;
-    }
-    const title = detectWorkbookSectionTitle(row);
-    if (title) {
-      if (current && current.headerRow) {
-        sections.push(current);
-      }
-      detectedHeaders.push(title);
-      current = { title, headerRow: null, rows: [] };
-      continue;
-    }
-    if (!current) continue;
-    if (current.headerRow === null) {
-      current.headerRow = row.map(cell => String(cell ?? "").trim()).filter(Boolean);
-      continue;
-    }
-    current.rows.push(row);
-  }
-  if (current && current.headerRow) sections.push(current);
-
-  const sectionNames = sections.map(s => s.title);
-  const missing = REQUIRED_WORKBOOK_SECTIONS.filter(title => !sectionNames.includes(title));
-  if (missing.length) {
-    const known = detectedHeaders.length ? detectedHeaders.join(" | ") : "No section titles detected";
-    throw new Error(`Import failed: unable to identify all required workbook sections. Missing: ${missing.join(", ")}. Detected headers: ${known}.`);
-  }
-
-  return sections.map(section => ({
-    title: section.title,
-    columns: Array.isArray(section.headerRow) ? section.headerRow : [],
-    rows: Array.isArray(section.rows) ? section.rows.filter(r => r.some(cell => String(cell ?? "").trim() !== "")) : []
-  }));
-}
-function tableMarkup(headers, rows){
-  if (!headers.length && !rows.length) return '<div class="empty">No rows to display for this section.</div>';
-  const headerCells = headers.length ? `<thead><tr>${headers.map(h => `<th>${esc(String(h ?? ""))}</th>`).join("")}</tr></thead>` : "";
-  const bodyRows = rows.length ? rows.map(r => `<tr>${(Array.isArray(r) ? r : []).map(c => `<td>${esc(String(c ?? ""))}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${Math.max(headers.length, 1)}">No rows</td></tr>`;
-  return `<div class="table-wrap"><table class="sub-table">${headerCells}<tbody>${bodyRows}</tbody></table></div>`;
-}
 function renderWorkbookSections(){
-  const box = $("workbookSectionTables");
-  if (!box) return;
-  if (!reportSections.length) {
-    box.innerHTML = '<div class="empty">No workbook section data yet.</div>';
-    return;
-  }
-  box.innerHTML = reportSections.map(section => { 
-    return `<div class="report-section-block"><h3>${esc(section.title || "Untitled section")}</h3>${tableMarkup(section.columns || [], section.rows || [])}</div>`;
+  const box=$("workbookSectionTables");
+  if(!box) return;
+  if(!reportSections.length){box.innerHTML='<div class="empty">No workbook section data yet.</div>';return;}
+  box.innerHTML = reportSections.map(section => {
+    const headers = Array.isArray(section.columns) ? section.columns : [];
+    const rows = Array.isArray(section.rows) ? section.rows : [];
+    const tableHeader = headers.length ? `<thead><tr>${headers.map(h => `<th>${esc(String(h ?? ""))}</th>`).join("")}</tr></thead>` : "";
+    const bodyRows = rows.length ? rows.map(r => `<tr>${(Array.isArray(r) ? r : []).map(c => `<td>${esc(String(c ?? ""))}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${Math.max(headers.length,1)}" class="empty">No rows in this section</td></tr>`;
+    return `<div class="report-section-block"><h3>${esc(section.title || "Untitled section")}</h3><div class="table-wrap"><table class="sub-table">${tableHeader}<tbody>${bodyRows}</tbody></table></div></div>`;
   }).join("");
 }
 function filteredRows(){
-  let rows = reportRows.slice();
-  const d = $("dateFilter")?.value || "";
-  const a = norm($("agentFilter")?.value || "");
-  if(d) rows = rows.filter(r => r.date === d);
-  if(a) rows = rows.filter(r => norm(r.agent).includes(a));
+  let rows=reportRows.slice();const d=$("dateFilter")?.value||"";const a=norm($("agentFilter")?.value||"");
+  if(d)rows=rows.filter(r=>r.date===d);
+  if(a)rows=rows.filter(r=>norm(r.agent).includes(a));
   return rows;
 }
 function sum(rows,key){return rows.reduce((s,r)=>s+(Number(r[key])||0),0);}
 function pct(a,b){return b?`${(a/b*100).toFixed(1)}%`:"—";}
-function esc(s){return String(s??"").replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[c]));}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function barList(container, entries){
   if(!entries.length){container.innerHTML='<div class="empty">No report data for this filter.</div>';return;}
   const max=Math.max(1,...entries.map(e=>e.value));
@@ -302,6 +291,24 @@ function table(container, headers, rows){
 }
 function renderReports(){
   renderWorkbookSections();
+  if(reportSections.length){
+    const totalCalls = reportTotals.totalCalls ?? 0;
+    const callsWithDisposition = reportTotals.callsWithDisposition ?? 0;
+    const blankDisposition = reportTotals.blankDisposition ?? 0;
+    $("mAssigned").textContent = blankDisposition || "—";
+    $("mAttempts").textContent = totalCalls || "—";
+    $("mConnect").textContent = totalCalls ? pct(callsWithDisposition, totalCalls) : "—";
+    $("mAttemptRate").textContent = totalCalls ? pct(callsWithDisposition, totalCalls) : "—";
+    $("rConnected").textContent = callsWithDisposition || "—";
+    $("rQualified").textContent = blankDisposition || "—";
+    $("rConversion").textContent = totalCalls ? pct(callsWithDisposition, totalCalls) : "—";
+    $("rRows").textContent = reportSections.reduce((sum, section) => sum + (section.rows || []).length, 0);
+    $("mySnapshot").textContent = `Workbook imported with ${reportSections.length} sections. Blank Disposition = ${blankDisposition}, Calls with Disposition = ${callsWithDisposition}, Total Calls = ${totalCalls}.`;
+    $("dayChart").innerHTML = '<div class="empty">Workbook totals preserved from the imported report.</div>';
+    $("dispChart").innerHTML = '<div class="empty">Workbook totals preserved from the imported report.</div>';
+    $("agentTable").innerHTML = '<div class="empty">Workbook section details are displayed below in their original section layout.</div>';
+    return;
+  }
   const rows=filteredRows();const attempts=sum(rows,"attempts"),connected=sum(rows,"connected"),qualified=sum(rows,"qualified"),assigned=sum(rows,"assigned");
   $("mAssigned").textContent=assigned||"—";$("mAttempts").textContent=attempts||"—";$("mConnect").textContent=pct(connected,attempts);
   const unique=new Set(rows.filter(r=>r.leadId).map(r=>r.agent+"|"+r.leadId)).size;
@@ -310,14 +317,14 @@ function renderReports(){
   $("rConnected").textContent=connected||"—";$("rQualified").textContent=qualified||"—";$("rConversion").textContent=pct(qualified,connected);$("rRows").textContent=rows.length;
   if(currentUser && currentUser.role!="admin"){
     const own=rows.filter(r=>norm(r.agent)===norm(currentUser.fullName)||norm(r.agent)===norm(currentUser.employeeId));
-    $("mySnapshot").textContent=own.length?`${own.length} report row(s) found for your profile. Connect rate: ${pct(sum(own,"connected"),sum(own,"attempts"))}.`:"No matching rows for your profile yet.";
-  }else{$("mySnapshot").textContent=reportRows.length?`${reportRows.length} rows loaded in this browser. Use Performance Reports for day-wise and disposition-wise summaries.`:"Admin can upload the call report spreadsheet to populate these metrics.";}
+    $("mySnapshot").textContent=own.length?`${own.length} report row(s) found for your profile. Connect rate: ${pct(sum(own,"connected"),sum(own,"attempts"))}.`:"No matching rows for your profile in this browser session.";
+  }else{$("mySnapshot").textContent=reportRows.length?`${reportRows.length} rows loaded in this browser. Use Performance Reports for day-wise and disposition-wise summaries.`:"Admin can upload the daily report from the Admin CSV Upload tab.";}
   const days={};rows.forEach(r=>days[r.date]=(days[r.date]||0)+r.attempts);
   barList($("dayChart"),Object.entries(days).sort((a,b)=>a[0].localeCompare(b[0])).map(([label,value])=>({label,value})));
   const disp={};rows.forEach(r=>disp[r.disposition]=(disp[r.disposition]||0)+1);
   barList($("dispChart"),Object.entries(disp).sort((a,b)=>b[1]-a[1]).map(([label,value])=>({label,value})));
   const agents={};rows.forEach(r=>{const a=agents[r.agent] ||= {assigned:0,attempts:0,connected:0,qualified:0,rows:0,leads:new Set()};a.assigned+=r.assigned;a.attempts+=r.attempts;a.connected+=r.connected;a.qualified+=r.qualified;a.rows+=1;if(r.leadId)a.leads.add(r.leadId);});
-  table($("agentTable"),["Agent","Assigned Leads","Attempts","Connects","Connect Rate","Attempt Rate","Qualified","Conversion"],Object.entries(agents).map(([name,a])=>[name,a.assigned||"—",a.attempts,a.connected,pct(a.connected,a.attempts),pct(a.leads.size||a.rows,a.assigned||a.rows),a.qualified,pct(a.qualified,a.connected)]));
+  table($("agentTable"),["Agent","Assigned Leads","Attempts","Connects","Connect Rate","Attempt Rate","Qualified","Conversion"],Object.entries(agents).map(([name,a])=>[name,a.assigned||"—",a.attempts,a.connected,pct(a.connected,a.attempts),pct(a.leads.size || (a.attempts>0?a.attempts:0),a.assigned||1),a.qualified,pct(a.qualified,a.connected||1)]));
   table($("recordsTable"),["Date","Agent","Disposition","Assigned","Attempts","Connected","Qualified"],rows.slice(0,300).map(r=>[r.date,r.agent,r.disposition,r.assigned||"—",r.attempts,r.connected,r.qualified]));
 }
 async function api(path, options={}) {
@@ -341,10 +348,11 @@ function setUser(user){
 }
 $("loginForm").addEventListener("submit",async e=>{
   e.preventDefault();const btn=$("loginButton");btn.disabled=true;showMessage($("loginMessage"),"Logging in…");
-  try{const data=await api("/api/login",{method:"POST",body:JSON.stringify({employeeId:$("employeeId").value.trim(),password:$("password").value})});if(!data.token)throw new Error("Login response missing token.");sessionStorage.setItem("indiframe_token",data.token);setUser(data.user||data);}catch(err){showMessage($("loginMessage"),err.message||"Login failed.","error");}finally{btn.disabled=false;}
+  try{const data=await api("/api/login",{method:"POST",body:JSON.stringify({employeeId:$("employeeId").value.trim(),password:$("password").value})});if(!data.token)throw new Error("Login response missing token.");sessionStorage.setItem("indiframe_token",data.token);setUser(data.user||data);}catch(err){showMessage($("loginMessage"),err.message==="Failed to fetch"?"API se connect nahi ho raha. Worker URL/CORS check karein.":err.message,"error");}
+  finally{btn.disabled=false;}
 });
-$("logoutButton").addEventListener("click",async()=>{try{await api("/api/logout",{method:"POST",body:"{}"});}catch{}sessionStorage.removeItem("indiframe_token");currentUser=null;$("appScreen").classList.add("hidden");$("loginScreen").classList.remove("hidden");});
-document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{if(btn.classList.contains("hidden"))return;document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b===btn));document.querySelectorAll("section[id^='tab-']").forEach(sec=>sec.classList.toggle("hidden",sec.id!==`tab-${btn.dataset.tab}`));}));
+$("logoutButton").addEventListener("click",async()=>{try{await api("/api/logout",{method:"POST",body:"{}"});}catch{}sessionStorage.removeItem("indiframe_token");currentUser=null;$("appScreen").classList.add("hidden");$("loginScreen").classList.remove("hidden");$("loginForm").reset();showMessage($("loginMessage"),"Logged out.","success");});
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{if(btn.classList.contains("hidden"))return;document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b===btn));const tab=btn.dataset.tab;document.querySelectorAll("[id^='tab-']").forEach(sec=>sec.classList.toggle("hidden",sec.id!==`tab-${tab}`));}));
 async function readImportedFile(file){
   if(!file) throw new Error("Please choose a file first.");
   const name=(file.name||"").toLowerCase();
@@ -355,24 +363,25 @@ async function readImportedFile(file){
   if(name.endsWith(".xls") || name.endsWith(".xlsx") || file.type.includes("excel") || file.type.includes("sheet") || file.type.includes("ms-excel") || file.type.includes("officedocument")){
     const buffer=await file.arrayBuffer();
     const workbook=XLSX.read(buffer,{type:"array",cellDates:true});
-    const firstSheetName=workbook.SheetNames[0];
-    if(!firstSheetName) throw new Error("The selected spreadsheet does not contain a sheet.");
-    const sheet=workbook.Sheets[firstSheetName];
-    const matrix=XLSX.utils.sheet_to_json(sheet,{header:1,defval:"",raw:false,blankrows:false});
-    if(!Array.isArray(matrix) || !matrix.length) throw new Error("The spreadsheet is empty or missing data rows.");
-    try {
-      const sections = detectWorkbookSections(matrix);
-      return {type:"sections", sections};
-    } catch (sectionsError) {
-      const headerRow = matrix[0] || [];
-      const rows = matrix.slice(1).map(row => {
-        const obj = {};
-        headerRow.forEach((header, index) => { obj[String(header || `Column ${index + 1}`)] = row[index] ?? ""; });
-        return obj;
-      }).filter(r => Object.values(r).some(v => String(v ?? "").trim() !== ""));
-      if (!rows.length) throw sectionsError;
-      return {type:"flat", rows};
+    const sheetName=workbook.SheetNames[0];
+    if(!sheetName) throw new Error("The selected spreadsheet does not contain a sheet.");
+    const sheet=workbook.Sheets[sheetName];
+    const rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:"",raw:false,blankrows:false});
+    if(!Array.isArray(rows) || !rows.length) throw new Error("The spreadsheet is empty or missing data rows.");
+    const hasWorkbookSections = isMultiSectionWorkbook(rows);
+    if(hasWorkbookSections){
+      const sections = parseWorkbookSections(rows);
+      reportTotals = extractWorkbookTotals(rows);
+      return { type:"multi", sections };
     }
+    const headerRow = rows[0] || [];
+    const flatRows = rows.slice(1).map(row => {
+      const obj = {};
+      headerRow.forEach((header, index) => { obj[String(header || `Column ${index + 1}`)] = row[index] ?? ""; });
+      return obj;
+    }).filter(r => Object.values(r).some(v => String(v ?? "").trim() !== ""));
+    if(!flatRows.length) throw new Error("The spreadsheet is empty or missing data rows.");
+    return { type:"flat", rows: flatRows };
   }
   throw new Error("Unsupported file format. Please upload a CSV, XLS, or XLSX file.");
 }
@@ -380,29 +389,31 @@ $("importButton").addEventListener("click",async()=>{
   const f=$("csvFile").files[0];if(!f){showMessage($("importMessage"),"Please choose a CSV/Excel file first.","error");return;}
   try{
     const importResult=await readImportedFile(f);
-    if(importResult.type === "sections"){
+    if(importResult.type === "multi"){
       reportSections=importResult.sections;
       reportRows=[];
       renderReports();
-      showMessage($("importMessage"),`${reportSections.length} workbook sections imported successfully.`,"success");
+      showMessage($("importMessage"),`Imported ${reportSections.length} workbook sections from ${f.name}. Blank Disposition = ${reportTotals.blankDisposition ?? "n/a"}, Calls with Disposition = ${reportTotals.callsWithDisposition ?? "n/a"}, Total Calls = ${reportTotals.totalCalls ?? "n/a"}.`,"success");
       return;
     }
     rawHeaders=Object.keys(importResult.rows[0]||{});
     reportRows=normalizeRows(importResult.rows);
     reportSections=[];
+    reportTotals={ blankDisposition:null, callsWithDisposition:null, totalCalls:null };
     renderReports();
-    showMessage($("importMessage"),`${reportRows.length} rows imported successfully.`,"success");
+    showMessage($("importMessage"),`${reportRows.length} rows imported successfully from ${f.name}.`,"success");
   } catch(err){
-    reportSections=[];
-    reportRows=[];
+    reportSections=[];reportRows=[];reportTotals={ blankDisposition:null, callsWithDisposition:null, totalCalls:null };
     renderReports();
     showMessage($("importMessage"),"Import failed: "+err.message,"error");
   }
 });
-$("clearButton").addEventListener("click",()=>{reportRows=[];reportSections=[];$("csvFile").value="";showMessage($("importMessage"),"Imported data cleared from this page.","success");renderReports();});
+$("clearButton").addEventListener("click",()=>{reportRows=[];reportSections=[];reportTotals={ blankDisposition:null, callsWithDisposition:null, totalCalls:null };$("csvFile").value="";showMessage($("importMessage"),"Imported data cleared from this page.","success");renderReports();});
 $("dateFilter").addEventListener("change",renderReports);$("agentFilter").addEventListener("input",renderReports);
 async function loadQuizHistory(){
-  const box=$("quizHistory");if(!box)return;try{const data=await api("/api/quiz-attempts");const items=Array.isArray(data)?data:(data.attempts||data.results||[]);if(!items.length){box.textContent="No quiz attempts found.";return;}box.innerHTML=items.slice(0,8).map(item=>`<div class="bar-row"><div>${esc(item.title||item.quiz||"Quiz")}</div><div>${esc(item.score||item.result||"—")}</div></div>`).join("");}catch(e){box.textContent="Quiz history could not be loaded: "+e.message;}}
+  const box=$("quizHistory");if(!box)return;try{const data=await api("/api/quiz-attempts");const items=Array.isArray(data)?data:(data.attempts||data.results||[]);if(!items.length){box.textContent="No quiz attempts found for this user.";return;}box.innerHTML=items.slice(0,5).map(item=>`<div class="bar-row"><div>${esc(item.title||item.quiz||"Quiz")}</div><div class="muted">${esc(item.score!=null?`Score: ${item.score}`:item.status||"Submitted")}</div></div>`).join("");}
+  catch(e){box.textContent="Quiz history could not be loaded: "+e.message;}
+}
 async function restoreSession(){
   const token=sessionStorage.getItem("indiframe_token");if(!token)return;
   try{const data=await api("/api/me");setUser(data.user||data);}catch{sessionStorage.removeItem("indiframe_token");}
