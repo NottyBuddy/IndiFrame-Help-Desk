@@ -94,16 +94,56 @@ let reportRows = [];
 let rawHeaders = [];
 const $ = id => document.getElementById(id);
 const norm = v => String(v ?? "").trim().toLowerCase().replace(/[^a-z0-9]/g,"");
+const REPORT_FIELD_ALIASES = {
+  agent: ["agent name","agent","employee name","employee","user","owner","agent id","team member","sales agent","caller","agentid","employeeid"],
+  date: ["date","call date","activity date","created date","report date","date of call","call day","dial date","event date","day"],
+  disposition: ["disposition","call disposition","status","outcome","lead status","result","call result","final status","last status","lead outcome","result status","sales outcome"],
+  assigned: ["assigned leads","leads assigned","assigned","total leads","lead count","assigned count","assigned leads count","leads count","assigned qty","total assigned"],
+  attempts: ["total attempts","attempts","call attempts","dial attempts","attempt count","attempts count","no of attempts","attempt count total","calls attempted","attempted calls"],
+  connected: ["connected calls","connects","connected","answered calls","connect count","connected count","connected calls count","calls connected","answered count","successful connects","connected leads"],
+  leadId: ["lead id","leadid","prospect id","customer id","phone number","mobile","mobile number","phone","contact number","customer phone","lead phone","prospect phone","phone no","lead number","contact no"],
+  qualified: ["qualified leads","qualified","qualified count","sales qualified","qualified leads count","qualified count total","converted","qualification","qualified calls","sales qualified leads"]
+};
+function normalizeHeaderKey(value){
+  return String(value ?? "").trim().toLowerCase().replace(/[\s_\-]+/g,"").replace(/[^a-z0-9]/g,"");
+}
+function headerAliasMatches(actualHeader, aliases){
+  const actual = normalizeHeaderKey(actualHeader);
+  return aliases.some(alias => {
+    const match = normalizeHeaderKey(alias);
+    return match && (actual === match || actual.includes(match) || match.includes(actual));
+  });
+}
+function resolveHeaderName(row, aliases){
+  const keys = Object.keys(row || {});
+  return keys.find(key => headerAliasMatches(key, aliases)) || null;
+}
+function findMissingMappedHeaders(rows){
+  const sampleRow = rows.find(r => Object.keys(r || {}).length) || {};
+  const available = Object.keys(sampleRow);
+  const missing = [];
+  for (const [field, aliases] of Object.entries(REPORT_FIELD_ALIASES)) {
+    if (!resolveHeaderName(sampleRow, aliases)) {
+      missing.push({ field, aliases, available });
+    }
+  }
+  return missing;
+}
 function showMessage(el, text, type="") { el.textContent=text; el.className="message "+type; }
 function pick(row, names) {
   const keys=Object.keys(row);
-  for(const name of names){const k=keys.find(x=>norm(x)===norm(name));if(k && row[k]!=="" && row[k]!=null)return row[k];}
-  for(const name of names){const target=norm(name);const k=keys.find(x=>norm(x).includes(target));if(k && row[k]!=="" && row[k]!=null)return row[k];}
+  for(const name of names){
+    const target=normalizeHeaderKey(name);
+    const k=keys.find(x => {
+      const keyNorm = normalizeHeaderKey(x);
+      return keyNorm === target || keyNorm.includes(target) || target.includes(keyNorm);
+    });
+    if(k && row[k]!=="" && row[k]!=null)return row[k];
+  }
   return "";
 }
 function num(v){if(v==null||v=="")return 0;const n=Number(String(v).replace(/[, %]/g,""));return Number.isFinite(n)?n:0;}
-function dateKey(v){if(!v)return "Unknown";const s=String(v).trim();let d=new Date(s);if(!Number.isNaN(d.getTime()))return d.toISOString().slice(0,10);const m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(m){const a=Number(m[1]),b=Number(m[2]),c=Number(m[3]);if(c<100){const y=String(c).length===2?2000+c:c;return new Date(y,b-1,a).toISOString().slice(0,10);}return new Date(c,b-1,a).toISOString().slice(0,10);}
-const d2=new Date(s);return Number.isNaN(d2.getTime())?"Unknown":d2.toISOString().slice(0,10);} 
+function dateKey(v){if(!v)return "Unknown";const s=String(v).trim();let d=new Date(s);if(!Number.isNaN(d.getTime()))return d.toISOString().slice(0,10);const m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);if(m){const a=Number(m[1]),b=Number(m[2]),c=Number(m[3]);if(c<100){const y=String(c).length===2?2000+c:c;return new Date(y,b-1,a).toISOString().slice(0,10);}return new Date(c,b-1,a).toISOString().slice(0,10);}const d2=new Date(s);return Number.isNaN(d2.getTime())?"Unknown":d2.toISOString().slice(0,10);} 
 function parseCSV(text){
   const rows=[];let row=[],field="",quoted=false;
   for(let i=0;i<text.length;i++){const c=text[i];if(quoted){if(c=='"'&&text[i+1]=='"'){field+='"';i++;}else if(c=='"')quoted=false;else field+=c;}else{if(c=='"')quoted=true;else if(c===","){row.push(field);field="";}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(field);if(row.some(x=>String(x).trim()!=="")){rows.push(row);}row=[];field="";}else field+=c;}}
@@ -113,17 +153,23 @@ function parseCSV(text){
   return rows.filter(r=>r.some(x=>String(x).trim()!=="")).map(r=>Object.fromEntries(headers.map((h,i)=>[h,(r[i]??"").trim()])));
 }
 function normalizeRows(rows){
+  const missing = findMissingMappedHeaders(rows);
+  if (missing.length) {
+    const missingList = missing.map(item => `${item.field} (expected: ${item.aliases.join(" / ")})`).join(", ");
+    const available = Object.keys(rows.find(r => Object.keys(r || {}).length) || {}).join(", ") || "No headers detected";
+    throw new Error(`Import failed: missing required spreadsheet columns. Unmatched headers: ${missingList}. Available headers: ${available}. Map the file to these fields: Agent Name / Agent, Date / Call Date, Disposition / Status, Assigned Leads, Attempts, Connected Calls, Lead ID / Phone, Qualified Leads.`);
+  }
   return rows.map((r,i)=>{
-   const agent=pick(r,["Agent Name","Agent","Employee Name","Employee","User","Owner","Agent ID"])||"Unknown Agent";
-   const date=dateKey(pick(r,["Date","Call Date","Activity Date","Created Date","Report Date"]));
-   const disposition=pick(r,["Disposition","Call Disposition","Status","Outcome","Lead Status"])||"Unspecified";
-   const assigned=num(pick(r,["Assigned Leads","Leads Assigned","Assigned","Total Leads"]));
-   const attempts=num(pick(r,["Total Attempts","Attempts","Call Attempts","Dial Attempts","Attempt Count"]));
-   const connectedRaw=pick(r,["Connected Calls","Connects","Connected","Answered Calls","Connect Count"]);
-   const connected=connectedRaw!==""?num(connectedRaw):(/connect|answered|conversation/i.test(disposition)?1:0);
-   const leadId=pick(r,["Lead ID","LeadID","Prospect ID","Customer ID","Phone Number","Mobile"]);
-   const qualified=num(pick(r,["Qualified Leads","Qualified","Qualified Count","Sales Qualified"]));
-   return {date,agent,disposition,assigned,attempts:attempts || (leadId?1:0),connected,leadId,qualified,source:r,rowNumber:i+1};
+   const agent=pick(r, REPORT_FIELD_ALIASES.agent) || "Unknown Agent";
+   const date=dateKey(pick(r, REPORT_FIELD_ALIASES.date));
+   const disposition=pick(r, REPORT_FIELD_ALIASES.disposition) || "Unspecified";
+   const assigned=num(pick(r, REPORT_FIELD_ALIASES.assigned));
+   const attempts=num(pick(r, REPORT_FIELD_ALIASES.attempts));
+   const connectedRaw=pick(r, REPORT_FIELD_ALIASES.connected);
+   const connected=connectedRaw!=="" ? num(connectedRaw) : 0;
+   const leadId=pick(r, REPORT_FIELD_ALIASES.leadId) || "";
+   const qualified=num(pick(r, REPORT_FIELD_ALIASES.qualified));
+   return {date,agent,disposition,assigned,attempts:attempts || (leadId ? 1 : 0),connected,leadId,qualified,source:r,rowNumber:i+1};
   });
 }
 function filteredRows(){
