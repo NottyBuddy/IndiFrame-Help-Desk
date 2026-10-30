@@ -3,35 +3,74 @@ const $ = id => document.getElementById(id);
 const state={user:null,quizAttempts:[],agents:[],kpis:[]};
 function normRole(v){return String(v||'agent').toLowerCase()}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function arr(data,keys=[]){if(Array.isArray(data))return data;for(const k of keys)if(Array.isArray(data?.[k]))return data[k];return []}
-function msg(text,type=''){const el=$('globalStatus');el.textContent=text;el.className='status '+type}
-function table(elId,headers,rows,empty='No records found.'){const el=$(elId);if(!rows.length){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;return}el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(v=>`<td>${esc(v??'—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
-function first(obj,keys,fallback='—'){for(const k of keys){if(obj&&obj[k]!==undefined&&obj[k]!==null&&obj[k]!=='')return obj[k]}return fallback}
-function setProfile(user){state.user=user||{};const id=first(user,['employeeId','employee_id','id'],'');const name=first(user,['fullName','full_name','name','employeeId','employee_id'],'Employee');const role=normRole(user.role);$('welcome').textContent=`Welcome, ${name}`;$('headNote').textContent=role==='admin'?'Admin overview and team monitoring.':'Your performance and training workspace.';$('profile').textContent=`${id}${id?' · ':''}${role==='admin'?'Administrator':'Agent'}`;$('roleBadge').textContent=role==='admin'?'Admin':'Agent';$('adminNav').classList.toggle('hidden',role!=='admin');}
-function renderKpis(rows){const kpis=arr(rows,['kpis','results','data']);const calls=kpis.reduce((s,x)=>s+(Number(first(x,['calls','total_calls'],0))||0),0);const qualified=kpis.reduce((s,x)=>s+(Number(first(x,['qualified_leads','qualifiedLeads'],0))||0),0);$('metricWeeks').textContent=kpis.length||'0';$('metricCalls').textContent=kpis.length?calls.toLocaleString():'—';$('metricQualified').textContent=kpis.length?qualified.toLocaleString():'—';table('myKpiTable',['Week','Calls','Qualified Leads','Conversions','Attendance %','Quality Score','Notes'],kpis.map(k=>[first(k,['week_start','weekStart']),first(k,['calls']),first(k,['qualified_leads','qualifiedLeads']),first(k,['conversions']),first(k,['attendance_pct','attendancePct']),first(k,['quality_score','qualityScore']),first(k,['notes'],'')]),'Personal KPI endpoint is not currently confirmed for this account.');
- const att=kpis.filter(k=>first(k,['attendance_pct','attendancePct'],null)!==null);$('attendancePanel').innerHTML=att.length?`<div class="grid">${att.slice(0,4).map(k=>`<div class="card"><div class="label">Week of ${esc(first(k,['week_start','weekStart']))}</div><div class="value">${esc(first(k,['attendance_pct','attendancePct']))}%</div><div class="note">KPI attendance summary</div></div>`).join('')}</div><p class="note">These are weekly KPI percentages, not daily check-in records.</p>`:'<div class="empty">No attendance percentage is available in the KPI data returned to this account.</div>'}
-function renderQuiz(attempts){const a=arr(attempts,['attempts','results','data']);state.quizAttempts=a;$('metricAttempts').textContent=a.length.toLocaleString();const rows=a.map(x=>[first(x,['week_start','weekStart','week_number','weekNumber']),first(x,['title','quiz_title']),`${first(x,['score'],0)} / ${first(x,['total_questions','totalQuestions','total'],0)}`,first(x,['percentage'],null)!==null?`${first(x,['percentage'])}%`:'—',first(x,['completed_at','completedAt','submitted_at','submittedAt'])]);table('quizTable',['Week','Quiz','Score','Percentage','Completed'],rows,'No saved quiz attempts found.');if(state.user&&normRole(state.user.role)==='admin')table('teamQuizTable',['Employee ID','Week','Quiz','Score','Total','Completed'],a.map(x=>[first(x,['employeeId','employee_id']),first(x,['week_start','weekStart','week_number']),first(x,['title','quiz_title']),first(x,['score']),first(x,['total_questions','totalQuestions','total']),first(x,['completed_at','completedAt','submitted_at'])]),'No quiz attempts found.');}
-async function load(){
- const token=window.IndiFrameAPI.getToken();if(!token){location.replace('index.html');return}
- try{const me=await window.IndiFrameAPI.apiRequest('/api/me');setProfile(me.user||me);$('connectionStatus').textContent='Login session verified with /api/me.';msg('Connected to the existing Worker API.','success')}
- catch(e){window.IndiFrameAPI.clearToken();location.replace('index.html');return}
- const role=normRole(state.user.role);let kpiLoaded=false;
- // Only call known read endpoints. Agent KPI endpoint was not confirmed in project notes.
- if(role==='admin'){
-   const results=await Promise.allSettled([window.IndiFrameAPI.apiRequest('/api/admin/agents'),window.IndiFrameAPI.apiRequest('/api/admin/kpis'),window.IndiFrameAPI.apiRequest('/api/quiz-attempts')]);
-   if(results[0].status==='fulfilled'){state.agents=arr(results[0].value,['agents','users','results','data']);$('adminAgentCount').textContent=state.agents.length;table('agentsTable',['Employee ID','Name','Role','Status'],state.agents.map(x=>[first(x,['employeeId','employee_id']),first(x,['fullName','full_name','name']),first(x,['role']),first(x,['active','isActive'],'—')]),'No agent records returned.')}
-   else { $('adminAgentCount').textContent='—';table('agentsTable',['Status'],[],results[0].reason.message); }
-   if(results[1].status==='fulfilled'){state.kpis=arr(results[1].value,['kpis','results','data']);kpiLoaded=true;$('adminKpiCount').textContent=state.kpis.length;table('teamKpiTable',['Employee ID','Week','Calls','Qualified','Conversions','Attendance %','Quality','Notes'],state.kpis.map(k=>[first(k,['employeeId','employee_id']),first(k,['week_start','weekStart']),first(k,['calls']),first(k,['qualified_leads','qualifiedLeads']),first(k,['conversions']),first(k,['attendance_pct','attendancePct']),first(k,['quality_score','qualityScore']),first(k,['notes'],'')]),'No KPI rows returned.')}
-   else {$('adminKpiCount').textContent='—';table('teamKpiTable',['Status'],[],results[1].reason.message)}
-   if(results[2].status==='fulfilled'){renderQuiz(results[2].value);$('adminAttemptCount').textContent=state.quizAttempts.length}else{$('adminAttemptCount').textContent='—';table('teamQuizTable',['Status'],[],results[2].reason.message)}
-   renderKpis(kpiLoaded?state.kpis:[]);$('connectionStatus').textContent='Session verified. Admin agents, KPI and quiz-history endpoints were checked; any failed endpoint is shown in its section.';
- } else {
-   $('adminNav').classList.add('hidden');
-   const results=await Promise.allSettled([window.IndiFrameAPI.apiRequest('/api/quiz-attempts')]);
-   if(results[0].status==='fulfilled')renderQuiz(results[0].value);else{$('metricAttempts').textContent='—';table('quizTable',['Status'],[],results[0].reason.message)}
-   renderKpis([]);$('connectionStatus').textContent='Session verified. Quiz history checked. A personal KPI read endpoint is not confirmed in the saved project notes, so no team KPI endpoint is called for agents.';
- }
+function arr(data,keys=[]){
+  if(Array.isArray(data)) return data;
+  if(!data || typeof data !== 'object') return [];
+  const candidates = [...keys, 'reports', 'kpis', 'results', 'data', 'rows', 'items'];
+  for(const k of candidates){ if(Array.isArray(data?.[k])) return data[k]; }
+  return [];
 }
-document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b===btn));['overview','kpis','attendance','quiz','admin'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==btn.dataset.view));}));
-$('logoutBtn').addEventListener('click',async()=>{try{await window.IndiFrameAPI.apiRequest('/api/logout',{method:'POST',body:'{}'})}catch{}window.IndiFrameAPI.clearToken();location.replace('index.html')});
-load().catch(e=>msg(e.message,'error'));
+function parseJsonObject(value, fallback={}){
+  if(value === undefined || value === null || value === '') return fallback;
+  if(typeof value === 'string'){
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' ? parsed : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+  if(typeof value === 'object') return value;
+  return fallback;
+}
+function normalizeKpiRow(row){
+  if(!row || typeof row !== 'object') return {};
+  const metrics = parseJsonObject(row.metrics_json ?? row.metricsJson ?? row.metrics ?? row.data ?? {});
+  return { ...row, ...metrics, employeeId: row.employeeId ?? row.employee_id ?? metrics.employeeId ?? metrics.employee_id, fullName: row.fullName ?? row.full_name ?? metrics.fullName ?? metrics.full_name };
+}
+function msg(text,type=''){const el=$('globalStatus');el.textContent=text;el.className='status '+type}
+function table(elId,headers,rows,empty='No records found.'){const el=$(elId);if(!rows.length){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;return}el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(value=>`<td>${esc(value)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function first(obj,keys,fallback='—'){for(const k of keys){if(obj&&obj[k]!==undefined&&obj[k]!==null&&obj[k]!=='')return obj[k]}return fallback}
+function setProfile(user){state.user=user||{};const id=first(user,['employeeId','employee_id','id'],'');const name=first(user,['fullName','full_name','name','employeeId','employee_id'],'Employee');const role=first(user,['role','userRole'], 'agent');$('profileName').textContent=name;$('profileId').textContent=id;$('roleBadge').textContent=String(role).toLowerCase()==='admin'?'Admin':'Employee';$('welcomeTitle').textContent='Welcome, '+name;$('welcomeSub').textContent=String(role).toLowerCase()==='admin'?'Team overview and pre-sales performance reports.':'Your pre-sales performance at a glance.';}
+function renderKpis(rows){
+  const kpis=arr(rows,['kpis','results','data','reports']).map(normalizeKpiRow);
+  const calls=kpis.reduce((s,x)=>s+(Number(first(x,['calls','total_calls','totalCalls','callsMade','assigned_leads','assignedLeads'],0))||0),0);
+  const qualified=kpis.reduce((s,x)=>s+(Number(first(x,['qualified','qualified_leads','qualifiedLeads'],0))||0),0);
+  const connected=kpis.reduce((s,x)=>s+(Number(first(x,['connected_calls','connectedCalls','connected'],0))||0),0);
+  const attempted=kpis.reduce((s,x)=>s+(Number(first(x,['attempts','total_attempts','totalAttempts','outgoing_attempts','outgoingAttempts'],0))||0),0);
+  const totalAgents=kpis.length;
+  $('metricCalls').textContent=calls.toLocaleString();
+  $('metricQualified').textContent=qualified.toLocaleString();
+  $('metricConnected').textContent=connected.toLocaleString();
+  $('metricAttempts').textContent=attempted.toLocaleString();
+  $('metricAgents').textContent=totalAgents.toLocaleString();
+  const rowsOut=kpis.map(x=>[
+    first(x,['employeeId','employee_id','employee','fullName','full_name','name'],'—'),
+    Number(first(x,['calls','total_calls','totalCalls','callsMade','assigned_leads','assignedLeads'],0))||0,
+    Number(first(x,['attempts','total_attempts','totalAttempts','outgoing_attempts','outgoingAttempts'],0))||0,
+    Number(first(x,['connected_calls','connectedCalls','connected'],0))||0,
+    Number(first(x,['qualified','qualified_leads','qualifiedLeads'],0))||0
+  ]);
+  if($('teamKpiTable')) table('teamKpiTable',['Employee','Calls','Attempts','Connected','Qualified'],rowsOut,'No KPI records found.');
+}
+function renderQuiz(attempts){const a=arr(attempts,['attempts','results','data','reports']);state.quizAttempts=a;$('metricAttempts').textContent=a.length.toLocaleString();}
+async function load(){
+  const token=window.IndiFrameAPI.getToken();if(!token){location.replace('index.html');return}
+  try{const me=await window.IndiFrameAPI.apiRequest('/api/me');setProfile(me.user||me);}
+  catch(e){window.IndiFrameAPI.clearToken();location.replace('index.html');return}
+  const role=normRole(state.user.role);
+  let kpiLoaded=false;
+  if(role==='admin'){
+    const results=await Promise.allSettled([
+      window.IndiFrameAPI.apiRequest('/api/admin/agents'),
+      window.IndiFrameAPI.apiRequest('/api/admin/kpis'),
+      window.IndiFrameAPI.apiRequest('/api/quiz-attempts')
+    ]);
+    if(results[0].status==='fulfilled'){state.agents=arr(results[0].value,['agents','users','results','data','reports']);}
+    if(results[1].status==='fulfilled'){state.kpis=arr(results[1].value,['kpis','results','data','reports']);kpiLoaded=true;}
+    if(results[2].status==='fulfilled'){renderQuiz(results[2].value);}
+    renderKpis(kpiLoaded ? state.kpis : []);
+  }
+}
+window.IndiFrameAPI = window.IndiFrameAPI || {};
+if(typeof window !== 'undefined') window.IndiFrameAPI.KPI = { arr, parseJsonObject, normalizeKpiRow };
