@@ -2,6 +2,16 @@
 /* Role-aware dashboard. All access control must still be enforced by the Worker. */
 const $ = id => document.getElementById(id);
 const state={user:null,quizAttempts:[],agents:[],kpis:[]};
+const ATTENDANCE_STORAGE_KEY = 'attendanceRecords';
+const OFFICE_RULES = {
+  checkInStart: '09:00',
+  checkInLatest: '09:30',
+  workEnd: '18:30',
+  requiredNetMinutes: 480,
+  halfDayMinMinutes: 240,
+  lateGraceMinutes: 0
+};
+
 function normRole(v){return String(v||'agent').toLowerCase()}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function arr(data,keys=[]){
@@ -38,10 +48,10 @@ function normalizeKpiPayload(data){
   }
   return [];
 }
-function msg(text,type=''){const el=$('globalStatus');el.textContent=text;el.className='status '+type}
+function msg(text,type=''){const el=$('globalStatus');if(el){el.textContent=text;el.className='status '+type}}
 function table(elId,headers,rows,empty='No records found.'){
-  const el=$(elId);if(!rows.length){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;return}
-  el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${esc(r[h] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const el=$(elId);if(!rows.length){if(el){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;}return}
+  if(el){el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${esc(r[h] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
 }
 function first(obj,keys,fallback='—'){for(const k of keys){if(obj&&obj[k]!==undefined&&obj[k]!==null&&obj[k]!=='')return obj[k]}return fallback}
 function setProfile(user){state.user=user||{};const id=first(user,['employeeId','employee_id','id'],'');const name=first(user,['fullName','full_name','name','employeeId','employee_id'],'Employee');console.log({id,name})}
@@ -52,7 +62,8 @@ function renderKpis(rows){
   const connected=kpis.reduce((s,x)=>s+(Number(first(x,['connected_calls','connectedCalls','connected'],0))||0),0);
   const attempted=kpis.reduce((s,x)=>s+(Number(first(x,['attempts','total_attempts','totalAttempts','outgoing_attempts','outgoingAttempts'],0))||0),0);
   const att=kpis.filter(k=>first(k,['attendance_pct','attendancePct'],null)!==null);
-  $('attendancePanel').innerHTML=att.length?`<div class="grid">${att.slice(0,4).map(k=>`<div class="card"><div class="label">${esc(first(k,['employeeId','employee_id','fullName','full_name','name'],'Employee'))}</div><div class="value">${esc(first(k,['attendance_pct','attendancePct'],'—'))}</div></div>`).join('')}</div>`:'<div class="empty">No attendance data</div>';
+  const panel=$('attendancePanel');
+  if(panel){panel.innerHTML=att.length?`<div class="grid">${att.slice(0,4).map(k=>`<div class="card"><div class="label">${esc(first(k,['employeeId','employee_id','fullName','full_name','name'],'Employee'))}</div><div class="value">${esc(first(k,['attendance_pct','attendancePct'],'—'))}</div></div>`).join('')}</div>`:'<div class="empty">No attendance data</div>'}
   $('metricCalls').textContent=calls.toLocaleString();
   $('metricQualified').textContent=qualified.toLocaleString();
   $('metricConnected').textContent=connected.toLocaleString();
@@ -100,13 +111,94 @@ function getAttendanceBreakMinutes(){
   return Math.max(0, manualBreak + (fixedBreaks[type] || 0));
 }
 
-function getAttendanceStatus(loginMinutes, breakMinutes){
+function getAttendanceStatus(loginMinutes, breakMinutes, checkIn, checkOut){
   const netMinutes = Math.max(0, loginMinutes - breakMinutes);
+  const checkInMinutes = parseTimeToMinutes(checkIn);
+  const checkOutMinutes = parseTimeToMinutes(checkOut);
+  const officeStart = parseTimeToMinutes(OFFICE_RULES.checkInLatest);
+  const officeEnd = parseTimeToMinutes(OFFICE_RULES.workEnd);
+
   if(loginMinutes <= 0) return 'Absent';
-  if(netMinutes >= 480) return 'Present';
-  if(netMinutes >= 240) return 'Half Day';
-  if(parseTimeToMinutes($('checkInTime')?.value || '00:00') > 540) return 'Late';
-  return 'Late';
+  if(netMinutes >= OFFICE_RULES.requiredNetMinutes && checkInMinutes <= officeStart && checkOutMinutes >= officeEnd) return 'Present';
+  if(checkInMinutes > officeStart) return 'Late';
+  if(netMinutes >= OFFICE_RULES.halfDayMinMinutes) return 'Half Day';
+  if(netMinutes > 0) return 'Late';
+  return 'Absent';
+}
+
+function loadStoredAttendanceRecords(){
+  try {
+    const raw = localStorage.getItem(ATTENDANCE_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveStoredAttendanceRecords(records){
+  try {
+    localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(records));
+  } catch (error) {
+    console.warn('Attendance save failed:', error);
+  }
+}
+
+function getCurrentMonthKey(date = new Date()){
+  const d = new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function getMonthlyPresentDays(records){
+  const month = getCurrentMonthKey();
+  return records.filter(item => {
+    if (!item || !item.date) return false;
+    const date = new Date(item.date + 'T00:00:00');
+    if (Number.isNaN(date.getTime())) return false;
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}` === month && ['Present','Late','Half Day'].includes(item.status);
+  }).length;
+}
+
+async function saveAttendanceToBackend(record){
+  const payload = {
+    ...record,
+    employeeId: state.user?.employeeId || state.user?.employee_id || state.user?.id || 'unknown',
+    employeeName: state.user?.fullName || state.user?.full_name || state.user?.name || 'Employee',
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    if (window.IndiFrameAPI && typeof window.IndiFrameAPI.apiRequest === 'function') {
+      return await window.IndiFrameAPI.apiRequest('/api/attendance', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (typeof fetch === 'function') {
+      const response = await fetch('/api/attendance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+      if (response.ok) return await response.json();
+    }
+  } catch (error) {
+    console.warn('Backend attendance save failed, retaining local record:', error);
+  }
+
+  return { savedLocally: true };
+}
+
+function persistAttendanceRecord(record){
+  const records = loadStoredAttendanceRecords();
+  const dateKey = record.date;
+  const idx = records.findIndex(item => item.date === dateKey && (item.employeeId === record.employeeId || !item.employeeId));
+  if (idx >= 0) records[idx] = record;
+  else records.push(record);
+  saveStoredAttendanceRecords(records);
+  return record;
 }
 
 function calculateAttendance(){
@@ -126,14 +218,34 @@ function calculateAttendance(){
   const loginMinutes = Math.max(0, parseTimeToMinutes(checkOut) - parseTimeToMinutes(checkIn));
   const breakMinutes = getAttendanceBreakMinutes();
   const netMinutes = Math.max(0, loginMinutes - breakMinutes);
-  const status = getAttendanceStatus(loginMinutes, breakMinutes);
+  const status = getAttendanceStatus(loginMinutes, breakMinutes, checkIn, checkOut);
+  const todayKey = new Date().toISOString().slice(0,10);
+  const attendanceRecord = {
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    date: todayKey,
+    employeeId: state.user?.employeeId || state.user?.employee_id || state.user?.id || 'unknown',
+    employeeName: state.user?.fullName || state.user?.full_name || state.user?.name || 'Employee',
+    checkIn,
+    checkOut,
+    breakType: $('breakType')?.value || 'none',
+    breakMinutes,
+    totalLoginMinutes: loginMinutes,
+    netWorkingMinutes: netMinutes,
+    status,
+    officeRules: OFFICE_RULES
+  };
 
   $('totalLoginHours').textContent = formatDuration(loginMinutes);
   $('breakTimeDisplay').textContent = formatDuration(breakMinutes);
   $('netWorkingHours').textContent = formatDuration(netMinutes);
   $('attendanceStatus').textContent = status;
   $('todayAttendanceValue').textContent = formatDuration(netMinutes);
-  $('monthlyPresentDaysValue').textContent = status === 'Present' ? '1' : status === 'Late' ? '1' : status === 'Half Day' ? '1' : '0';
+
+  const monthlyRecords = loadStoredAttendanceRecords();
+  const persisted = persistAttendanceRecord(attendanceRecord);
+  saveAttendanceToBackend(persisted).catch(()=>{});
+  const monthlyCount = getMonthlyPresentDays([...monthlyRecords, persisted]);
+  $('monthlyPresentDaysValue').textContent = String(monthlyCount);
 }
 
 function resetAttendance(){
@@ -146,12 +258,16 @@ function resetAttendance(){
   $('netWorkingHours').textContent = '00:00:00';
   $('attendanceStatus').textContent = '—';
   $('todayAttendanceValue').textContent = '—';
-  $('monthlyPresentDaysValue').textContent = '—';
+  $('monthlyPresentDaysValue').textContent = String(getMonthlyPresentDays(loadStoredAttendanceRecords()));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const calculateBtn = $('calculateAttendanceBtn');
   const resetBtn = $('resetAttendanceBtn');
+
+  const stored = loadStoredAttendanceRecords();
+  const monthlyCount = getMonthlyPresentDays(stored);
+  if ($('monthlyPresentDaysValue')) $('monthlyPresentDaysValue').textContent = String(monthlyCount);
 
   if(calculateBtn) calculateBtn.addEventListener('click', calculateAttendance);
   if(resetBtn) resetBtn.addEventListener('click', resetAttendance);
