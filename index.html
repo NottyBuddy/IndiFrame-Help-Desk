@@ -22,7 +22,7 @@
       border-radius: 16px;
       width: 100%;
       max-width: 380px;
-      box-shadow: 0 8px 30px #0001;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
     }
     h1 { color: #173b70; font-size: 25px; margin-bottom: 8px; }
     p { color: #64748b; font-size: 14px; }
@@ -56,11 +56,10 @@
 
     <form id="loginForm">
       <label for="employeeId">Employee ID</label>
-      <input id="employeeId" autocomplete="username" required>
+      <input id="employeeId" name="employeeId" autocomplete="username" required>
 
       <label for="password">Password</label>
-      <input id="password" type="password"
-        autocomplete="current-password" required>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
 
       <button id="loginButton" type="submit">Login</button>
       <p id="message" role="status"></p>
@@ -68,43 +67,48 @@
   </main>
 
   <script>
-    const API = "https://indiframe-helpdesk-api.mukuls2302.workers.dev";
+    const API = 'https://indiframe-helpdesk-api.mukuls2302.workers.dev';
 
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const button = document.getElementById("loginButton");
-      const message = document.getElementById("message");
+      const button = document.getElementById('loginButton');
+      const message = document.getElementById('message');
+      const employeeId = document.getElementById('employeeId').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!employeeId || !password) {
+        message.textContent = 'Employee ID and password are required.';
+        return;
+      }
+
       button.disabled = true;
-      message.textContent = "Logging in...";
+      message.textContent = 'Logging in...';
 
       try {
-        const response = await fetch(API + "/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            employeeId: document.getElementById("employeeId").value.trim(),
-            password: document.getElementById("password").value
-          })
+        const response = await fetch(API + '/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ employeeId, password })
         });
 
         let data = {};
         try { data = await response.json(); } catch {}
 
         if (!response.ok) {
-          throw new Error(data.error || "Login failed");
+          throw new Error(data.error || data.message || 'Login failed');
         }
 
         if (!data.token) {
-          throw new Error("Login response mein token nahi mila.");
+          throw new Error('Login response mein token nahi mila.');
         }
 
-        sessionStorage.setItem("indiframe_token", data.token);
-        message.textContent = "Login successful! Dashboard opening...";
-        window.location.href = "dashboard.html";
+        sessionStorage.setItem('indiframe_token', data.token);
+        message.textContent = 'Login successful! Dashboard opening...';
+        window.location.href = 'dashboard.html';
       } catch (error) {
-        message.textContent = error.message === "Failed to fetch"
-          ? "Server se connect nahi ho raha. API settings check karein."
+        message.textContent = error.message === 'Failed to fetch'
+          ? 'Server se connect nahi ho raha. API settings check karein.'
           : error.message;
       } finally {
         button.disabled = false;
