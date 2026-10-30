@@ -1,3 +1,4 @@
+<script>
 /* Role-aware dashboard. All access control must still be enforced by the Worker. */
 const $ = id => document.getElementById(id);
 const state={user:null,quizAttempts:[],agents:[],kpis:[]};
@@ -38,7 +39,10 @@ function normalizeKpiPayload(data){
   return [];
 }
 function msg(text,type=''){const el=$('globalStatus');el.textContent=text;el.className='status '+type}
-function table(elId,headers,rows,empty='No records found.'){const el=$(elId);if(!rows.length){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;return}el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${esc(r[h] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`};
+function table(elId,headers,rows,empty='No records found.'){
+  const el=$(elId);if(!rows.length){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;return}
+  el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${esc(r[h] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
 function first(obj,keys,fallback='—'){for(const k of keys){if(obj&&obj[k]!==undefined&&obj[k]!==null&&obj[k]!=='')return obj[k]}return fallback}
 function setProfile(user){state.user=user||{};const id=first(user,['employeeId','employee_id','id'],'');const name=first(user,['fullName','full_name','name','employeeId','employee_id'],'Employee');console.log({id,name})}
 function renderKpis(rows){
@@ -48,7 +52,7 @@ function renderKpis(rows){
   const connected=kpis.reduce((s,x)=>s+(Number(first(x,['connected_calls','connectedCalls','connected'],0))||0),0);
   const attempted=kpis.reduce((s,x)=>s+(Number(first(x,['attempts','total_attempts','totalAttempts','outgoing_attempts','outgoingAttempts'],0))||0),0);
   const att=kpis.filter(k=>first(k,['attendance_pct','attendancePct'],null)!==null);
-  $('attendancePanel').innerHTML=att.length?`<div class="grid">${att.slice(0,4).map(k=>`<div class="card"><div class="label">${esc(first(k,['employeeId','employee_id','fullName','full_name','name'],'E[...`}
+  $('attendancePanel').innerHTML=att.length?`<div class="grid">${att.slice(0,4).map(k=>`<div class="card"><div class="label">${esc(first(k,['employeeId','employee_id','fullName','full_name','name'],'Employee'))}</div><div class="value">${esc(first(k,['attendance_pct','attendancePct'],'—'))}</div></div>`).join('')}</div>`:'<div class="empty">No attendance data</div>';
   $('metricCalls').textContent=calls.toLocaleString();
   $('metricQualified').textContent=qualified.toLocaleString();
   $('metricConnected').textContent=connected.toLocaleString();
@@ -73,8 +77,89 @@ async function load(){
     renderKpis(kpiLoaded ? state.kpis : []);
   }
 }
+
+function parseTimeToMinutes(value){
+  if(!value) return 0;
+  const [hours, minutes] = String(value).split(':').map(Number);
+  if(Number.isNaN(hours) || Number.isNaN(minutes)) return 0;
+  return (hours * 60) + minutes;
+}
+
+function formatDuration(totalMinutes){
+  const safeMinutes = Math.max(0, Number(totalMinutes) || 0);
+  const hours = Math.floor(safeMinutes / 60);
+  const minutes = Math.floor(safeMinutes % 60);
+  const secs = Math.floor((safeMinutes % 1) * 60);
+  return `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+}
+
+function getAttendanceBreakMinutes(){
+  const manualBreak = Number($('breakMinutes')?.value || 0);
+  const type = $('breakType')?.value || 'none';
+  const fixedBreaks = { none: 0, lunch: 45, tea: 15, bio: 10 };
+  return Math.max(0, manualBreak + (fixedBreaks[type] || 0));
+}
+
+function getAttendanceStatus(loginMinutes, breakMinutes){
+  const netMinutes = Math.max(0, loginMinutes - breakMinutes);
+  if(loginMinutes <= 0) return 'Absent';
+  if(netMinutes >= 480) return 'Present';
+  if(netMinutes >= 240) return 'Half Day';
+  if(parseTimeToMinutes($('checkInTime')?.value || '00:00') > 540) return 'Late';
+  return 'Late';
+}
+
+function calculateAttendance(){
+  const checkIn = $('checkInTime')?.value;
+  const checkOut = $('checkOutTime')?.value;
+
+  if(!checkIn || !checkOut){
+    $('totalLoginHours').textContent = '00:00:00';
+    $('breakTimeDisplay').textContent = '00:00:00';
+    $('netWorkingHours').textContent = '00:00:00';
+    $('attendanceStatus').textContent = 'Absent';
+    $('todayAttendanceValue').textContent = '00:00:00';
+    $('monthlyPresentDaysValue').textContent = '0';
+    return;
+  }
+
+  const loginMinutes = Math.max(0, parseTimeToMinutes(checkOut) - parseTimeToMinutes(checkIn));
+  const breakMinutes = getAttendanceBreakMinutes();
+  const netMinutes = Math.max(0, loginMinutes - breakMinutes);
+  const status = getAttendanceStatus(loginMinutes, breakMinutes);
+
+  $('totalLoginHours').textContent = formatDuration(loginMinutes);
+  $('breakTimeDisplay').textContent = formatDuration(breakMinutes);
+  $('netWorkingHours').textContent = formatDuration(netMinutes);
+  $('attendanceStatus').textContent = status;
+  $('todayAttendanceValue').textContent = formatDuration(netMinutes);
+  $('monthlyPresentDaysValue').textContent = status === 'Present' ? '1' : status === 'Late' ? '1' : status === 'Half Day' ? '1' : '0';
+}
+
+function resetAttendance(){
+  $('checkInTime').value = '';
+  $('checkOutTime').value = '';
+  $('breakType').value = 'none';
+  $('breakMinutes').value = 0;
+  $('totalLoginHours').textContent = '00:00:00';
+  $('breakTimeDisplay').textContent = '00:00:00';
+  $('netWorkingHours').textContent = '00:00:00';
+  $('attendanceStatus').textContent = '—';
+  $('todayAttendanceValue').textContent = '—';
+  $('monthlyPresentDaysValue').textContent = '—';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const calculateBtn = $('calculateAttendanceBtn');
+  const resetBtn = $('resetAttendanceBtn');
+
+  if(calculateBtn) calculateBtn.addEventListener('click', calculateAttendance);
+  if(resetBtn) resetBtn.addEventListener('click', resetAttendance);
+});
+
 window.IndiFrameAPI = window.IndiFrameAPI || {};
 if(typeof window !== 'undefined') window.IndiFrameAPI.KPI = { arr, parseJsonObject: parseJsonObject, normalizeKpiRow, normalizeKpiPayload };
+</script>
 
 <section id="tab-attendance" class="hidden">
   <div class="card">
