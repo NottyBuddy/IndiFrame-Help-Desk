@@ -38,9 +38,9 @@ function normalizeKpiPayload(data){
   return [];
 }
 function msg(text,type=''){const el=$('globalStatus');el.textContent=text;el.className='status '+type}
-function table(elId,headers,rows,empty='No records found.'){const el=$(elId);if(!rows.length){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;return}el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(value=>`<td>${esc(value)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function table(elId,headers,rows,empty='No records found.'){const el=$(elId);if(!rows.length){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;return}el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${esc(r[h] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`};
 function first(obj,keys,fallback='—'){for(const k of keys){if(obj&&obj[k]!==undefined&&obj[k]!==null&&obj[k]!=='')return obj[k]}return fallback}
-function setProfile(user){state.user=user||{};const id=first(user,['employeeId','employee_id','id'],'');const name=first(user,['fullName','full_name','name','employeeId','employee_id'],'Employee');const role=first(user,['role','userRole'],'agent');$('profileName').textContent=name;$('profileId').textContent=id;$('roleBadge').textContent=String(role).toLowerCase()==='admin'?'Admin':'Employee';$('welcomeTitle').textContent='Welcome, '+name;$('welcomeSub').textContent=String(role).toLowerCase()==='admin'?'Team overview and pre-sales performance reports.':'Your pre-sales performance at a glance.';}
+function setProfile(user){state.user=user||{};const id=first(user,['employeeId','employee_id','id'],'');const name=first(user,['fullName','full_name','name','employeeId','employee_id'],'Employee');console.log({id,name})}
 function renderKpis(rows){
   const kpis=normalizeKpiPayload(rows);
   const calls=kpis.reduce((s,x)=>s+(Number(first(x,['calls','total_calls','totalCalls','callsMade','assigned_leads','assignedLeads'],0))||0),0);
@@ -48,7 +48,7 @@ function renderKpis(rows){
   const connected=kpis.reduce((s,x)=>s+(Number(first(x,['connected_calls','connectedCalls','connected'],0))||0),0);
   const attempted=kpis.reduce((s,x)=>s+(Number(first(x,['attempts','total_attempts','totalAttempts','outgoing_attempts','outgoingAttempts'],0))||0),0);
   const att=kpis.filter(k=>first(k,['attendance_pct','attendancePct'],null)!==null);
-  $('attendancePanel').innerHTML=att.length?`<div class="grid">${att.slice(0,4).map(k=>`<div class="card"><div class="label">${esc(first(k,['employeeId','employee_id','fullName','full_name','name'],'Employee'))}</div><div class="value">${esc(first(k,['attendance_pct','attendancePct'],0))}</div></div>`).join('')}</div>`:'<div class="empty">No KPI data available.</div>';
+  $('attendancePanel').innerHTML=att.length?`<div class="grid">${att.slice(0,4).map(k=>`<div class="card"><div class="label">${esc(first(k,['employeeId','employee_id','fullName','full_name','name'],'E[...`}
   $('metricCalls').textContent=calls.toLocaleString();
   $('metricQualified').textContent=qualified.toLocaleString();
   $('metricConnected').textContent=connected.toLocaleString();
@@ -75,3 +75,61 @@ async function load(){
 }
 window.IndiFrameAPI = window.IndiFrameAPI || {};
 if(typeof window !== 'undefined') window.IndiFrameAPI.KPI = { arr, parseJsonObject: parseJsonObject, normalizeKpiRow, normalizeKpiPayload };
+
+<section id="tab-attendance" class="hidden">
+  <div class="card">
+    <h2>Attendance</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px;">
+      <div>
+        <label for="checkInTime">Check In</label>
+        <input id="checkInTime" type="time" step="60" style="width:100%;padding:10px;border:1px solid #dfe7f5;border-radius:8px;">
+      </div>
+
+      <div>
+        <label for="checkOutTime">Check Out</label>
+        <input id="checkOutTime" type="time" step="60" style="width:100%;padding:10px;border:1px solid #dfe7f5;border-radius:8px;">
+      </div>
+
+      <div>
+        <label for="breakType">Break Type</label>
+        <select id="breakType" style="width:100%;padding:10px;border:1px solid #dfe7f5;border-radius:8px;">
+          <option value="none">None</option>
+          <option value="lunch">Lunch Break</option>
+          <option value="tea">Tea Break</option>
+          <option value="bio">Bio Break</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="breakMinutes">Break Minutes</label>
+        <input id="breakMinutes" type="number" min="0" max="240" value="0" style="width:100%;padding:10px;border:1px solid #dfe7f5;border-radius:8px;">
+      </div>
+    </div>
+
+    <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+      <button id="calculateAttendanceBtn" class="btn btn-primary" type="button">Calculate Attendance</button>
+      <button id="resetAttendanceBtn" class="btn btn-outline" type="button">Reset</button>
+    </div>
+
+    <div id="attendanceResult" style="margin-top:18px;padding:14px;border:1px solid #e3e9f2;border-radius:10px;background:#f9fbff;">
+      <div><strong>Total Login Hours:</strong> <span id="totalLoginHours">00:00:00</span></div>
+      <div><strong>Break Time:</strong> <span id="breakTimeDisplay">00:00:00</span></div>
+      <div><strong>Net Working Hours:</strong> <span id="netWorkingHours">00:00:00</span></div>
+      <div><strong>Status:</strong> <span id="attendanceStatus">—</span></div>
+    </div>
+  </div>
+
+  <div class="section grid">
+    <div class="card">
+      <div class="metric-label">Today</div>
+      <div class="metric-value" id="todayAttendanceValue">—</div>
+      <div class="metric-note">Login duration minus break time</div>
+    </div>
+    <div class="card">
+      <div class="metric-label">Monthly Present Days</div>
+      <div class="metric-value" id="monthlyPresentDaysValue">—</div>
+      <div class="metric-note">Based on attendance status</div>
+    </div>
+  </div>
+</section>
