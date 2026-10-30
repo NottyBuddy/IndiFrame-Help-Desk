@@ -44,16 +44,19 @@
           <div id="metricWeeks" class="value">—</div>
           <div class="note">From the existing API</div>
         </div>
+
         <div class="card stat-card">
           <div class="label">Calls</div>
           <div id="metricCalls" class="value">—</div>
           <div class="note">Available KPI total</div>
         </div>
+
         <div class="card stat-card">
           <div class="label">Qualified Leads</div>
           <div id="metricQualified" class="value">—</div>
           <div class="note">Available KPI total</div>
         </div>
+
         <div class="card stat-card">
           <div class="label">Quiz Attempts</div>
           <div id="metricAttempts" class="value">—</div>
@@ -84,7 +87,9 @@
         <h2>Attendance</h2>
         <div id="attendancePanel" class="empty">Loading attendance summary…</div>
       </div>
-      <div class="alert">This is a read-only summary. Daily check-in/check-out is not enabled in this dashboard yet.</div>
+      <div class="alert">
+        This is a read-only summary. Daily check-in/check-out is not enabled in this dashboard yet.
+      </div>
     </section>
 
     <section id="view-quiz" class="tab-panel hidden">
@@ -92,25 +97,14 @@
         <h2>My Quiz History</h2>
         <div id="quizTable" class="empty">Loading quiz attempts…</div>
       </div>
-      <div class="alert">Saved attempt history will appear here once the API returns data.</div>
-    </section>
-
-    <section id="view-admin" class="tab-panel hidden">
-      <div class="grid">
-        <div class="card stat-card">
-          <div class="label">Registered Agents</div>
-          <div id="adminAgentCount" class="value">—</div>
-          <div class="note">From /api/admin/agents</div>
-        </div>
-        <div class="card stat-card">
-          <div class="label">KPI Records</div>
-          <div id="adminKpiCount" class="value">—</div>
-          <div class="note">From /api/admin/kpis</div>
-        </div>
+      <div class="alert">
+        Saved attempt history will appear here once the API returns data.
       </div>
     </section>
 
-    <div class="footer">IndiFrame Help Desk · Existing GitHub Pages + Cloudflare Worker API · Worker deployment untouched</div>
+    <div class="footer">
+      IndiFrame Help Desk · Existing GitHub Pages + Cloudflare Worker API · Worker deployment untouched
+    </div>
   </main>
 
   <script src="api.js"></script>

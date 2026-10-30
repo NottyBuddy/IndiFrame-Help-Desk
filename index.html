@@ -67,28 +67,28 @@
   </main>
 
   <script>
-    const API = 'https://indiframe-helpdesk-api.mukuls2302.workers.dev';
+    const API = "https://indiframe-helpdesk-api.mukuls2302.workers.dev";
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const button = document.getElementById('loginButton');
-      const message = document.getElementById('message');
-      const employeeId = document.getElementById('employeeId').value.trim();
-      const password = document.getElementById('password').value;
+      const button = document.getElementById("loginButton");
+      const message = document.getElementById("message");
+      const employeeId = document.getElementById("employeeId").value.trim();
+      const password = document.getElementById("password").value;
 
       if (!employeeId || !password) {
-        message.textContent = 'Employee ID and password are required.';
+        message.textContent = "Employee ID and password are required.";
         return;
       }
 
       button.disabled = true;
-      message.textContent = 'Logging in...';
+      message.textContent = "Logging in...";
 
       try {
-        const response = await fetch(API + '/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch(API + "/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ employeeId, password })
         });
 
@@ -96,19 +96,19 @@
         try { data = await response.json(); } catch {}
 
         if (!response.ok) {
-          throw new Error(data.error || data.message || 'Login failed');
+          throw new Error(data.error || data.message || "Login failed");
         }
 
         if (!data.token) {
-          throw new Error('Login response mein token nahi mila.');
+          throw new Error("Login response mein token nahi mila.");
         }
 
-        sessionStorage.setItem('indiframe_token', data.token);
-        message.textContent = 'Login successful! Dashboard opening...';
-        window.location.href = 'dashboard.html';
+        sessionStorage.setItem("indiframe_token", data.token);
+        message.textContent = "Login successful! Dashboard opening...";
+        window.location.href = "dashboard.html";
       } catch (error) {
-        message.textContent = error.message === 'Failed to fetch'
-          ? 'Server se connect nahi ho raha. API settings check karein.'
+        message.textContent = error.message === "Failed to fetch"
+          ? "Server se connect nahi ho raha. API settings check karein."
           : error.message;
       } finally {
         button.disabled = false;
