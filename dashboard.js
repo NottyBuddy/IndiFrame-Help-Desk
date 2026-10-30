@@ -26,12 +26,16 @@ function parseJsonObject(value, fallback={}){
 function normalizeKpiRow(row){
   if(!row || typeof row !== 'object') return {};
   const metrics = parseJsonObject(row.metrics_json ?? row.metricsJson ?? row.metrics ?? row.data ?? {});
-  return { ...row, ...metrics, employeeId: row.employeeId ?? row.employee_id ?? metrics.employeeId ?? metrics.employee_id, fullName: row.fullName ?? row.full_name ?? metrics.fullName ?? metrics.full_name };
+  return { ...row, ...metrics, employeeId: row.employeeId ?? row.employee_id ?? metrics.employeeId ?? metrics.employee_id, fullName: row.fullName ?? row.full_name ?? metrics.fullName ?? metrics.full_name, name: row.name ?? metrics.name };
 }
-function msg(text,type=''){const el=$('globalStatus');el.textContent=text;el.className='status '+type}
-function table(elId,headers,rows,empty='No records found.'){const el=$(elId);if(!rows.length){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;return}el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(value=>`<td>${esc(value)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function msg(text,type=''){const el=$('globalStatus');if(el){el.textContent=text;el.className='status '+type}}
+function table(elId,headers,rows,empty='No records found.'){const el=$(elId);if(!rows.length){if(el){el.innerHTML=`<div class="empty">${esc(empty)}</div>`;}return}if(el){el.innerHTML=`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${headers.map(h=>`<td>${esc(r[h] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}}
 function first(obj,keys,fallback='—'){for(const k of keys){if(obj&&obj[k]!==undefined&&obj[k]!==null&&obj[k]!=='')return obj[k]}return fallback}
-function setProfile(user){state.user=user||{};const id=first(user,['employeeId','employee_id','id'],'');const name=first(user,['fullName','full_name','name','employeeId','employee_id'],'Employee');const role=first(user,['role','userRole'], 'agent');$('profileName').textContent=name;$('profileId').textContent=id;$('roleBadge').textContent=String(role).toLowerCase()==='admin'?'Admin':'Employee';$('welcomeTitle').textContent='Welcome, '+name;$('welcomeSub').textContent=String(role).toLowerCase()==='admin'?'Team overview and pre-sales performance reports.':'Your pre-sales performance at a glance.';}
+function setProfile(user){state.user=user||{};const id=first(user,['employeeId','employee_id','id'],'');const name=first(user,['fullName','full_name','name','employeeId','employee_id'],'Employee');
+  if($('welcome')) $('welcome').textContent = `Welcome, ${name}`;
+  if($('roleBadge')) $('roleBadge').textContent = normRole(state.user.role);
+  if($('profile')) $('profile').textContent = id ? `ID: ${id}` : 'Profile loaded';
+}
 function renderKpis(rows){
   const kpis=arr(rows,['kpis','results','data','reports']).map(normalizeKpiRow);
   const calls=kpis.reduce((s,x)=>s+(Number(first(x,['calls','total_calls','totalCalls','callsMade','assigned_leads','assignedLeads'],0))||0),0);
@@ -39,11 +43,11 @@ function renderKpis(rows){
   const connected=kpis.reduce((s,x)=>s+(Number(first(x,['connected_calls','connectedCalls','connected'],0))||0),0);
   const attempted=kpis.reduce((s,x)=>s+(Number(first(x,['attempts','total_attempts','totalAttempts','outgoing_attempts','outgoingAttempts'],0))||0),0);
   const totalAgents=kpis.length;
-  $('metricCalls').textContent=calls.toLocaleString();
-  $('metricQualified').textContent=qualified.toLocaleString();
-  $('metricConnected').textContent=connected.toLocaleString();
-  $('metricAttempts').textContent=attempted.toLocaleString();
-  $('metricAgents').textContent=totalAgents.toLocaleString();
+  if($('metricCalls')) $('metricCalls').textContent=calls.toLocaleString();
+  if($('metricQualified')) $('metricQualified').textContent=qualified.toLocaleString();
+  if($('metricConnected')) $('metricConnected').textContent=connected.toLocaleString();
+  if($('metricAttempts')) $('metricAttempts').textContent=attempted.toLocaleString();
+  if($('metricAgents')) $('metricAgents').textContent=totalAgents.toLocaleString();
   const rowsOut=kpis.map(x=>[
     first(x,['employeeId','employee_id','employee','fullName','full_name','name'],'—'),
     Number(first(x,['calls','total_calls','totalCalls','callsMade','assigned_leads','assignedLeads'],0))||0,
@@ -53,11 +57,23 @@ function renderKpis(rows){
   ]);
   if($('teamKpiTable')) table('teamKpiTable',['Employee','Calls','Attempts','Connected','Qualified'],rowsOut,'No KPI records found.');
 }
-function renderQuiz(attempts){const a=arr(attempts,['attempts','results','data','reports']);state.quizAttempts=a;$('metricAttempts').textContent=a.length.toLocaleString();}
+function renderQuiz(attempts){const a=arr(attempts,['attempts','results','data','reports']);state.quizAttempts=a;if($('metricAttempts')) $('metricAttempts').textContent=a.length.toLocaleString();}
 async function load(){
-  const token=window.IndiFrameAPI.getToken();if(!token){location.replace('index.html');return}
-  try{const me=await window.IndiFrameAPI.apiRequest('/api/me');setProfile(me.user||me);}
-  catch(e){window.IndiFrameAPI.clearToken();location.replace('index.html');return}
+  const token=window.IndiFrameAPI.getToken();
+  if(!token){
+    location.replace('index.html');
+    return;
+  }
+  try{
+    const me=await window.IndiFrameAPI.apiRequest('/api/me');
+    setProfile(me.user||me);
+  }
+  catch(e){
+    console.error('Profile load failed:', e);
+    window.IndiFrameAPI.clearToken();
+    location.replace('index.html');
+    return;
+  }
   const role=normRole(state.user.role);
   let kpiLoaded=false;
   if(role==='admin'){
@@ -74,3 +90,10 @@ async function load(){
 }
 window.IndiFrameAPI = window.IndiFrameAPI || {};
 if(typeof window !== 'undefined') window.IndiFrameAPI.KPI = { arr, parseJsonObject, normalizeKpiRow };
+if(typeof window !== 'undefined') {
+  if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', load);
+  } else {
+    load();
+  }
+}
