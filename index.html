@@ -5,90 +5,188 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IndiFrame Help Desk</title>
   <style>
+    :root {
+      --navy: #173b70;
+      --navy-2: #23509a;
+      --bg: #eef4ff;
+      --panel: #ffffff;
+      --line: #dfe8f5;
+      --text: #12233f;
+      --muted: #64748b;
+      --success: #1d9a5d;
+      --danger: #c62828;
+      --shadow: rgba(15, 23, 42, 0.12);
+    }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
       min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #edf4ff 0%, #dfeaff 45%, #f8fbff 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
+      color: var(--text);
     }
-    .card {
-      background: white;
-      padding: 28px;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 380px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+
+    .login-shell {
+      width: min(100%, 440px);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(147, 170, 210, 0.28);
+      border-radius: 20px;
+      padding: 28px 28px 22px;
+      box-shadow: 0 20px 45px var(--shadow);
+      backdrop-filter: blur(6px);
     }
-    h1 { color: #173b70; font-size: 25px; margin-bottom: 8px; }
-    p { color: #64748b; font-size: 14px; }
-    label { display: block; margin: 18px 0 7px; font-size: 14px; }
+
+    h1 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: clamp(2rem, 4vw, 2.7rem);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
     input {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 16px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+      background: #fff;
+      color: var(--text);
     }
+
+    input:focus {
+      border-color: var(--navy-2);
+      box-shadow: 0 0 0 4px rgba(35, 80, 154, 0.12);
+    }
+
     button {
       width: 100%;
-      padding: 13px;
-      margin-top: 22px;
-      border: 0;
-      border-radius: 8px;
-      background: #173b70;
+      margin-top: 8px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
       color: white;
-      font-size: 16px;
+      padding: 14px 18px;
+      font-size: 1.05rem;
+      font-weight: 700;
       cursor: pointer;
+      transition: transform .15s ease, opacity .2s ease, box-shadow .2s ease;
+      box-shadow: 0 10px 20px rgba(23, 59, 112, 0.2);
     }
-    button:disabled { opacity: .7; cursor: wait; }
-    #message { margin-top: 15px; overflow-wrap: anywhere; }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    button:disabled {
+      opacity: 0.72;
+      cursor: wait;
+      transform: none;
+    }
+
+    .message {
+      min-height: 22px;
+      margin-top: 16px;
+      font-size: 0.96rem;
+      font-weight: 600;
+      text-align: left;
+      color: var(--danger);
+    }
+
+    .message.success {
+      color: var(--success);
+    }
+
+    .helper {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .helper strong { color: var(--navy); }
   </style>
 </head>
 <body>
-  <main class="card">
+  <main class="login-shell">
     <h1>IndiFrame Help Desk</h1>
-    <p>Employee Login Portal</p>
+    <p class="subtitle">Employee Login Portal</p>
 
-    <form id="loginForm">
-      <label for="employeeId">Employee ID</label>
-      <input id="employeeId" name="employeeId" autocomplete="username" required>
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="employeeId">Employee ID</label>
+        <input id="employeeId" name="employeeId" autocomplete="username" placeholder="Enter employee ID" required>
+      </div>
 
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+      </div>
 
       <button id="loginButton" type="submit">Login</button>
-      <p id="message" role="status"></p>
+      <div id="message" class="message" role="status" aria-live="polite"></div>
     </form>
+
+    <div class="helper">
+      <strong>Note:</strong> Non-admin agents may use the default password <strong>Hrhca@123456</strong> on first login. Admin accounts are excluded.
+    </div>
   </main>
 
   <script>
-    const API = "https://indiframe-helpdesk-api.mukuls2302.workers.dev";
+    const API = 'https://indiframe-helpdesk-api.mukuls2302.workers.dev';
+    const DEFAULT_AGENT_PASSWORD = 'Hrhca@123456';
 
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const isAdminId = (value) => String(value || '').trim().toLowerCase() === 'admin';
 
-      const button = document.getElementById("loginButton");
-      const message = document.getElementById("message");
-      const employeeId = document.getElementById("employeeId").value.trim();
-      const password = document.getElementById("password").value;
+    const showMessage = (text, type = 'error') => {
+      const message = document.getElementById('message');
+      message.textContent = text;
+      message.className = 'message ' + (type === 'success' ? 'success' : '');
+    };
+
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const employeeId = document.getElementById('employeeId').value.trim();
+      const password = document.getElementById('password').value;
+      const button = document.getElementById('loginButton');
 
       if (!employeeId || !password) {
-        message.textContent = "Employee ID and password are required.";
+        showMessage('Please enter both Employee ID and password.');
         return;
       }
 
       button.disabled = true;
-      message.textContent = "Logging in...";
+      showMessage('Logging in...');
 
       try {
-        const response = await fetch(API + "/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const response = await fetch(API + '/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ employeeId, password })
         });
 
@@ -96,20 +194,32 @@
         try { data = await response.json(); } catch {}
 
         if (!response.ok) {
-          throw new Error(data.error || data.message || "Login failed");
+          throw new Error(data.error || 'Invalid Employee ID or password');
         }
 
         if (!data.token) {
-          throw new Error("Login response mein token nahi mila.");
+          throw new Error('Login response mein token nahi mila.');
         }
 
-        sessionStorage.setItem("indiframe_token", data.token);
-        message.textContent = "Login successful! Dashboard opening...";
-        window.location.href = "dashboard.html";
+        sessionStorage.setItem('indiframe_token', data.token);
+
+        const shouldForcePasswordChange = !isAdminId(employeeId) && password === DEFAULT_AGENT_PASSWORD;
+
+        if (shouldForcePasswordChange) {
+          sessionStorage.setItem('forcePasswordChange', 'true');
+          showMessage('Default password detected. Redirecting to password change...', 'success');
+          setTimeout(() => window.location.href = 'change-password.html', 500);
+          return;
+        }
+
+        sessionStorage.setItem('forcePasswordChange', 'false');
+        showMessage('Login successful! Opening dashboard...', 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 500);
       } catch (error) {
-        message.textContent = error.message === "Failed to fetch"
-          ? "Server se connect nahi ho raha. API settings check karein."
+        const text = error.message === 'Failed to fetch'
+          ? 'Server se connect nahi ho raha. API settings check karein.'
           : error.message;
+        showMessage(text);
       } finally {
         button.disabled = false;
       }
