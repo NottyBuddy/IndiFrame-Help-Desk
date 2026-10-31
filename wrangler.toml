@@ -1,0 +1,6 @@
+name = "indiframe-helpdesk-api"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+JWT_SECRET = "indiframe_dev_secret"
