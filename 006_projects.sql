@@ -3,8 +3,6 @@
 -- Existing agents, sessions, KPI records, quiz attempts, and signup requests remain untouched.
 -- Run only after taking a D1 backup and confirming this is the intended production database.
 
-PRAGMA foreign_keys = ON;
-
 CREATE TABLE IF NOT EXISTS projects (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   project_code TEXT NOT NULL UNIQUE,
