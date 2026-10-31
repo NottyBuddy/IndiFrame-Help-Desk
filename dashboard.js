@@ -251,36 +251,8 @@ async function loadDashboard() {
       renderQuiz([]);
     }
   } catch (error) {
-    const demoUser = (window.IndiFrameAPI && typeof window.IndiFrameAPI.getDemoUser === 'function')
-      ? window.IndiFrameAPI.getDemoUser()
-      : null;
-
-    if (demoUser) {
-      setProfile(demoUser);
-      const role = normRole(demoUser.role);
-      setConnectionStatus('API unavailable. Showing demo data instead.', false);
-      if (role === 'admin') {
-        renderKpis([
-          { employeeId: 'admin', fullName: 'System Admin', calls: 240, attempts: 310, connected: 90, qualified: 45 },
-          { employeeId: 'A101', fullName: 'Agent Alpha', calls: 140, attempts: 190, connected: 58, qualified: 30 },
-          { employeeId: 'A102', fullName: 'Agent Beta', calls: 110, attempts: 160, connected: 50, qualified: 22 }
-        ]);
-        renderQuiz([
-          { weekNumber: 1, score: 9, totalQuestions: 10 },
-          { weekNumber: 2, score: 8, totalQuestions: 10 }
-        ]);
-      } else {
-        renderKpis([
-          { employeeId: demoUser.employeeId, fullName: demoUser.fullName, calls: 48, attempts: 65, connected: 18, qualified: 10 }
-        ]);
-        renderQuiz([{ weekNumber: 1, score: 7, totalQuestions: 10 }]);
-      }
-      return;
-    }
-
-    setConnectionStatus('API unavailable. Please check the Worker or log in again.', false);
-    sessionStorage.removeItem('indiframe_token');
-    sessionStorage.removeItem('forcePasswordChange');
+    setConnectionStatus(error.message || 'API unavailable. Please check the Worker or log in again.', false);
+    window.IndiFrameAPI.clearToken();
     setTimeout(() => { window.location.href = 'index.html'; }, 1200);
   }
 }
