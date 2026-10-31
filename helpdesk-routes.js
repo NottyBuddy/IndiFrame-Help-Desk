@@ -296,13 +296,13 @@ async function kpiImport(req, env, u) {
     bad(`${invalid.length} invalid and ${skipped.length} already-existing row(s) will NOT be imported. Confirm to import only the ${fresh.length} new valid row(s).`, 409);
   const hash = await sha256(JSON.stringify(fresh.map(({ n, key, ...r }) => r)));
   if (await env.DB.prepare("SELECT 1 FROM kpi_imports WHERE file_hash = ?").bind(hash).first()) bad("This exact data was already imported.", 409);
-  const ins = env.DB.prepare(`INSERT INTO kpi_daily(employee_id,kpi_date,report_date,disposition,calls,connected_calls,leads,site_visits,bookings,revenue,${NUM.join(",")},import_id,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,${NUM.map(() => "?").join(",")},(SELECT id FROM kpi_imports WHERE file_hash = ?),?)`);
+  const ins = env.DB.prepare(`INSERT INTO kpi_daily(employee_id,kpi_date,report_date,disposition,calls,leads,site_visits,bookings,revenue,${NUM.join(",")},import_id,created_at) VALUES(?,?,?,?,?,?,?,?,?,${NUM.map(() => "?").join(",")},(SELECT id FROM kpi_imports WHERE file_hash = ?),?)`);
   try {
     // ONE atomic batch: import record + every row. Plain INSERT (not OR IGNORE): any conflict aborts everything, so rows are never silently dropped.
     await env.DB.batch([
       env.DB.prepare("INSERT INTO kpi_imports(file_hash,file_name,filename,imported_by,imported_at,total_rows,successful_rows,failed_rows,rows_accepted,rows_skipped) VALUES(?,?,?,?,?,?,?,?,?,?)")
         .bind(hash, String(body.filename || "").slice(0, 120) || "kpi-import", String(body.filename || "").slice(0, 120), u.employeeId, now(), fresh.length + skipped.length + invalid.length, fresh.length, skipped.length + invalid.length, fresh.length, skipped.length + invalid.length),
-      ...fresh.map(o => ins.bind(o.employee_id, o.report_date, o.report_date, o.disposition, o.total_attempts, o.connected_calls, o.assigned_leads, 0, 0, 0, ...NUM.map(k => o[k]), hash, now())),
+      ...fresh.map(o => ins.bind(o.employee_id, o.report_date, o.report_date, o.disposition, o.total_attempts, o.assigned_leads, 0, 0, 0, ...NUM.map(k => o[k]), hash, now())),
     ]);
   } catch (e) {
     console.error("kpi import batch failed", e && e.message);
