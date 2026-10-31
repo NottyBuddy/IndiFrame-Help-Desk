@@ -28,6 +28,17 @@ function first(obj, keys, fallback = '—') {
   return fallback;
 }
 
+function setTextByIdCandidates(ids, value) {
+  for (const id of ids) {
+    const el = $(id);
+    if (el) {
+      el.textContent = value;
+      return true;
+    }
+  }
+  return false;
+}
+
 function parseJsonObject(value, fallback = {}) {
   if (value === undefined || value === null || value === '') return fallback;
   if (typeof value === 'string') {
@@ -94,10 +105,24 @@ function setProfile(user) {
   const id = first(user, ['employeeId', 'employee_id', 'id'], '');
   const name = first(user, ['fullName', 'full_name', 'name', 'employeeId', 'employee_id'], 'Employee');
   const role = normRole(first(user, ['role', 'userRole'], 'agent'));
+  const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
 
-  if ($('welcomeName')) $('welcomeName').textContent = String(name);
-  if ($('userRole')) $('userRole').textContent = role.charAt(0).toUpperCase() + role.slice(1);
-  if ($('userId')) $('userId').textContent = id || 'N/A';
+  setTextByIdCandidates(['welcomeName', 'welcome'], String(name));
+  setTextByIdCandidates(['userRole', 'roleBadge'], roleLabel);
+  setTextByIdCandidates(['userId', 'profile'], id || 'N/A');
+
+  const badge = $('roleBadge');
+  if (badge) {
+    badge.textContent = roleLabel;
+    badge.classList.toggle('admin', role === 'admin');
+  }
+}
+
+function setConnectionStatus(message, isOk = true) {
+  const el = $('connectionStatus') || $('globalStatus');
+  if (!el) return;
+  el.textContent = message;
+  el.className = isOk ? 'empty' : 'status error';
 }
 
 function renderKpis(rows) {
@@ -107,12 +132,11 @@ function renderKpis(rows) {
   const connected = kpis.reduce((sum, item) => sum + (Number(first(item, ['connected_calls', 'connectedCalls', 'connected'], 0)) || 0), 0);
   const attempted = kpis.reduce((sum, item) => sum + (Number(first(item, ['attempts', 'total_attempts', 'totalAttempts', 'outgoing_attempts', 'outgoingAttempts'], 0)) || 0), 0);
 
-  if ($('metricCalls')) $('metricCalls').textContent = calls.toLocaleString();
-  if ($('metricQualified')) $('metricQualified').textContent = qualified.toLocaleString();
-  if ($('metricConnected')) $('metricConnected').textContent = connected.toLocaleString();
-  if ($('metricAttempts')) $('metricAttempts').textContent = attempted.toLocaleString();
-
-  if ($('metricAgents')) $('metricAgents').textContent = kpis.length.toLocaleString();
+  setTextByIdCandidates(['metricCalls'], calls.toLocaleString());
+  setTextByIdCandidates(['metricQualified'], qualified.toLocaleString());
+  setTextByIdCandidates(['metricConnected'], connected.toLocaleString());
+  setTextByIdCandidates(['metricAttempts'], attempted.toLocaleString());
+  setTextByIdCandidates(['metricAgents'], kpis.length.toLocaleString());
 
   const rowsOut = kpis.map((item) => [
     first(item, ['employeeId', 'employee_id', 'employee', 'fullName', 'full_name', 'name'], '—'),
@@ -122,14 +146,14 @@ function renderKpis(rows) {
     Number(first(item, ['qualified', 'qualified_leads', 'qualifiedLeads'], 0)) || 0
   ]);
 
-  if ($('teamKpiTable')) {
-    const table = $('teamKpiTable');
+  const myKpiTable = $('myKpiTable') || $('teamKpiTable');
+  if (myKpiTable) {
     if (!rowsOut.length) {
-      table.innerHTML = '<div class="empty">No KPI records found.</div>';
+      myKpiTable.innerHTML = '<div class="empty">No KPI records found.</div>';
       return;
     }
 
-    table.innerHTML = `
+    myKpiTable.innerHTML = `
       <div class="tablewrap">
         <table>
           <thead>
@@ -153,12 +177,35 @@ function renderKpis(rows) {
 function renderQuiz(attempts) {
   const result = arr(attempts, ['attempts', 'results', 'data', 'reports']);
   state.quizAttempts = result;
-  if ($('metricAttempts')) $('metricAttempts').textContent = result.length.toLocaleString();
+  const total = Array.isArray(result) ? result.length : 0;
+  setTextByIdCandidates(['metricAttempts'], total.toLocaleString());
+
+  const quizTable = $('quizTable');
+  if (quizTable) {
+    if (!result.length) {
+      quizTable.innerHTML = '<div class="empty">No quiz attempts found.</div>';
+      return;
+    }
+
+    quizTable.innerHTML = `
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th>Week</th><th>Score</th><th>Total</th></tr>
+          </thead>
+          <tbody>
+            ${result.map((item) => `<tr><td>${esc(first(item,['weekNumber','week','week_number'], '—'))}</td><td>${Number(first(item,['score','totalScore'],0))}</td><td>${Number(first(item,['totalQuestions','total_questions','total'],0))}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
 }
 
 async function loadDashboard() {
   const token = sessionStorage.getItem('indiframe_token');
   if (!token) {
+    setConnectionStatus('No active session. Redirecting to login…', false);
     window.location.href = 'index.html';
     return;
   }
@@ -169,11 +216,13 @@ async function loadDashboard() {
   }
 
   try {
+    setConnectionStatus('Checking the existing API…', true);
     const me = await request('/api/me');
     const user = me.user || me;
     setProfile(user);
 
     const role = normRole(first(user, ['role', 'userRole'], 'agent'));
+    setTextByIdCandidates(['profile'], `${String(first(user,['fullName','full_name','name'],'Employee'))} • ${role}`);
 
     if (role === 'admin') {
       const [agentsRes, kpisRes, quizRes] = await Promise.allSettled([
@@ -194,11 +243,45 @@ async function loadDashboard() {
       if (quizRes.status === 'fulfilled') {
         renderQuiz(quizRes.value);
       }
+
+      setConnectionStatus('Connected to the API. Admin data loaded successfully.', true);
+    } else {
+      setConnectionStatus('Connected to the API. Agent dashboard ready.', true);
+      renderKpis([]);
+      renderQuiz([]);
     }
   } catch (error) {
+    const demoUser = (window.IndiFrameAPI && typeof window.IndiFrameAPI.getDemoUser === 'function')
+      ? window.IndiFrameAPI.getDemoUser()
+      : null;
+
+    if (demoUser) {
+      setProfile(demoUser);
+      const role = normRole(demoUser.role);
+      setConnectionStatus('API unavailable. Showing demo data instead.', false);
+      if (role === 'admin') {
+        renderKpis([
+          { employeeId: 'admin', fullName: 'System Admin', calls: 240, attempts: 310, connected: 90, qualified: 45 },
+          { employeeId: 'A101', fullName: 'Agent Alpha', calls: 140, attempts: 190, connected: 58, qualified: 30 },
+          { employeeId: 'A102', fullName: 'Agent Beta', calls: 110, attempts: 160, connected: 50, qualified: 22 }
+        ]);
+        renderQuiz([
+          { weekNumber: 1, score: 9, totalQuestions: 10 },
+          { weekNumber: 2, score: 8, totalQuestions: 10 }
+        ]);
+      } else {
+        renderKpis([
+          { employeeId: demoUser.employeeId, fullName: demoUser.fullName, calls: 48, attempts: 65, connected: 18, qualified: 10 }
+        ]);
+        renderQuiz([{ weekNumber: 1, score: 7, totalQuestions: 10 }]);
+      }
+      return;
+    }
+
+    setConnectionStatus('API unavailable. Please check the Worker or log in again.', false);
     sessionStorage.removeItem('indiframe_token');
     sessionStorage.removeItem('forcePasswordChange');
-    window.location.href = 'index.html';
+    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
   }
 }
 
