@@ -147,10 +147,18 @@ async function coreRoute(request, env, url) {
     const rows=(await env.DB.prepare("SELECT a.employee_id employeeId,a.full_name fullName,w.week_start weekStart,w.week_end weekEnd,w.metrics_json metricsJson,w.created_at createdAt FROM weekly_kpis w JOIN agents a ON a.id=w.agent_id ORDER BY w.week_start DESC,a.full_name LIMIT 2000").all()).results;
     return json(request,{kpis:rows});
   }
+  if (path === "/api/kpis/my" && method === "GET") {
+    requireRole(user,"agent");
+    const rows=(await env.DB.prepare("SELECT week_start weekStart,week_end weekEnd,metrics_json metricsJson,created_at createdAt FROM weekly_kpis WHERE agent_id=? ORDER BY week_start DESC LIMIT 200").bind(user.id).all()).results;
+    return json(request,{kpis:rows,scope:"personal"});
+  }
   if (path === "/api/quiz-attempts" && method === "GET") {
-    requireRole(user,"admin");
-    const rows=(await env.DB.prepare("SELECT q.id,a.employee_id employeeId,a.full_name fullName,q.week_number weekNumber,q.score,q.total_questions totalQuestions,q.completed_at completedAt FROM quiz_attempts q JOIN agents a ON a.id=q.agent_id ORDER BY q.completed_at DESC LIMIT 2000").all()).results;
-    return json(request,{attempts:rows});
+    requireRole(user,"agent");
+    const sql = String(user.role).toLowerCase()==="admin"
+      ? "SELECT q.id,a.employee_id employeeId,a.full_name fullName,q.week_number weekNumber,q.score,q.total_questions totalQuestions,q.completed_at completedAt FROM quiz_attempts q JOIN agents a ON a.id=q.agent_id ORDER BY q.completed_at DESC LIMIT 2000"
+      : "SELECT q.id,a.employee_id employeeId,a.full_name fullName,q.week_number weekNumber,q.score,q.total_questions totalQuestions,q.completed_at completedAt FROM quiz_attempts q JOIN agents a ON a.id=q.agent_id WHERE q.agent_id=? ORDER BY q.completed_at DESC LIMIT 500";
+    const rows=(await (String(user.role).toLowerCase()==="admin" ? env.DB.prepare(sql).all() : env.DB.prepare(sql).bind(user.id).all())).results;
+    return json(request,{attempts:rows,scope:String(user.role).toLowerCase()==="admin"?"team":"personal"});
   }
 
   if (path === "/api/superadmin/agents" && method === "GET") {
