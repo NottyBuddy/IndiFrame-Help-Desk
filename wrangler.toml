@@ -2,5 +2,6 @@ name = "indiframe-helpdesk-api"
 main = "worker.js"
 compatibility_date = "2025-01-01"
 
-[vars]
-JWT_SECRET = "indiframe_dev_secret"
+# D1 binding "DB" is already configured in the Cloudflare Worker dashboard.
+# Add database_name and database_id here only if you later choose Wrangler-based deployment.
+# Do not store passwords, API tokens, or other secrets in this file.
