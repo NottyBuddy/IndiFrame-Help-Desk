@@ -150,6 +150,8 @@ async function projectCreate(req, env, u, admin) {
   if (!PROJECT_STATUSES.has(status)) bad("Invalid project status.");
   const material = clean(b.product_material, 30);
   if (material && !["uPVC","aluminium","WPC","other"].includes(material)) bad("Invalid product material.");
+  const projectType = clean(b.project_type, 30) || "residential";
+  if (!["residential","commercial","institutional","other"].includes(projectType)) bad("Invalid project type.");
   const products = projectProducts(b.products) || [];
   let assignedId = u.agentId;
   if (b.assigned_agent_id !== undefined && b.assigned_agent_id !== null && b.assigned_agent_id !== "") {
@@ -162,7 +164,7 @@ async function projectCreate(req, env, u, admin) {
   const code = "PRJ-" + crypto.randomUUID().replace(/-/g,"").slice(0,10).toUpperCase();
   const t = now();
   const ins = await env.DB.prepare(`INSERT INTO projects(project_code,customer_name,customer_phone,alternate_phone,email,address,city,state,pincode,project_type,product_material,construction_stage,expected_timeline,status,assigned_agent_id,created_by_agent_id,requirements_notes,requirements_json,next_follow_up_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
-    .bind(code,customer,phone,clean(b.alternate_phone,30),clean(b.email,160),clean(b.address,500),clean(b.city,100),clean(b.state,100),clean(b.pincode,12),clean(b.project_type,30)||"residential",material,clean(b.construction_stage,120),clean(b.expected_timeline,120),status,assignedId,u.agentId,clean(b.requirements_notes,4000),b.requirements_json == null ? null : clean(typeof b.requirements_json==="string"?b.requirements_json:JSON.stringify(b.requirements_json),10000),clean(b.next_follow_up_at,40),t,t).run();
+    .bind(code,customer,phone,clean(b.alternate_phone,30),clean(b.email,160),clean(b.address,500),clean(b.city,100),clean(b.state,100),clean(b.pincode,12),projectType,material,clean(b.construction_stage,120),clean(b.expected_timeline,120),status,assignedId,u.agentId,clean(b.requirements_notes,4000),b.requirements_json == null ? null : clean(typeof b.requirements_json==="string"?b.requirements_json:JSON.stringify(b.requirements_json),10000),clean(b.next_follow_up_at,40),t,t).run();
   const id = ins.meta.last_row_id;
   const statements = products.map(p => env.DB.prepare("INSERT INTO project_products(project_id,product_category,product_type,quantity,width_mm,height_mm,configuration_json,notes) VALUES(?,?,?,?,?,?,?,?)").bind(id,p.category,p.type,p.quantity,p.width,p.height,p.config,p.notes));
   statements.push(env.DB.prepare("INSERT INTO project_activity(project_id,actor_agent_id,activity_type,description,new_status,created_at) VALUES(?,?,?,?,?,?)").bind(id,u.agentId,"created","Project created",status,t));
