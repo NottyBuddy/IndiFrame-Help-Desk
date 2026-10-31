@@ -1,10 +1,15 @@
 -- Additive migration: role hierarchy and agent break tracking.
 -- Existing agents, sessions, weekly_kpis, quiz_attempts and signup requests are preserved.
--- Do not execute until the project-data location has been confirmed and a D1 backup exists.
+-- Run only after a D1 backup and explicit approval to apply the live schema changes.
 
 ALTER TABLE agents
   ADD COLUMN is_super_admin INTEGER NOT NULL DEFAULT 0
   CHECK (is_super_admin IN (0, 1));
+
+-- Enforce a single Super Admin account at database level.
+CREATE UNIQUE INDEX IF NOT EXISTS ux_agents_single_super_admin
+  ON agents(is_super_admin)
+  WHERE is_super_admin = 1;
 
 CREATE TABLE IF NOT EXISTS agent_breaks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
