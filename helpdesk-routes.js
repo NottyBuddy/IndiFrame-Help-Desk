@@ -1,6 +1,4 @@
-// DRAFT additive module. All routes live under /api/hd/ so they cannot collide with existing routes.
-// Wire-up (see README): in your existing fetch handler, before the 404:
-//   const r = await handleHelpdesk(request, env); if (r) return r;
+// Help Desk API routes under /api/hd/. Imported by worker.js after core authentication routes.
 
 const ORIGIN = "https://nottybuddy.github.io";
 const CORS = {
@@ -20,10 +18,8 @@ const bad = (m, s = 400) => { throw new HttpError(s, m); };
 // Identity rule: the session's agent row is the ONLY source of identity. u.agentId = agents.id (used for quiz_attempts),
 // u.employeeId = agents.employee_id (used in the new attendance / kpi_daily / audit_log tables).
 //
-// ===== STILL UNCONFIRMED (verify against your real login code; this module never touches login) =====
-// U1: sessions.token_hash = lowercase hex SHA-256 of the raw bearer token.
-// U2: sessions.expires_at is an ISO-8601 UTC string (string comparison with now()). If it is epoch seconds/ms, change the comparison.
-// U3: agents.active = 1 means active; role 'admin' (case-insensitive) = admin.
+// Session contract used by worker.js: token_hash is lowercase hex SHA-256; expires_at is ISO-8601 UTC; active=1 means enabled.
+// Authentication identity always comes from the joined D1 agent record, never from client-supplied employee IDs.
 async function authenticate(req, env) {
   const m = (req.headers.get("Authorization") || "").match(/^Bearer (.+)$/);
   if (!m) return null;
