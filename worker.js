@@ -113,11 +113,11 @@ async function coreRoute(request, env, url) {
   if (path === "/api/login" && method === "POST") {
     const b = await body(request);
     if (!b || !String(b.employeeId || "").trim() || typeof b.password !== "string") return json(request, { error: "Employee ID and password are required." }, 400);
-    const user = await env.DB.prepare("SELECT id,employee_id,full_name,password_hash,role,active,is_super_admin FROM agents WHERE employee_id=? COLLATE NOCASE LIMIT 1").bind(String(b.employeeId).trim()).first();
+    const user = await env.DB.prepare("SELECT id,employee_id,full_name,password_hash,role,active,is_super_admin,must_change_password FROM agents WHERE employee_id=? COLLATE NOCASE LIMIT 1").bind(String(b.employeeId).trim()).first();
     if (!user || Number(user.active) !== 1 || !(await verifyPassword(b.password, user.password_hash))) return json(request, { error: "Invalid Employee ID or password." }, 401);
     const token = randomToken(), expires = new Date(Date.now() + TOKEN_TTL_MS).toISOString();
     await env.DB.prepare("INSERT INTO sessions(agent_id,token_hash,expires_at,created_at) VALUES(?,?,?,?)").bind(user.id, await sha256(token), expires, now()).run();
-    return json(request, { token, user: publicUser(user), expiresAt: expires });
+    return json(request, { token, user: publicUser(user), mustChangePassword: Number(user.must_change_password) === 1, expiresAt: expires });
   }
 
   const user = await auth(request, env);
@@ -131,7 +131,7 @@ async function coreRoute(request, env, url) {
     const b = await body(request), password = String(b?.password || "");
     if (password.length < 10) return json(request, { error: "Password kam se kam 10 characters ka hona chahiye." }, 400);
     const hash = await hashPassword(password);
-    await env.DB.prepare("UPDATE agents SET password_hash=? WHERE id=?").bind(hash, user.id).run();
+    await env.DB.prepare("UPDATE agents SET password_hash=?, must_change_password=0 WHERE id=?").bind(hash, user.id).run();
     await env.DB.prepare("DELETE FROM sessions WHERE agent_id=? AND id NOT IN (SELECT id FROM sessions WHERE agent_id=? ORDER BY created_at DESC LIMIT 1)").bind(user.id,user.id).run();
     await audit(env,user,"password_changed","Employee changed own password");
     return json(request, { success: true });
