@@ -248,9 +248,19 @@ async function loadDashboard() {
 
       setConnectionStatus('Connected to the API. Admin data loaded successfully.', true);
     } else {
-      setConnectionStatus('Connected to the API. Agent dashboard ready.', true);
-      renderKpis([]);
-      renderQuiz([]);
+      const [myKpiRes, myQuizRes] = await Promise.allSettled([
+        request('/api/kpis/my'),
+        request('/api/quiz-attempts')
+      ]);
+      if (myKpiRes.status === 'fulfilled') {
+        state.kpis = arr(myKpiRes.value, ['kpis', 'results', 'data']);
+        renderKpis(state.kpis);
+      } else {
+        renderKpis([]);
+      }
+      if (myQuizRes.status === 'fulfilled') renderQuiz(myQuizRes.value);
+      else renderQuiz([]);
+      setConnectionStatus('Connected to the API. Aapka personal KPI aur quiz history load ho gaya.', true);
     }
   } catch (error) {
     setConnectionStatus(error.message || 'API unavailable. Please check the Worker or log in again.', false);
