@@ -151,17 +151,10 @@
       <div id="message" class="message" role="status" aria-live="polite"></div>
     </form>
 
-    <div class="helper">
-      <strong>Note:</strong> Non-admin agents may use the default password <strong>Hrhca@123456</strong> on first login. Admin accounts are excluded.
-    </div>
   </main>
 
   <script>
     const API = 'https://indiframe-helpdesk-api.mukuls2302.workers.dev';
-    const DEFAULT_AGENT_PASSWORD = 'Hrhca@123456';
-
-    const isAdminId = (value) => String(value || '').trim().toLowerCase() === 'admin';
-
     const showMessage = (text, type = 'error') => {
       const message = document.getElementById('message');
       message.textContent = text;
@@ -203,7 +196,7 @@
 
         sessionStorage.setItem('indiframe_token', data.token);
 
-        const shouldForcePasswordChange = !isAdminId(employeeId) && password === DEFAULT_AGENT_PASSWORD;
+        const shouldForcePasswordChange = data.mustChangePassword === true;
 
         if (shouldForcePasswordChange) {
           sessionStorage.setItem('forcePasswordChange', 'true');
