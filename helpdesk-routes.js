@@ -57,7 +57,7 @@ export async function handleHelpdesk(req, env) {
     if (p.startsWith("/api/hd/admin/") && !admin) return J({ error: "Admin access required." }, 403);
 
     if (m === "GET" && p === "/api/hd/projects") return J(await projectList(url, env, u, admin));
-    if (m === "POST" && p === "/api/hd/projects") return J(await projectCreate(req, env, u), 201);
+    if (m === "POST" && p === "/api/hd/projects") return J(await projectCreate(req, env, u, admin), 201);
     const projectMatch = p.match(/^\\/api\\/hd\\/projects\\/(\\d+)$/);
     if (m === "GET" && projectMatch) return J(await projectGet(Number(projectMatch[1]), env, u, admin));
     if (m === "PUT" && projectMatch) return J(await projectUpdate(req, Number(projectMatch[1]), env, u, admin));
@@ -137,7 +137,7 @@ async function projectGet(id, env, u, admin) {
   const products = (await env.DB.prepare("SELECT id,product_category,product_type,quantity,width_mm,height_mm,configuration_json,notes FROM project_products WHERE project_id=? ORDER BY id").bind(id).all()).results;
   return { project, products };
 }
-async function projectCreate(req, env, u) {
+async function projectCreate(req, env, u, admin) {
   const b = await req.json().catch(() => bad("Invalid JSON body."));
   const customer = clean(b.customer_name, 160), phone = clean(b.customer_phone, 30);
   if (!customer) bad("Customer name is required.");
