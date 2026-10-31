@@ -66,6 +66,10 @@ export async function handleHelpdesk(req, env) {
     if (m === "POST" && activityMatch) return J(await projectAddActivity(req, Number(activityMatch[1]), env, u, admin));
     if (m === "GET" && p === "/api/hd/kpis/summary") return J(await kpiSummary(url, env, u, admin));
     if (m === "POST" && p === "/api/hd/admin/kpis/import") return J(await kpiImport(req, env, u));
+    if (m === "GET" && p === "/api/hd/breaks/status") return J(await breakStatus(env, u));
+    if (m === "POST" && p === "/api/hd/breaks/start") return J(await breakStart(req, env, u), 201);
+    if (m === "POST" && p === "/api/hd/breaks/end") return J(await breakEnd(env, u));
+    if (m === "GET" && p === "/api/hd/admin/breaks/status") return J(await adminBreakStatus(env));
     if (m === "GET" && p === "/api/hd/attendance/status") return J(await attStatus(env, u));
     if (m === "POST" && p === "/api/hd/attendance/check-in") return J(await checkIn(req, env, u));
     if (m === "POST" && p === "/api/hd/attendance/check-out") return J(await checkOut(env, u));
@@ -309,6 +313,36 @@ async function kpiImport(req, env, u) {
   if (saved !== fresh.length) throw new Error(`kpi import count mismatch: expected ${fresh.length}, saved ${saved}`);
   await audit(env, u, "kpi_import", `import ${imp.id}: ${saved} saved, ${skipped.length} existing skipped, ${invalid.length} invalid, file ${String(body.filename || "").slice(0, 60)}`);
   return { dryRun: false, importId: imp.id, saved, ...summary };
+}
+
+// ---------- Break management ----------
+const BREAK_TYPES = new Set(["tea","lunch","bio","personal","other"]);
+async function breakStatus(env,u) {
+  const active = await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  const recent = (await env.DB.prepare("SELECT id,break_type,started_at,ended_at,duration_seconds FROM agent_breaks WHERE agent_id=? ORDER BY started_at DESC LIMIT 20").bind(u.agentId).all()).results;
+  return { active: active ? { ...active, elapsedSeconds: Math.max(0,Math.floor((Date.now()-Date.parse(active.started_at))/1000)) } : null, history: recent };
+}
+async function breakStart(req,env,u) {
+  const b=await req.json().catch(()=>({}));
+  const type=String(b.break_type||"").toLowerCase();
+  if(!BREAK_TYPES.has(type)) bad("Select a valid break type.");
+  const t=now();
+  try {
+    const r=await env.DB.prepare("INSERT INTO agent_breaks(agent_id,break_type,started_at) VALUES(?,?,?)").bind(u.agentId,type,t).run();
+    return { id:r.meta.last_row_id, breakType:type, startedAt:t };
+  } catch(e) { bad("An active break already exists. End it before starting another break.",409); }
+}
+async function breakEnd(env,u) {
+  const active=await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(!active) bad("There is no active break to end.",409);
+  const t=now(), seconds=Math.max(0,Math.floor((Date.parse(t)-Date.parse(active.started_at))/1000));
+  await env.DB.prepare("UPDATE agent_breaks SET ended_at=?,duration_seconds=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,active.id).run();
+  return { id:active.id,breakType:active.break_type,startedAt:active.started_at,endedAt:t,durationSeconds:seconds };
+}
+async function adminBreakStatus(env) {
+  const rows=(await env.DB.prepare("SELECT b.id,b.break_type,b.started_at,a.employee_id,a.full_name FROM agent_breaks b JOIN agents a ON a.id=b.agent_id WHERE b.ended_at IS NULL AND a.active=1 ORDER BY b.started_at ASC").all()).results;
+  const t=Date.now();
+  return { activeBreaks:rows.map(r=>({...r,elapsedSeconds:Math.max(0,Math.floor((t-Date.parse(r.started_at))/1000))})), serverTime:now() };
 }
 
 // ---------- Attendance ----------
