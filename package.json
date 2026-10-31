@@ -1,0 +1,10 @@
+{
+  "name": "indiframe-helpdesk-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "node --check worker.js" 
+  }
+}
