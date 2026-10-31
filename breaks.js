@@ -1,4 +1,4 @@
-const $=id=>document.getElementById(id),api=window.IndiFrameAPI;let activeBreak=null,serverOffset=0,ticker=null;
+const $=id=>document.getElementById(id),api=window.IndiFrameAPI;let activeBreak=null,serverOffset=0,ticker=null,refreshTimer=null;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function message(t,error=false){$("message").textContent=t;$("message").className="break-message"+(error?" error":"")}
 function duration(sec){sec=Math.max(0,Math.floor(sec||0));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return [h,m,s].map(x=>String(x).padStart(2,"0")).join(":")}
@@ -24,4 +24,4 @@ async function load(){
 $("startBreak").onclick=async()=>{try{await api.apiRequest("/api/hd/breaks/start",{method:"POST",body:JSON.stringify({break_type:$("breakType").value})});message("Break start ho gaya.");await load()}catch(e){message(e.message,true)}};
 $("endBreak").onclick=async()=>{try{const r=await api.apiRequest("/api/hd/breaks/end",{method:"POST"});message("Break end ho gaya. Duration: "+duration(r.durationSeconds));await load()}catch(e){message(e.message,true)}};
 $("logoutBtn").onclick=()=>{api.clearToken();location.replace("index.html")};
-document.addEventListener("DOMContentLoaded",()=>{load();ticker=setInterval(()=>{renderOwn();if(String($("profile").textContent).includes("admin"))load()},1000)});
+document.addEventListener("DOMContentLoaded",()=>{load();ticker=setInterval(renderOwn,1000);refreshTimer=setInterval(load,30000)});
