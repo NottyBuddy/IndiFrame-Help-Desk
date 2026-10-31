@@ -174,6 +174,53 @@ function renderKpis(rows) {
   }
 }
 
+async function loadAttendance() {
+  const panel = $('attendancePanel');
+  try {
+    const status = await request('/api/hd/attendance/status');
+    if (panel) {
+      panel.textContent = status.active
+        ? 'Aap checked-in hain. Check-in time: ' + new Date(status.checkInAt).toLocaleString()
+        : 'Aap abhi checked-in nahi hain.';
+    }
+    const inBtn = $('checkInBtn'), outBtn = $('checkOutBtn');
+    if (inBtn) inBtn.disabled = !!status.active;
+    if (outBtn) outBtn.disabled = !status.active;
+    const month = new Date().toISOString().slice(0, 7);
+    const history = await request('/api/hd/attendance/history?month=' + month);
+    const records = history.records || [];
+    const el = $('attendanceHistory');
+    if (el) {
+      el.innerHTML = records.length
+        ? '<div class="tablewrap"><table><thead><tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Duration</th></tr></thead><tbody>' +
+          records.map(r => '<tr><td>' + esc(r.workDate) + '</td><td>' + esc(r.checkInAt ? new Date(r.checkInAt).toLocaleTimeString() : '—') + '</td><td>' + esc(r.checkOutAt ? new Date(r.checkOutAt).toLocaleTimeString() : '—') + '</td><td>' + esc(r.durationMinutes == null ? 'In progress' : Math.floor(r.durationMinutes/60)+'h '+(r.durationMinutes%60)+'m') + '</td></tr>').join('') +
+          '</tbody></table></div>'
+        : '<div class="empty">Is month ki attendance history abhi available nahi hai.</div>';
+    }
+  } catch (e) {
+    if (panel) panel.textContent = 'Attendance service abhi available nahi hai: ' + e.message;
+  }
+}
+
+async function attendanceAction(action) {
+  const inBtn = $('checkInBtn'), outBtn = $('checkOutBtn');
+  if (inBtn) inBtn.disabled = true;
+  if (outBtn) outBtn.disabled = true;
+  try {
+    if (action === 'in') {
+      await request('/api/hd/attendance/check-in', { method: 'POST', body: JSON.stringify({ tzOffsetMinutes: new Date().getTimezoneOffset() }) });
+      setConnectionStatus('Check-in successfully save ho gaya.', true);
+    } else {
+      await request('/api/hd/attendance/check-out', { method: 'POST' });
+      setConnectionStatus('Check-out successfully save ho gaya.', true);
+    }
+    await loadAttendance();
+  } catch (e) {
+    setConnectionStatus(e.message, false);
+    await loadAttendance();
+  }
+}
+
 function renderQuiz(attempts) {
   const result = arr(attempts, ['attempts', 'results', 'data', 'reports']);
   state.quizAttempts = result;
@@ -220,6 +267,7 @@ async function loadDashboard() {
     const me = await request('/api/me');
     const user = me.user || me;
     setProfile(user);
+    await loadAttendance();
 
     const role = normRole(first(user, ['role', 'userRole'], 'agent'));
     setTextByIdCandidates(['profile'], `${String(first(user,['fullName','full_name','name'],'Employee'))} • ${role}`);
@@ -270,6 +318,10 @@ async function loadDashboard() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  const checkIn = $('checkInBtn'), checkOut = $('checkOutBtn'), refresh = $('refreshAttendanceBtn');
+  if (checkIn) checkIn.addEventListener('click', () => attendanceAction('in'));
+  if (checkOut) checkOut.addEventListener('click', () => attendanceAction('out'));
+  if (refresh) refresh.addEventListener('click', loadAttendance);
   loadDashboard();
 });
 
