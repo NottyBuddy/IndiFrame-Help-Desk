@@ -58,10 +58,10 @@ export async function handleHelpdesk(req, env) {
 
     if (m === "GET" && p === "/api/hd/projects") return J(await projectList(url, env, u, admin));
     if (m === "POST" && p === "/api/hd/projects") return J(await projectCreate(req, env, u, admin), 201);
-    const projectMatch = p.match(/^\\/api\\/hd\\/projects\\/(\\d+)$/);
+    const projectMatch = p.match(/^\/api\/hd\/projects\/(\d+)$/);
     if (m === "GET" && projectMatch) return J(await projectGet(Number(projectMatch[1]), env, u, admin));
     if (m === "PUT" && projectMatch) return J(await projectUpdate(req, Number(projectMatch[1]), env, u, admin));
-    const activityMatch = p.match(/^\\/api\\/hd\\/projects\\/(\\d+)\\/activity$/);
+    const activityMatch = p.match(/^\/api\/hd\/projects\/(\d+)\/activity$/);
     if (m === "GET" && activityMatch) return J(await projectActivity(Number(activityMatch[1]), env, u, admin));
     if (m === "POST" && activityMatch) return J(await projectAddActivity(req, Number(activityMatch[1]), env, u, admin));
     if (m === "GET" && p === "/api/hd/kpis/summary") return J(await kpiSummary(url, env, u, admin));
