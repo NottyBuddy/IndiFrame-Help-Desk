@@ -1,8 +1,8 @@
 const USERS = new Map([
   ['admin', { employeeId: 'admin', fullName: 'System Admin', role: 'admin', password: 'admin123' }],
-  ['A101', { employeeId: 'A101', fullName: 'Agent Alpha', role: 'agent', password: 'Hrhca@123456' }],
-  ['A102', { employeeId: 'A102', fullName: 'Agent Beta', role: 'agent', password: 'Hrhca@123456' }],
-  ['A103', { employeeId: 'A103', fullName: 'Agent Gamma', role: 'agent', password: 'Hrhca@123456' }],
+  ['a101', { employeeId: 'A101', fullName: 'Agent Alpha', role: 'agent', password: 'Hrhca@123456' }],
+  ['a102', { employeeId: 'A102', fullName: 'Agent Beta', role: 'agent', password: 'Hrhca@123456' }],
+  ['a103', { employeeId: 'A103', fullName: 'Agent Gamma', role: 'agent', password: 'Hrhca@123456' }],
   ['agent', { employeeId: 'agent', fullName: 'Agent User', role: 'agent', password: 'Hrhca@123456' }]
 ]);
 
@@ -42,6 +42,10 @@ function normalizeEmployeeId(value) {
   return String(value || '').trim();
 }
 
+function normalizeEmployeeKey(value) {
+  return normalizeEmployeeId(value).toLowerCase();
+}
+
 function createToken(user) {
   const token = crypto.randomUUID();
   SESSIONS.set(token, {
@@ -76,7 +80,7 @@ function requireAuth(req) {
 
 function requireAdmin(req) {
   const user = requireAuth(req);
-  if (user.role !== 'admin') {
+  if (String(user.role || '').toLowerCase() !== 'admin') {
     throw new Error('Admin access required');
   }
   return user;
@@ -99,9 +103,9 @@ export default {
 
       if (path === '/api/login' && request.method === 'POST') {
         const body = await getBody(request);
-        const employeeId = normalizeEmployeeId(body.employeeId);
+        const employeeKey = normalizeEmployeeKey(body.employeeId);
         const password = String(body.password || '');
-        const user = USERS.get(employeeId) || USERS.get(employeeId.toLowerCase()) || null;
+        const user = USERS.get(employeeKey) || null;
 
         if (!user || password !== user.password) {
           return json({ error: 'Invalid Employee ID or password' }, 401);
@@ -125,7 +129,7 @@ export default {
           return json({ error: 'Password must be at least 6 characters.' }, 400);
         }
 
-        const existing = USERS.get(session.employeeId) || USERS.get(session.employeeId.toLowerCase()) || null;
+        const existing = USERS.get(normalizeEmployeeKey(session.employeeId)) || null;
         if (!existing) {
           return json({ error: 'User not found.' }, 404);
         }
