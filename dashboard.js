@@ -223,6 +223,8 @@ async function loadDashboard() {
 
     const role = normRole(first(user, ['role', 'userRole'], 'agent'));
     setTextByIdCandidates(['profile'], `${String(first(user,['fullName','full_name','name'],'Employee'))} • ${role}`);
+    const superAdminLink = $('superAdminLink');
+    if (superAdminLink) superAdminLink.classList.toggle('hidden', user.isSuperAdmin !== true);
 
     if (role === 'admin') {
       const [agentsRes, kpisRes, quizRes] = await Promise.allSettled([
