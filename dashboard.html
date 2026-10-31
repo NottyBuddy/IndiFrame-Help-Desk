@@ -33,6 +33,7 @@
       <button data-view="kpis" type="button">My KPI</button>
       <button data-view="attendance" type="button">Attendance</button>
       <button data-view="quiz" type="button">Weekly Quiz &amp; History</button>
+      <button id="adminNav" data-view="admin" type="button" class="hidden">Team Admin</button>
       <a href="projects.html" class="nav-link">Projects</a>
       <a href="breaks.html" class="nav-link">Breaks</a>
       <a id="superAdminLink" href="superadmin.html" class="nav-link hidden">Super Admin</a>
@@ -101,8 +102,26 @@
       </div>
     </section>
 
+    <section id="view-admin" class="tab-panel hidden">
+      <div class="grid">
+        <div class="card stat-card"><div class="label">Active Employees</div><div id="adminActiveAgents" class="value">—</div></div>
+        <div class="card stat-card"><div class="label">Team Quiz Attempts</div><div id="adminQuizAttempts" class="value">—</div></div>
+        <div class="card stat-card"><div class="label">Agents Checked In</div><div id="adminAttendanceCount" class="value">—</div></div>
+        <div class="card stat-card"><div class="label">Active Breaks</div><div id="adminBreakCount" class="value">—</div></div>
+      </div>
+      <div class="section card"><h2>Team Members</h2><div id="adminAgentsTable" class="empty">Loading team…</div></div>
+      <div class="section card"><h2>Team Attendance</h2><div id="adminAttendanceTable" class="empty">Loading attendance…</div></div>
+      <div class="section card"><h2>Active Breaks</h2><div id="adminBreakTable" class="empty">Loading breaks…</div></div>
+      <div class="section card"><h2>Team KPI</h2><div id="adminKpiTable" class="empty">Loading KPI…</div></div>
+      <div class="section card"><h2>Quiz Results</h2><div id="adminQuizTable" class="empty">Loading quiz results…</div></div>
+    </section>
+
     <section id="view-quiz" class="tab-panel hidden">
       <div class="section card">
+        <h2>Weekly Quiz</h2>
+        <div class="quiz-controls" style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0"><label>Week number <input id="quizWeek" type="number" min="1" max="60" value="1" style="max-width:110px;padding:8px;border:1px solid #dce5f1;border-radius:8px"></label><button id="loadQuizBtn" class="secondary-btn" type="button">Load Quiz</button></div>
+        <div id="quizPlayer" class="empty">Select a week and load its quiz.</div>
+        <div id="quizMessage" class="status" role="status"></div>
         <h2>My Quiz History</h2>
         <div id="quizTable" class="empty">Loading quiz attempts…</div>
       </div>
