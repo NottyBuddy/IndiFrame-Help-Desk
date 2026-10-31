@@ -36,7 +36,10 @@ async function init(){
     for(const k of Object.keys(data)) if(data[k]==="") data[k]=null;
     const submit=form.querySelector('button[type="submit"]'); submit.disabled=true; submit.textContent="Saving…";
     try{
-      const result=await api.apiRequest("/api/hd/projects",{method:"POST",body:JSON.stringify(data)});
+      const productFields=[["window","windows_quantity"],["door","doors_quantity"],["ventilator","ventilators_quantity"],["mesh","mesh_quantity"]];
+    data.products=productFields.map(([category,key])=>({product_category:category,quantity:Number(data[key]||0)})).filter(p=>p.quantity>0);
+    for(const [,key] of productFields) delete data[key];
+    const result=await api.apiRequest("/api/hd/projects",{method:"POST",body:JSON.stringify(data)});
       form.reset(); message("Project saved: "+result.projectCode); await loadProjects();
     }catch(e){message(e.message,true);}
     finally{submit.disabled=false;submit.textContent="Save Project";}
