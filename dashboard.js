@@ -275,6 +275,8 @@ async function loadDashboard() {
     if (superAdminLink) superAdminLink.classList.toggle('hidden', user.isSuperAdmin !== true);
 
     if (role === 'admin') {
+      const adminNav = $('adminNav'); if (adminNav) adminNav.classList.remove('hidden');
+      await loadAdminWorkspace();
       const [agentsRes, kpisRes, quizRes] = await Promise.allSettled([
         request('/api/admin/agents'),
         request('/api/admin/kpis'),
@@ -317,11 +319,48 @@ async function loadDashboard() {
   }
 }
 
+
+async function loadWeeklyQuiz() {
+  const week = Number($('quizWeek')?.value || 1), player=$('quizPlayer'), message=$('quizMessage');
+  if (!Number.isInteger(week) || week<1 || week>60) { message.textContent='Week number 1 se 60 ke beech hona chahiye.'; return; }
+  player.textContent='Quiz load ho raha hai…'; message.textContent='';
+  try {
+    const data=await request('/api/hd/quiz/questions?week='+week);
+    if(data.alreadyAttempted){player.textContent='Aap is week ka quiz already submit kar chuke hain. Score: '+data.previous.score+'/'+data.previous.total_questions;return;}
+    if(!data.questions?.length){player.textContent='Is week ke liye abhi quiz questions publish nahi hue hain.';return;}
+    player.innerHTML='<form id="weeklyQuizForm">'+data.questions.map((q,i)=>'<fieldset class="card" style="margin:12px 0;padding:16px;border:1px solid var(--line);border-radius:10px"><legend><strong>'+(i+1)+'. '+esc(q.question)+'</strong></legend>'+q.options.map((o,n)=>'<label style="display:block;margin:10px 0"><input type="radio" name="q_'+q.id+'" value="'+n+'" required> '+esc(o)+'</label>').join('')+'</fieldset>').join('')+'<button class="primary-btn" type="submit">Submit Weekly Quiz</button></form>';
+    $('weeklyQuizForm').addEventListener('submit',async ev=>{ev.preventDefault();const answers={};for(const q of data.questions){const picked=ev.currentTarget.querySelector('input[name="q_'+q.id+'"]:checked');if(!picked){message.textContent='Please answer every question.';return;}answers[String(q.id)]=Number(picked.value);}const btn=ev.currentTarget.querySelector('button');btn.disabled=true;try{const result=await request('/api/hd/quiz/submit',{method:'POST',body:JSON.stringify({week,answers})});player.textContent='Quiz submitted. Score: '+result.score+'/'+result.total+' ('+result.percent+'%).';message.textContent='Submission successfully save ho gaya.';const hist=await request('/api/quiz-attempts');renderQuiz(hist);}catch(err){message.textContent=err.message;btn.disabled=false;}});
+  } catch(e){player.textContent='Quiz load nahi ho paya: '+e.message;}
+}
+async function loadAdminWorkspace() {
+  const put=(id,value)=>{const el=$(id);if(el)el.textContent=value;};
+  const table=(id,headers,rows)=>{const el=$(id);if(!el)return;if(!rows.length){el.textContent='No records available.';return;}el.innerHTML='<div class="tablewrap"><table><thead><tr>'+headers.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table></div>';};
+  const jobs=await Promise.allSettled([
+    request('/api/admin/agents'),request('/api/hd/kpis/summary'),request('/api/quiz-attempts'),
+    request('/api/hd/attendance/history?month='+new Date().toISOString().slice(0,7)),
+    request('/api/hd/admin/breaks/status'),request('/api/hd/admin/quiz/results?week='+Number($('quizWeek')?.value||1))
+  ]);
+  const val=i=>jobs[i].status==='fulfilled'?jobs[i].value:null;
+  const agents=val(0)?.agents||[], kpi=val(1), quiz=val(2)?.attempts||[], attendance=val(3)?.records||[], breaks=val(4)?.activeBreaks||[], results=val(5)?.attempts||[];
+  put('adminActiveAgents',agents.filter(a=>Number(a.active)===1&&a.role!=='admin').length);
+  put('adminQuizAttempts',quiz.length);put('adminAttendanceCount',new Set(attendance.filter(a=>!a.checkOutAt).map(a=>a.employeeId)).size);put('adminBreakCount',breaks.length);
+  table('adminAgentsTable',['Employee','Role','Status'],agents.map(a=>'<tr><td>'+esc(a.fullName)+'<br><small>'+esc(a.employeeId)+'</small></td><td>'+esc(a.role)+'</td><td>'+(Number(a.active)===1?'Active':'Inactive')+'</td></tr>'));
+  table('adminAttendanceTable',['Employee ID','Date','Check In','Check Out','Duration'],attendance.map(a=>'<tr><td>'+esc(a.employeeId)+'</td><td>'+esc(a.workDate)+'</td><td>'+esc(a.checkInAt?new Date(a.checkInAt).toLocaleTimeString():'—')+'</td><td>'+esc(a.checkOutAt?new Date(a.checkOutAt).toLocaleTimeString():'—')+'</td><td>'+esc(a.durationMinutes==null?'In progress':a.durationMinutes+' min')+'</td></tr>'));
+  table('adminBreakTable',['Employee','Break','Started','Elapsed'],breaks.map(b=>'<tr><td>'+esc(b.full_name)+' ('+esc(b.employee_id)+')</td><td>'+esc(b.break_type)+'</td><td>'+esc(new Date(b.started_at).toLocaleTimeString())+'</td><td>'+Math.floor(b.elapsedSeconds/60)+' min</td></tr>'));
+  const byAgent=kpi?.byAgent||[];
+  table('adminKpiTable',['Employee ID','Assigned','Attempts','Connected','Qualified','Conversion'],byAgent.map(x=>'<tr><td>'+esc(x.employeeId)+'</td><td>'+x.assigned+'</td><td>'+x.attempts+'</td><td>'+x.connected+'</td><td>'+x.qualified+'</td><td>'+esc(x.conversionRate==null?'—':x.conversionRate+'%')+'</td></tr>'));
+  table('adminQuizTable',['Employee ID','Score','Total','Completed'],results.map(x=>'<tr><td>'+esc(x.employeeId)+'</td><td>'+x.score+'</td><td>'+x.total+'</td><td>'+esc(x.completedAt?new Date(x.completedAt).toLocaleString():'—')+'</td></tr>'));
+  const failed=jobs.map((x,i)=>x.status==='rejected'?['Agents','KPI','Quiz','Attendance','Breaks','Quiz results'][i]+': '+x.reason.message:null).filter(Boolean);
+  if(failed.length)put('globalStatus','Some Admin panels unavailable: '+failed.join(' | '));
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const checkIn = $('checkInBtn'), checkOut = $('checkOutBtn'), refresh = $('refreshAttendanceBtn');
   if (checkIn) checkIn.addEventListener('click', () => attendanceAction('in'));
   if (checkOut) checkOut.addEventListener('click', () => attendanceAction('out'));
   if (refresh) refresh.addEventListener('click', loadAttendance);
+  const loadQuizBtn = $('loadQuizBtn'); if (loadQuizBtn) loadQuizBtn.addEventListener('click', loadWeeklyQuiz);
+  const nav = document.querySelector('.nav'); if (nav) nav.addEventListener('click', e => { const b=e.target.closest('[data-view]'); if(!b)return; document.querySelectorAll('.nav [data-view]').forEach(x=>x.classList.toggle('active',x===b)); document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('hidden',x.id!=='view-'+b.dataset.view)); });
   loadDashboard();
 });
 
