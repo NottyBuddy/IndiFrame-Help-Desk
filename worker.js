@@ -178,7 +178,7 @@ async function coreRoute(request, env, url) {
     if(duplicate)return json(request,{error:"Ye Employee ID pehle se registered hai."},409);
     const hash=await hashPassword(password);
     try{
-      const r=await env.DB.prepare("INSERT INTO agents(employee_id,full_name,password_hash,role,active,is_super_admin,created_at) VALUES(?,?,?,'agent',1,0,?)").bind(employeeId,fullName,hash,now()).run();
+      const r=await env.DB.prepare("INSERT INTO agents(employee_id,full_name,password_hash,role,active,is_super_admin,must_change_password,created_at) VALUES(?,?,?,'agent',1,0,1,?)").bind(employeeId,fullName,hash,now()).run();
       await audit(env,user,"agent_created","Agent account created: "+employeeId);
       return json(request,{success:true,id:r.meta.last_row_id,employeeId,role:"agent"},201);
     }catch(e){return json(request,{error:"Agent account create nahi ho paya."},409);}
