@@ -131,7 +131,7 @@ async function projectList(url, env, u, admin) {
   const q = clean(url.searchParams.get("q"), 100);
   if (q) { where.push("(p.customer_name LIKE ? OR p.customer_phone LIKE ? OR p.project_code LIKE ? OR p.city LIKE ? OR p.pincode LIKE ?)"); const like = "%" + q + "%"; args.push(like,like,like,like,like); }
   const assigned = admin ? url.searchParams.get("assigned_agent_id") : null;
-  if (assigned && /^\\d+$/.test(assigned)) { where.push("p.assigned_agent_id=?"); args.push(Number(assigned)); }
+  if (assigned && /^\d+$/.test(assigned)) { where.push("p.assigned_agent_id=?"); args.push(Number(assigned)); }
   const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 50)));
   const rows = (await env.DB.prepare(`SELECT p.id,p.project_code,p.customer_name,p.customer_phone,p.city,p.state,p.pincode,p.product_material,p.construction_stage,p.expected_timeline,p.status,p.assigned_agent_id,a.employee_id assigned_employee_id,a.full_name assigned_employee_name,p.next_follow_up_at,p.updated_at FROM projects p LEFT JOIN agents a ON a.id=p.assigned_agent_id WHERE ${where.join(" AND ")} ORDER BY p.updated_at DESC,p.id DESC LIMIT ?`).bind(...args,limit).all()).results;
   return { projects: rows, count: rows.length, scope: admin ? "team" : "assigned" };
@@ -155,6 +155,7 @@ async function projectCreate(req, env, u, admin) {
   const products = projectProducts(b.products) || [];
   let assignedId = u.agentId;
   if (b.assigned_agent_id !== undefined && b.assigned_agent_id !== null && b.assigned_agent_id !== "") {
+    if (!admin) bad("Only admins can assign a project to another employee.", 403);
     const n = Number(b.assigned_agent_id);
     if (!Number.isInteger(n) || n < 1) bad("Invalid assigned agent.");
     const exists = await env.DB.prepare("SELECT id FROM agents WHERE id=? AND active=1").bind(n).first();
