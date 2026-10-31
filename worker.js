@@ -89,7 +89,7 @@ async function auth(request, env) {
   if (!match) return null;
   const tokenHash = await sha256(match[1]);
   return await env.DB.prepare(
-    "SELECT a.id, a.employee_id, a.full_name, a.role, a.active, a.is_super_admin FROM sessions s JOIN agents a ON a.id=s.agent_id WHERE s.token_hash=? AND s.expires_at>? AND a.active=1"
+    "SELECT a.id, a.employee_id, a.full_name, a.role, a.active, a.is_super_admin, a.must_change_password FROM sessions s JOIN agents a ON a.id=s.agent_id WHERE s.token_hash=? AND s.expires_at>? AND a.active=1"
   ).bind(tokenHash, now()).first();
 }
 function requireRole(user, role) {
