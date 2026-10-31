@@ -121,6 +121,9 @@ async function coreRoute(request, env, url) {
   }
 
   const user = await auth(request, env);
+  if (user && Number(user.must_change_password) === 1 && path !== "/api/change-password" && path !== "/api/me") {
+    return json(request, { error: "First login par password change karna zaroori hai.", mustChangePassword: true }, 403);
+  }
   if (path === "/api/me" && method === "GET") {
     if (!user) return json(request, { error: "Session expired or invalid. Please log in again." }, 401);
     return json(request, { user: publicUser(user) });
