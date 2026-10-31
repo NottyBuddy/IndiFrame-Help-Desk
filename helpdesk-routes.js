@@ -40,7 +40,8 @@ const now = () => new Date().toISOString();
 const isDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s || "") && !isNaN(Date.parse(s));
 const rate = (a, b) => (b > 0 ? Math.round((a / b) * 1000) / 10 : null); // % with 1 decimal, null if /0
 const audit = (env, u, action, detail) =>
-  env.DB.prepare("INSERT INTO audit_log(actor,action,detail,created_at) VALUES(?,?,?,?)").bind(u.employeeId, action, detail, now()).run();
+  env.DB.prepare("INSERT INTO audit_log(actor_id,actor,action,details,detail,created_at) VALUES(?,?,?,?,?,?)")
+    .bind(u.agentId, u.employeeId, action, detail, detail, now()).run();
 
 export async function handleHelpdesk(req, env) {
   const url = new URL(req.url), p = url.pathname, m = req.method;
@@ -160,11 +161,11 @@ async function projectCreate(req, env, u, admin) {
   }
   const code = "PRJ-" + crypto.randomUUID().replace(/-/g,"").slice(0,10).toUpperCase();
   const t = now();
-  const ins = await env.DB.prepare(`INSERT INTO projects(project_code,customer_name,customer_phone,alternate_phone,email,address,city,state,pincode,project_type,product_material,construction_stage,expected_timeline,status,assigned_agent_id,created_by_agent_id,requirements_notes,requirements_json,next_follow_up_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
-    .bind(code,customer,phone,clean(b.alternate_phone,30),clean(b.email,160),clean(b.address,500),clean(b.city,100),clean(b.state,100),clean(b.pincode,12),projectType,material,clean(b.construction_stage,120),clean(b.expected_timeline,120),status,assignedId,u.agentId,clean(b.requirements_notes,4000),b.requirements_json == null ? null : clean(typeof b.requirements_json==="string"?b.requirements_json:JSON.stringify(b.requirements_json),10000),clean(b.next_follow_up_at,40),t,t).run();
+  const ins = await env.DB.prepare(`INSERT INTO projects(project_name,project_code,customer_name,phone,customer_phone,alternate_phone,email,location,address,city,state,pincode,project_type,product_material,construction_stage,expected_timeline,status,assigned_to,assigned_agent_id,created_by,created_by_agent_id,requirements_notes,requirements_json,next_follow_up_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+    .bind(code,code,customer,phone,phone,clean(b.alternate_phone,30),clean(b.email,160),clean(b.city,100),clean(b.address,500),clean(b.city,100),clean(b.state,100),clean(b.pincode,12),projectType,material,clean(b.construction_stage,120),clean(b.expected_timeline,120),status,String(assignedId),assignedId,u.agentId,u.agentId,clean(b.requirements_notes,4000),b.requirements_json == null ? null : clean(typeof b.requirements_json==="string"?b.requirements_json:JSON.stringify(b.requirements_json),10000),clean(b.next_follow_up_at,40),t,t).run();
   const id = ins.meta.last_row_id;
-  const statements = products.map(p => env.DB.prepare("INSERT INTO project_products(project_id,product_category,product_type,quantity,width_mm,height_mm,configuration_json,notes) VALUES(?,?,?,?,?,?,?,?)").bind(id,p.category,p.type,p.quantity,p.width,p.height,p.config,p.notes));
-  statements.push(env.DB.prepare("INSERT INTO project_activity(project_id,actor_agent_id,activity_type,description,new_status,created_at) VALUES(?,?,?,?,?,?)").bind(id,u.agentId,"created","Project created",status,t));
+  const statements = products.map(p => env.DB.prepare("INSERT INTO project_products(project_id,product_type,product_category,quantity,width_mm,height_mm,configuration_json,notes) VALUES(?,?,?,?,?,?,?,?)").bind(id,p.type || p.category,p.category,p.quantity,p.width,p.height,p.config,p.notes));
+  statements.push(env.DB.prepare("INSERT INTO project_activity(project_id,actor_id,actor_agent_id,activity_type,description,new_status,created_at) VALUES(?,?,?,?,?,?,?)").bind(id,u.agentId,u.agentId,"created","Project created",status,t));
   await env.DB.batch(statements);
   return { id, projectCode: code, status };
 }
@@ -195,7 +196,7 @@ async function projectUpdate(req, id, env, u, admin) {
     stmts.push(env.DB.prepare("DELETE FROM project_products WHERE project_id=?").bind(id));
     for(const p of products) stmts.push(env.DB.prepare("INSERT INTO project_products(project_id,product_category,product_type,quantity,width_mm,height_mm,configuration_json,notes) VALUES(?,?,?,?,?,?,?,?)").bind(id,p.category,p.type,p.quantity,p.width,p.height,p.config,p.notes));
   }
-  if(nextStatus!==old.status) stmts.push(env.DB.prepare("INSERT INTO project_activity(project_id,actor_agent_id,activity_type,description,old_status,new_status,created_at) VALUES(?,?,?,?,?,?,?)").bind(id,u.agentId,"status_change","Project status changed",old.status,nextStatus,t));
+  if(nextStatus!==old.status) stmts.push(env.DB.prepare("INSERT INTO project_activity(project_id,actor_id,actor_agent_id,activity_type,description,old_status,new_status,created_at) VALUES(?,?,?,?,?,?,?,?)").bind(id,u.agentId,u.agentId,"status_change","Project status changed",old.status,nextStatus,t));
   if(stmts.length) await env.DB.batch(stmts);
   return { id, updated: true, status: nextStatus };
 }
@@ -211,7 +212,7 @@ async function projectAddActivity(req,id,env,u,admin) {
   const type=clean(b.activity_type,60)||"note";
   if(!description) bad("Activity description is required.");
   const t=now();
-  const r=await env.DB.prepare("INSERT INTO project_activity(project_id,actor_agent_id,activity_type,description,metadata_json,created_at) VALUES(?,?,?,?,?,?)").bind(id,u.agentId,type,description,b.metadata==null?null:JSON.stringify(b.metadata).slice(0,5000),t).run();
+  const r=await env.DB.prepare("INSERT INTO project_activity(project_id,actor_id,actor_agent_id,activity_type,description,metadata_json,created_at) VALUES(?,?,?,?,?,?,?)").bind(id,u.agentId,u.agentId,type,description,b.metadata==null?null:JSON.stringify(b.metadata).slice(0,5000),t).run();
   await env.DB.prepare("UPDATE projects SET updated_at=?,last_contacted_at=? WHERE id=?").bind(t,t,id).run();
   return { id:r.meta.last_row_id, createdAt:t };
 }
@@ -295,13 +296,13 @@ async function kpiImport(req, env, u) {
     bad(`${invalid.length} invalid and ${skipped.length} already-existing row(s) will NOT be imported. Confirm to import only the ${fresh.length} new valid row(s).`, 409);
   const hash = await sha256(JSON.stringify(fresh.map(({ n, key, ...r }) => r)));
   if (await env.DB.prepare("SELECT 1 FROM kpi_imports WHERE file_hash = ?").bind(hash).first()) bad("This exact data was already imported.", 409);
-  const ins = env.DB.prepare(`INSERT INTO kpi_daily(employee_id,report_date,disposition,${NUM.join(",")},import_id) VALUES(?,?,?,${NUM.map(() => "?").join(",")},(SELECT id FROM kpi_imports WHERE file_hash = ?))`);
+  const ins = env.DB.prepare(`INSERT INTO kpi_daily(employee_id,kpi_date,report_date,disposition,calls,leads,site_visits,bookings,revenue,${NUM.join(",")},import_id,created_at) VALUES(?,?,?,?,?,?,?,?,?,${NUM.map(() => "?").join(",")},(SELECT id FROM kpi_imports WHERE file_hash = ?),?)`);
   try {
     // ONE atomic batch: import record + every row. Plain INSERT (not OR IGNORE): any conflict aborts everything, so rows are never silently dropped.
     await env.DB.batch([
-      env.DB.prepare("INSERT INTO kpi_imports(file_hash,filename,imported_by,imported_at,rows_accepted,rows_skipped) VALUES(?,?,?,?,?,?)")
-        .bind(hash, String(body.filename || "").slice(0, 120), u.employeeId, now(), fresh.length, skipped.length + invalid.length),
-      ...fresh.map(o => ins.bind(o.employee_id, o.report_date, o.disposition, ...NUM.map(k => o[k]), hash)),
+      env.DB.prepare("INSERT INTO kpi_imports(file_hash,file_name,filename,imported_by,imported_at,total_rows,successful_rows,failed_rows,rows_accepted,rows_skipped) VALUES(?,?,?,?,?,?,?,?,?,?)")
+        .bind(hash, String(body.filename || "").slice(0, 120) || "kpi-import", String(body.filename || "").slice(0, 120), u.employeeId, now(), fresh.length + skipped.length + invalid.length, fresh.length, skipped.length + invalid.length, fresh.length, skipped.length + invalid.length),
+      ...fresh.map(o => ins.bind(o.employee_id, o.report_date, o.report_date, o.disposition, o.total_attempts, o.assigned_leads, 0, 0, 0, ...NUM.map(k => o[k]), hash, now())),
     ]);
   } catch (e) {
     console.error("kpi import batch failed", e && e.message);
@@ -327,7 +328,7 @@ async function breakStart(req,env,u) {
   if(!BREAK_TYPES.has(type)) bad("Select a valid break type.");
   const t=now();
   try {
-    const r=await env.DB.prepare("INSERT INTO agent_breaks(agent_id,break_type,started_at) VALUES(?,?,?)").bind(u.agentId,type,t).run();
+    const r=await env.DB.prepare("INSERT INTO agent_breaks(employee_id,agent_id,break_type,started_at,created_at) VALUES(?,?,?,?,?)").bind(u.employeeId,u.agentId,type,t,t).run();
     return { id:r.meta.last_row_id, breakType:type, startedAt:t };
   } catch(e) { bad("An active break already exists. End it before starting another break.",409); }
 }
@@ -335,7 +336,7 @@ async function breakEnd(env,u) {
   const active=await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
   if(!active) bad("There is no active break to end.",409);
   const t=now(), seconds=Math.max(0,Math.floor((Date.parse(t)-Date.parse(active.started_at))/1000));
-  await env.DB.prepare("UPDATE agent_breaks SET ended_at=?,duration_seconds=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,active.id).run();
+  await env.DB.prepare("UPDATE agent_breaks SET ended_at=?,duration_seconds=?,duration_minutes=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,Math.floor(seconds/60),active.id).run();
   return { id:active.id,breakType:active.break_type,startedAt:active.started_at,endedAt:t,durationSeconds:seconds };
 }
 async function adminBreakStatus(env) {
