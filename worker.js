@@ -168,16 +168,17 @@ async function coreRoute(request, env, url) {
   }
   if (path === "/api/superadmin/agents" && method === "POST") {
     requireRole(user,"super_admin");
-    const b=await body(request), employeeId=String(b?.employeeId||"").trim(), fullName=String(b?.fullName||"").trim(), password=String(b?.password||""), role=String(b?.role||"agent").toLowerCase();
+    const b=await body(request), employeeId=String(b?.employeeId||"").trim(), fullName=String(b?.fullName||"").trim(), password=String(b?.password||"");
     if(!employeeId||employeeId.length>50||!fullName||fullName.length>160) return json(request,{error:"Employee ID aur full name required hain."},400);
-    if(!["agent","admin"].includes(role)) return json(request,{error:"Role sirf Agent ya Admin ho sakta hai."},400);
     if(password.length<10) return json(request,{error:"Temporary password kam se kam 10 characters ka hona chahiye."},400);
+    const duplicate=await env.DB.prepare("SELECT id FROM agents WHERE employee_id=? COLLATE NOCASE LIMIT 1").bind(employeeId).first();
+    if(duplicate)return json(request,{error:"Ye Employee ID pehle se registered hai."},409);
     const hash=await hashPassword(password);
     try{
-      const r=await env.DB.prepare("INSERT INTO agents(employee_id,full_name,password_hash,role,active,is_super_admin,created_at) VALUES(?,?,?,?,1,0,?)").bind(employeeId,fullName,hash,role,now()).run();
-      await audit(env,user,"account_created",role+" account created: "+employeeId);
-      return json(request,{success:true,id:r.meta.last_row_id,employeeId,role},201);
-    }catch(e){return json(request,{error:"Employee ID already exists ya account create nahi ho paya."},409);}
+      const r=await env.DB.prepare("INSERT INTO agents(employee_id,full_name,password_hash,role,active,is_super_admin,created_at) VALUES(?,?,?,'agent',1,0,?)").bind(employeeId,fullName,hash,now()).run();
+      await audit(env,user,"agent_created","Agent account created: "+employeeId);
+      return json(request,{success:true,id:r.meta.last_row_id,employeeId,role:"agent"},201);
+    }catch(e){return json(request,{error:"Agent account create nahi ho paya."},409);}
   }
   const accountMatch=path.match(/^\/api\/superadmin\/agents\/(\d+)$/);
   if(accountMatch && method==="PUT"){
@@ -188,7 +189,7 @@ async function coreRoute(request, env, url) {
     if(Number(target.is_super_admin)===1 && id!==user.id)return json(request,{error:"Dusre Super Admin account ko yahan se change nahi kar sakte."},403);
     const sets=[],args=[];
     if(typeof b?.fullName==="string"&&b.fullName.trim()){sets.push("full_name=?");args.push(b.fullName.trim().slice(0,160));}
-    if(["agent","admin"].includes(String(b?.role||"").toLowerCase()) && Number(target.is_super_admin)!==1){sets.push("role=?");args.push(String(b.role).toLowerCase());}
+    if(b?.role!==undefined)return json(request,{error:"Admin role changes are disabled. Only the existing Super Admin can have Admin access."},400);
     if(typeof b?.active==="boolean"){if(id===user.id&&!b.active)return json(request,{error:"Apne Super Admin account ko deactivate nahi kar sakte."},400);sets.push("active=?");args.push(b.active?1:0);}
     if(b?.password){const pw=String(b.password);if(pw.length<10)return json(request,{error:"Password kam se kam 10 characters ka hona chahiye."},400);sets.push("password_hash=?");args.push(await hashPassword(pw));}
     if(!sets.length)return json(request,{error:"Update ke liye koi valid field nahi mili."},400);
