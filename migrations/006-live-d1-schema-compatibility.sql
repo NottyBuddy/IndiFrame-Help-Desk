@@ -60,6 +60,9 @@ UPDATE projects SET customer_phone=phone WHERE customer_phone IS NULL;
 UPDATE projects SET city=location WHERE city IS NULL;
 UPDATE projects SET assigned_agent_id=CAST(assigned_to AS INTEGER)
  WHERE assigned_agent_id IS NULL AND assigned_to GLOB '[0-9]*';
+UPDATE projects SET assigned_agent_id=(SELECT id FROM agents WHERE employee_id=projects.assigned_to COLLATE NOCASE LIMIT 1)
+ WHERE assigned_agent_id IS NULL AND assigned_to IS NOT NULL;
+UPDATE projects SET created_by_agent_id=created_by WHERE created_by_agent_id IS NULL AND created_by IS NOT NULL;
 UPDATE project_products SET product_category=CASE
  WHEN lower(product_type) LIKE '%door%' THEN 'door'
  WHEN lower(product_type) LIKE '%vent%' THEN 'ventilator'
@@ -69,6 +72,8 @@ UPDATE project_products SET product_category=CASE
 UPDATE project_activity SET actor_agent_id=actor_id WHERE actor_agent_id IS NULL;
 UPDATE kpi_daily SET report_date=kpi_date WHERE report_date IS NULL;
 UPDATE kpi_imports SET filename=file_name WHERE filename IS NULL;
+UPDATE agent_breaks SET agent_id=(SELECT id FROM agents WHERE employee_id=agent_breaks.employee_id COLLATE NOCASE LIMIT 1)
+ WHERE agent_id IS NULL;
 UPDATE agent_breaks SET duration_seconds=duration_minutes*60
  WHERE duration_seconds IS NULL AND duration_minutes IS NOT NULL;
 
