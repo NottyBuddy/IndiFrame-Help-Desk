@@ -9,13 +9,12 @@
 <main class="wrap"><div class="head"><div><h1>Account Management</h1><div class="muted">Sirf Super Admin Admin aur Agent accounts manage kar sakta hai.</div></div><div id="profile" class="profile muted">Loading…</div></div>
 <div id="message" class="sa-msg" role="status"></div>
 <div class="sa-grid">
-<section class="card"><h2>Create Employee Account</h2><form id="createForm" class="sa-form">
+<section class="card"><h2>Create Agent Account</h2><form id="createForm" class="sa-form">
 <label>Employee ID<input name="employeeId" required maxlength="50"></label>
 <label>Full Name<input name="fullName" required maxlength="160"></label>
-<label>Role<select name="role"><option value="agent">Agent</option><option value="admin">Admin</option></select></label>
 <label>Temporary Password<input name="password" type="password" required minlength="10" autocomplete="new-password"></label>
 <button class="sa-btn" type="submit">Create Account</button></form>
-<p class="muted" style="font-size:12px">Password minimum 10 characters. Employee ID unique hona chahiye.</p></section>
+<p class="muted" style="font-size:12px">Password minimum 10 characters. Employee ID unique hona chahiye. Admin access sirf Super Admin account ke paas rahega.</p></section>
 <section class="card"><div class="head"><h2>All Employee Accounts</h2><button id="refreshBtn" class="sa-small">Refresh</button></div><div id="accountList" class="empty">Loading accounts…</div></section>
 </div></main>
 <script src="api.js"></script><script src="superadmin.js"></script></body></html>
