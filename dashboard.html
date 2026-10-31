@@ -33,6 +33,9 @@
       <button data-view="kpis" type="button">My KPI</button>
       <button data-view="attendance" type="button">Attendance</button>
       <button data-view="quiz" type="button">Weekly Quiz &amp; History</button>
+      <a href="projects.html" class="nav-link">Projects</a>
+      <a href="breaks.html" class="nav-link">Breaks</a>
+      <a id="superAdminLink" href="superadmin.html" class="nav-link hidden">Super Admin</a>
     </nav>
 
     <div id="globalStatus" class="status" role="status"></div>
@@ -85,10 +88,16 @@
     <section id="view-attendance" class="tab-panel hidden">
       <div class="section card">
         <h2>Attendance</h2>
-        <div id="attendancePanel" class="empty">Loading attendance summary…</div>
+        <div id="attendancePanel" class="empty">Loading attendance status…</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+          <button id="checkInBtn" class="primary-btn" type="button">Check In</button>
+          <button id="checkOutBtn" class="primary-btn" type="button" disabled>Check Out</button>
+          <button id="refreshAttendanceBtn" class="secondary-btn" type="button">Refresh</button>
+        </div>
+        <div id="attendanceHistory" class="empty" style="margin-top:16px">Loading attendance history…</div>
       </div>
       <div class="alert">
-        This is a read-only summary. Daily check-in/check-out is not enabled in this dashboard yet.
+        Attendance ka time server par save hota hai. Check-in / check-out ek hi baar active session mein allowed hai.
       </div>
     </section>
 

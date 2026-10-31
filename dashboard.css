@@ -210,3 +210,10 @@ h1 {
     align-items: flex-start;
   }
 }
+
+.nav-link { display:inline-flex; align-items:center; border:1px solid #cbd5e1; border-radius:10px; padding:10px 16px; color:var(--ink); text-decoration:none; font-weight:600; }
+.nav-link:hover { background:#eaf0f8; }
+.primary-btn,.secondary-btn { border-radius:9px; padding:10px 15px; font-weight:700; cursor:pointer; }
+.primary-btn { background:var(--navy); color:#fff; border:1px solid var(--navy); }
+.secondary-btn { background:#fff; color:var(--navy); border:1px solid #cbd5e1; }
+.primary-btn:disabled,.secondary-btn:disabled { opacity:.5; cursor:not-allowed; }

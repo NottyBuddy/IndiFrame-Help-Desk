@@ -174,6 +174,53 @@ function renderKpis(rows) {
   }
 }
 
+async function loadAttendance() {
+  const panel = $('attendancePanel');
+  try {
+    const status = await request('/api/hd/attendance/status');
+    if (panel) {
+      panel.textContent = status.active
+        ? 'Aap checked-in hain. Check-in time: ' + new Date(status.checkInAt).toLocaleString()
+        : 'Aap abhi checked-in nahi hain.';
+    }
+    const inBtn = $('checkInBtn'), outBtn = $('checkOutBtn');
+    if (inBtn) inBtn.disabled = !!status.active;
+    if (outBtn) outBtn.disabled = !status.active;
+    const month = new Date().toISOString().slice(0, 7);
+    const history = await request('/api/hd/attendance/history?month=' + month);
+    const records = history.records || [];
+    const el = $('attendanceHistory');
+    if (el) {
+      el.innerHTML = records.length
+        ? '<div class="tablewrap"><table><thead><tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Duration</th></tr></thead><tbody>' +
+          records.map(r => '<tr><td>' + esc(r.workDate) + '</td><td>' + esc(r.checkInAt ? new Date(r.checkInAt).toLocaleTimeString() : '—') + '</td><td>' + esc(r.checkOutAt ? new Date(r.checkOutAt).toLocaleTimeString() : '—') + '</td><td>' + esc(r.durationMinutes == null ? 'In progress' : Math.floor(r.durationMinutes/60)+'h '+(r.durationMinutes%60)+'m') + '</td></tr>').join('') +
+          '</tbody></table></div>'
+        : '<div class="empty">Is month ki attendance history abhi available nahi hai.</div>';
+    }
+  } catch (e) {
+    if (panel) panel.textContent = 'Attendance service abhi available nahi hai: ' + e.message;
+  }
+}
+
+async function attendanceAction(action) {
+  const inBtn = $('checkInBtn'), outBtn = $('checkOutBtn');
+  if (inBtn) inBtn.disabled = true;
+  if (outBtn) outBtn.disabled = true;
+  try {
+    if (action === 'in') {
+      await request('/api/hd/attendance/check-in', { method: 'POST', body: JSON.stringify({ tzOffsetMinutes: new Date().getTimezoneOffset() }) });
+      setConnectionStatus('Check-in successfully save ho gaya.', true);
+    } else {
+      await request('/api/hd/attendance/check-out', { method: 'POST' });
+      setConnectionStatus('Check-out successfully save ho gaya.', true);
+    }
+    await loadAttendance();
+  } catch (e) {
+    setConnectionStatus(e.message, false);
+    await loadAttendance();
+  }
+}
+
 function renderQuiz(attempts) {
   const result = arr(attempts, ['attempts', 'results', 'data', 'reports']);
   state.quizAttempts = result;
@@ -220,9 +267,12 @@ async function loadDashboard() {
     const me = await request('/api/me');
     const user = me.user || me;
     setProfile(user);
+    await loadAttendance();
 
     const role = normRole(first(user, ['role', 'userRole'], 'agent'));
     setTextByIdCandidates(['profile'], `${String(first(user,['fullName','full_name','name'],'Employee'))} • ${role}`);
+    const superAdminLink = $('superAdminLink');
+    if (superAdminLink) superAdminLink.classList.toggle('hidden', user.isSuperAdmin !== true);
 
     if (role === 'admin') {
       const [agentsRes, kpisRes, quizRes] = await Promise.allSettled([
@@ -246,46 +296,32 @@ async function loadDashboard() {
 
       setConnectionStatus('Connected to the API. Admin data loaded successfully.', true);
     } else {
-      setConnectionStatus('Connected to the API. Agent dashboard ready.', true);
-      renderKpis([]);
-      renderQuiz([]);
+      const [myKpiRes, myQuizRes] = await Promise.allSettled([
+        request('/api/kpis/my'),
+        request('/api/quiz-attempts')
+      ]);
+      if (myKpiRes.status === 'fulfilled') {
+        state.kpis = arr(myKpiRes.value, ['kpis', 'results', 'data']);
+        renderKpis(state.kpis);
+      } else {
+        renderKpis([]);
+      }
+      if (myQuizRes.status === 'fulfilled') renderQuiz(myQuizRes.value);
+      else renderQuiz([]);
+      setConnectionStatus('Connected to the API. Aapka personal KPI aur quiz history load ho gaya.', true);
     }
   } catch (error) {
-    const demoUser = (window.IndiFrameAPI && typeof window.IndiFrameAPI.getDemoUser === 'function')
-      ? window.IndiFrameAPI.getDemoUser()
-      : null;
-
-    if (demoUser) {
-      setProfile(demoUser);
-      const role = normRole(demoUser.role);
-      setConnectionStatus('API unavailable. Showing demo data instead.', false);
-      if (role === 'admin') {
-        renderKpis([
-          { employeeId: 'admin', fullName: 'System Admin', calls: 240, attempts: 310, connected: 90, qualified: 45 },
-          { employeeId: 'A101', fullName: 'Agent Alpha', calls: 140, attempts: 190, connected: 58, qualified: 30 },
-          { employeeId: 'A102', fullName: 'Agent Beta', calls: 110, attempts: 160, connected: 50, qualified: 22 }
-        ]);
-        renderQuiz([
-          { weekNumber: 1, score: 9, totalQuestions: 10 },
-          { weekNumber: 2, score: 8, totalQuestions: 10 }
-        ]);
-      } else {
-        renderKpis([
-          { employeeId: demoUser.employeeId, fullName: demoUser.fullName, calls: 48, attempts: 65, connected: 18, qualified: 10 }
-        ]);
-        renderQuiz([{ weekNumber: 1, score: 7, totalQuestions: 10 }]);
-      }
-      return;
-    }
-
-    setConnectionStatus('API unavailable. Please check the Worker or log in again.', false);
-    sessionStorage.removeItem('indiframe_token');
-    sessionStorage.removeItem('forcePasswordChange');
+    setConnectionStatus(error.message || 'API unavailable. Please check the Worker or log in again.', false);
+    window.IndiFrameAPI.clearToken();
     setTimeout(() => { window.location.href = 'index.html'; }, 1200);
   }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  const checkIn = $('checkInBtn'), checkOut = $('checkOutBtn'), refresh = $('refreshAttendanceBtn');
+  if (checkIn) checkIn.addEventListener('click', () => attendanceAction('in'));
+  if (checkOut) checkOut.addEventListener('click', () => attendanceAction('out'));
+  if (refresh) refresh.addEventListener('click', loadAttendance);
   loadDashboard();
 });
 

@@ -1,6 +1,4 @@
-// DRAFT additive module. All routes live under /api/hd/ so they cannot collide with existing routes.
-// Wire-up (see README): in your existing fetch handler, before the 404:
-//   const r = await handleHelpdesk(request, env); if (r) return r;
+// Help Desk API routes under /api/hd/. Imported by worker.js after core authentication routes.
 
 const ORIGIN = "https://nottybuddy.github.io";
 const CORS = {
@@ -20,10 +18,8 @@ const bad = (m, s = 400) => { throw new HttpError(s, m); };
 // Identity rule: the session's agent row is the ONLY source of identity. u.agentId = agents.id (used for quiz_attempts),
 // u.employeeId = agents.employee_id (used in the new attendance / kpi_daily / audit_log tables).
 //
-// ===== STILL UNCONFIRMED (verify against your real login code; this module never touches login) =====
-// U1: sessions.token_hash = lowercase hex SHA-256 of the raw bearer token.
-// U2: sessions.expires_at is an ISO-8601 UTC string (string comparison with now()). If it is epoch seconds/ms, change the comparison.
-// U3: agents.active = 1 means active; role 'admin' (case-insensitive) = admin.
+// Session contract used by worker.js: token_hash is lowercase hex SHA-256; expires_at is ISO-8601 UTC; active=1 means enabled.
+// Authentication identity always comes from the joined D1 agent record, never from client-supplied employee IDs.
 async function authenticate(req, env) {
   const m = (req.headers.get("Authorization") || "").match(/^Bearer (.+)$/);
   if (!m) return null;
@@ -56,8 +52,20 @@ export async function handleHelpdesk(req, env) {
     const admin = u.role === "admin";
     if (p.startsWith("/api/hd/admin/") && !admin) return J({ error: "Admin access required." }, 403);
 
+    if (m === "GET" && p === "/api/hd/projects") return J(await projectList(url, env, u, admin));
+    if (m === "POST" && p === "/api/hd/projects") return J(await projectCreate(req, env, u, admin), 201);
+    const projectMatch = p.match(/^\/api\/hd\/projects\/(\d+)$/);
+    if (m === "GET" && projectMatch) return J(await projectGet(Number(projectMatch[1]), env, u, admin));
+    if (m === "PUT" && projectMatch) return J(await projectUpdate(req, Number(projectMatch[1]), env, u, admin));
+    const activityMatch = p.match(/^\/api\/hd\/projects\/(\d+)\/activity$/);
+    if (m === "GET" && activityMatch) return J(await projectActivity(Number(activityMatch[1]), env, u, admin));
+    if (m === "POST" && activityMatch) return J(await projectAddActivity(req, Number(activityMatch[1]), env, u, admin));
     if (m === "GET" && p === "/api/hd/kpis/summary") return J(await kpiSummary(url, env, u, admin));
     if (m === "POST" && p === "/api/hd/admin/kpis/import") return J(await kpiImport(req, env, u));
+    if (m === "GET" && p === "/api/hd/breaks/status") return J(await breakStatus(env, u));
+    if (m === "POST" && p === "/api/hd/breaks/start") return J(await breakStart(req, env, u), 201);
+    if (m === "POST" && p === "/api/hd/breaks/end") return J(await breakEnd(env, u));
+    if (m === "GET" && p === "/api/hd/admin/breaks/status") return J(await adminBreakStatus(env));
     if (m === "GET" && p === "/api/hd/attendance/status") return J(await attStatus(env, u));
     if (m === "POST" && p === "/api/hd/attendance/check-in") return J(await checkIn(req, env, u));
     if (m === "POST" && p === "/api/hd/attendance/check-out") return J(await checkOut(env, u));
@@ -75,6 +83,137 @@ export async function handleHelpdesk(req, env) {
     console.error("helpdesk error", e && e.message);
     return J({ error: "Something went wrong. Please try again." }, 500);
   }
+}
+
+
+// ---------- Projects ----------
+const PROJECT_STATUSES = new Set([
+  "NEW","CONTACTED","QUALIFIED","SITE_VISIT_PENDING","MEASUREMENT_PENDING",
+  "MEASURED","QUOTATION_PENDING","QUOTATION_SENT","NEGOTIATION","APPROVED",
+  "IN_PRODUCTION","INSTALLATION","COMPLETED","ON_HOLD","LOST","CANCELLED"
+]);
+const PRODUCT_CATEGORIES = new Set(["window","door","ventilator","mesh","other"]);
+const clean = (v, max = 500) => v == null ? null : String(v).trim().slice(0, max);
+function projectProducts(input) {
+  if (input === undefined) return null;
+  if (!Array.isArray(input) || input.length > 100) bad("products must be an array (maximum 100).");
+  return input.map((p, i) => {
+    const category = String(p.product_category || p.category || "").toLowerCase();
+    const quantity = Number(p.quantity ?? 1);
+    const width = p.width_mm == null || p.width_mm === "" ? null : Number(p.width_mm);
+    const height = p.height_mm == null || p.height_mm === "" ? null : Number(p.height_mm);
+    if (!PRODUCT_CATEGORIES.has(category)) bad(`Invalid product category on item ${i + 1}.`);
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100000) bad(`Invalid quantity on item ${i + 1}.`);
+    if (width !== null && (!Number.isInteger(width) || width < 1)) bad(`Invalid width on item ${i + 1}.`);
+    if (height !== null && (!Number.isInteger(height) || height < 1)) bad(`Invalid height on item ${i + 1}.`);
+    return {
+      category, type: clean(p.product_type || p.type, 120), quantity, width, height,
+      config: p.configuration_json == null ? (p.configuration == null ? null : JSON.stringify(p.configuration)) : clean(p.configuration_json, 5000),
+      notes: clean(p.notes, 1000)
+    };
+  });
+}
+async function projectAccess(id, env, u, admin) {
+  const row = await env.DB.prepare("SELECT * FROM projects WHERE id=? AND archived_at IS NULL").bind(id).first();
+  if (!row) bad("Project not found.", 404);
+  if (!admin && row.assigned_agent_id !== u.agentId && row.created_by_agent_id !== u.agentId) bad("Project access denied.", 403);
+  return row;
+}
+async function projectList(url, env, u, admin) {
+  const where = ["p.archived_at IS NULL"], args = [];
+  if (!admin) { where.push("(p.assigned_agent_id=? OR p.created_by_agent_id=?)"); args.push(u.agentId, u.agentId); }
+  const status = url.searchParams.get("status");
+  if (status) { if (!PROJECT_STATUSES.has(status)) bad("Invalid project status."); where.push("p.status=?"); args.push(status); }
+  const q = clean(url.searchParams.get("q"), 100);
+  if (q) { where.push("(p.customer_name LIKE ? OR p.customer_phone LIKE ? OR p.project_code LIKE ? OR p.city LIKE ? OR p.pincode LIKE ?)"); const like = "%" + q + "%"; args.push(like,like,like,like,like); }
+  const assigned = admin ? url.searchParams.get("assigned_agent_id") : null;
+  if (assigned && /^\d+$/.test(assigned)) { where.push("p.assigned_agent_id=?"); args.push(Number(assigned)); }
+  const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 50)));
+  const rows = (await env.DB.prepare(`SELECT p.id,p.project_code,p.customer_name,p.customer_phone,p.city,p.state,p.pincode,p.product_material,p.construction_stage,p.expected_timeline,p.status,p.assigned_agent_id,a.employee_id assigned_employee_id,a.full_name assigned_employee_name,p.next_follow_up_at,p.updated_at FROM projects p LEFT JOIN agents a ON a.id=p.assigned_agent_id WHERE ${where.join(" AND ")} ORDER BY p.updated_at DESC,p.id DESC LIMIT ?`).bind(...args,limit).all()).results;
+  return { projects: rows, count: rows.length, scope: admin ? "team" : "assigned" };
+}
+async function projectGet(id, env, u, admin) {
+  const project = await projectAccess(id, env, u, admin);
+  const products = (await env.DB.prepare("SELECT id,product_category,product_type,quantity,width_mm,height_mm,configuration_json,notes FROM project_products WHERE project_id=? ORDER BY id").bind(id).all()).results;
+  return { project, products };
+}
+async function projectCreate(req, env, u, admin) {
+  const b = await req.json().catch(() => bad("Invalid JSON body."));
+  const customer = clean(b.customer_name, 160), phone = clean(b.customer_phone, 30);
+  if (!customer) bad("Customer name is required.");
+  if (!phone) bad("Customer phone is required.");
+  const status = String(b.status || "NEW").toUpperCase();
+  if (!PROJECT_STATUSES.has(status)) bad("Invalid project status.");
+  const material = clean(b.product_material, 30);
+  if (material && !["uPVC","aluminium","WPC","other"].includes(material)) bad("Invalid product material.");
+  const projectType = clean(b.project_type, 30) || "residential";
+  if (!["residential","commercial","institutional","other"].includes(projectType)) bad("Invalid project type.");
+  const products = projectProducts(b.products) || [];
+  let assignedId = u.agentId;
+  if (b.assigned_agent_id !== undefined && b.assigned_agent_id !== null && b.assigned_agent_id !== "") {
+    if (!admin) bad("Only admins can assign a project to another employee.", 403);
+    const n = Number(b.assigned_agent_id);
+    if (!Number.isInteger(n) || n < 1) bad("Invalid assigned agent.");
+    const exists = await env.DB.prepare("SELECT id FROM agents WHERE id=? AND active=1").bind(n).first();
+    if (!exists) bad("Assigned employee is not active.", 404);
+    assignedId = n;
+  }
+  const code = "PRJ-" + crypto.randomUUID().replace(/-/g,"").slice(0,10).toUpperCase();
+  const t = now();
+  const ins = await env.DB.prepare(`INSERT INTO projects(project_code,customer_name,customer_phone,alternate_phone,email,address,city,state,pincode,project_type,product_material,construction_stage,expected_timeline,status,assigned_agent_id,created_by_agent_id,requirements_notes,requirements_json,next_follow_up_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`)
+    .bind(code,customer,phone,clean(b.alternate_phone,30),clean(b.email,160),clean(b.address,500),clean(b.city,100),clean(b.state,100),clean(b.pincode,12),projectType,material,clean(b.construction_stage,120),clean(b.expected_timeline,120),status,assignedId,u.agentId,clean(b.requirements_notes,4000),b.requirements_json == null ? null : clean(typeof b.requirements_json==="string"?b.requirements_json:JSON.stringify(b.requirements_json),10000),clean(b.next_follow_up_at,40),t,t).run();
+  const id = ins.meta.last_row_id;
+  const statements = products.map(p => env.DB.prepare("INSERT INTO project_products(project_id,product_category,product_type,quantity,width_mm,height_mm,configuration_json,notes) VALUES(?,?,?,?,?,?,?,?)").bind(id,p.category,p.type,p.quantity,p.width,p.height,p.config,p.notes));
+  statements.push(env.DB.prepare("INSERT INTO project_activity(project_id,actor_agent_id,activity_type,description,new_status,created_at) VALUES(?,?,?,?,?,?)").bind(id,u.agentId,"created","Project created",status,t));
+  await env.DB.batch(statements);
+  return { id, projectCode: code, status };
+}
+async function projectUpdate(req, id, env, u, admin) {
+  const old = await projectAccess(id, env, u, admin);
+  const b = await req.json().catch(() => bad("Invalid JSON body."));
+  const allowed = {
+    customer_name:["customer_name",160],customer_phone:["customer_phone",30],alternate_phone:["alternate_phone",30],
+    email:["email",160],address:["address",500],city:["city",100],state:["state",100],pincode:["pincode",12],
+    construction_stage:["construction_stage",120],expected_timeline:["expected_timeline",120],
+    requirements_notes:["requirements_notes",4000],next_follow_up_at:["next_follow_up_at",40]
+  };
+  const sets=[],args=[];
+  for (const [key,[column,max]] of Object.entries(allowed)) if (key in b) { const value=clean(b[key],max); if (key==="customer_name" && !value) bad("Customer name cannot be empty."); if (key==="customer_phone" && !value) bad("Customer phone cannot be empty."); sets.push(column+"=?"); args.push(value); }
+  let nextStatus=old.status;
+  if ("status" in b) { nextStatus=String(b.status).toUpperCase(); if (!PROJECT_STATUSES.has(nextStatus)) bad("Invalid project status."); sets.push("status=?"); args.push(nextStatus); }
+  if ("product_material" in b) { const v=clean(b.product_material,30); if(v && !["uPVC","aluminium","WPC","other"].includes(v)) bad("Invalid product material."); sets.push("product_material=?"); args.push(v); }
+  if (admin && "assigned_agent_id" in b) {
+    const v=b.assigned_agent_id==null||b.assigned_agent_id===""?null:Number(b.assigned_agent_id);
+    if(v!==null && (!Number.isInteger(v)||v<1||!(await env.DB.prepare("SELECT id FROM agents WHERE id=? AND active=1").bind(v).first()))) bad("Assigned employee is not active.");
+    sets.push("assigned_agent_id=?"); args.push(v);
+  } else if ("assigned_agent_id" in b) bad("Only admins can reassign projects.",403);
+  const products=projectProducts(b.products);
+  const t=now();
+  if(sets.length){ sets.push("updated_at=?"); args.push(t,id); await env.DB.prepare("UPDATE projects SET "+sets.join(",")+" WHERE id=?").bind(...args).run(); }
+  const stmts=[];
+  if(products!==null){
+    stmts.push(env.DB.prepare("DELETE FROM project_products WHERE project_id=?").bind(id));
+    for(const p of products) stmts.push(env.DB.prepare("INSERT INTO project_products(project_id,product_category,product_type,quantity,width_mm,height_mm,configuration_json,notes) VALUES(?,?,?,?,?,?,?,?)").bind(id,p.category,p.type,p.quantity,p.width,p.height,p.config,p.notes));
+  }
+  if(nextStatus!==old.status) stmts.push(env.DB.prepare("INSERT INTO project_activity(project_id,actor_agent_id,activity_type,description,old_status,new_status,created_at) VALUES(?,?,?,?,?,?,?)").bind(id,u.agentId,"status_change","Project status changed",old.status,nextStatus,t));
+  if(stmts.length) await env.DB.batch(stmts);
+  return { id, updated: true, status: nextStatus };
+}
+async function projectActivity(id, env, u, admin) {
+  await projectAccess(id,env,u,admin);
+  const rows=(await env.DB.prepare("SELECT pa.id,pa.activity_type,pa.description,pa.old_status,pa.new_status,pa.metadata_json,pa.created_at,a.employee_id actor_employee_id,a.full_name actor_name FROM project_activity pa LEFT JOIN agents a ON a.id=pa.actor_agent_id WHERE pa.project_id=? ORDER BY pa.created_at DESC,pa.id DESC LIMIT 200").bind(id).all()).results;
+  return { activity: rows };
+}
+async function projectAddActivity(req,id,env,u,admin) {
+  await projectAccess(id,env,u,admin);
+  const b=await req.json().catch(()=>bad("Invalid JSON body."));
+  const description=clean(b.description,2000);
+  const type=clean(b.activity_type,60)||"note";
+  if(!description) bad("Activity description is required.");
+  const t=now();
+  const r=await env.DB.prepare("INSERT INTO project_activity(project_id,actor_agent_id,activity_type,description,metadata_json,created_at) VALUES(?,?,?,?,?,?)").bind(id,u.agentId,type,description,b.metadata==null?null:JSON.stringify(b.metadata).slice(0,5000),t).run();
+  await env.DB.prepare("UPDATE projects SET updated_at=?,last_contacted_at=? WHERE id=?").bind(t,t,id).run();
+  return { id:r.meta.last_row_id, createdAt:t };
 }
 
 // ---------- KPIs ----------
@@ -173,6 +312,36 @@ async function kpiImport(req, env, u) {
   if (saved !== fresh.length) throw new Error(`kpi import count mismatch: expected ${fresh.length}, saved ${saved}`);
   await audit(env, u, "kpi_import", `import ${imp.id}: ${saved} saved, ${skipped.length} existing skipped, ${invalid.length} invalid, file ${String(body.filename || "").slice(0, 60)}`);
   return { dryRun: false, importId: imp.id, saved, ...summary };
+}
+
+// ---------- Break management ----------
+const BREAK_TYPES = new Set(["tea","lunch","bio","personal","other"]);
+async function breakStatus(env,u) {
+  const active = await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  const recent = (await env.DB.prepare("SELECT id,break_type,started_at,ended_at,duration_seconds FROM agent_breaks WHERE agent_id=? ORDER BY started_at DESC LIMIT 20").bind(u.agentId).all()).results;
+  return { active: active ? { ...active, elapsedSeconds: Math.max(0,Math.floor((Date.now()-Date.parse(active.started_at))/1000)) } : null, history: recent };
+}
+async function breakStart(req,env,u) {
+  const b=await req.json().catch(()=>({}));
+  const type=String(b.break_type||"").toLowerCase();
+  if(!BREAK_TYPES.has(type)) bad("Select a valid break type.");
+  const t=now();
+  try {
+    const r=await env.DB.prepare("INSERT INTO agent_breaks(agent_id,break_type,started_at) VALUES(?,?,?)").bind(u.agentId,type,t).run();
+    return { id:r.meta.last_row_id, breakType:type, startedAt:t };
+  } catch(e) { bad("An active break already exists. End it before starting another break.",409); }
+}
+async function breakEnd(env,u) {
+  const active=await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(!active) bad("There is no active break to end.",409);
+  const t=now(), seconds=Math.max(0,Math.floor((Date.parse(t)-Date.parse(active.started_at))/1000));
+  await env.DB.prepare("UPDATE agent_breaks SET ended_at=?,duration_seconds=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,active.id).run();
+  return { id:active.id,breakType:active.break_type,startedAt:active.started_at,endedAt:t,durationSeconds:seconds };
+}
+async function adminBreakStatus(env) {
+  const rows=(await env.DB.prepare("SELECT b.id,b.break_type,b.started_at,a.employee_id,a.full_name FROM agent_breaks b JOIN agents a ON a.id=b.agent_id WHERE b.ended_at IS NULL AND a.active=1 ORDER BY b.started_at ASC").all()).results;
+  const t=Date.now();
+  return { activeBreaks:rows.map(r=>({...r,elapsedSeconds:Math.max(0,Math.floor((t-Date.parse(r.started_at))/1000))})), serverTime:now() };
 }
 
 // ---------- Attendance ----------
