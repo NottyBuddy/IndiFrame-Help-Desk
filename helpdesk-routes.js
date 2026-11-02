@@ -52,13 +52,17 @@ export async function handleHelpdesk(req, env) {
     if (!u) return J({ error: "Session expired or invalid. Please log in again." }, 401);
     const admin = u.role === "admin";
     if (p.startsWith("/api/hd/admin/") && !admin) return J({ error: "Admin access required." }, 403);
-    // Admin accounts are monitoring-only. The sole write exception is KPI publishing by Super Admin.
+    // Admin accounts are monitoring-only. Separate KPI and Call Performance imports are Super Admin-only.
     const superAdminKpiImport = p === "/api/hd/admin/kpis/import" && m === "POST" && u.isSuperAdmin;
-    if (admin && ["POST", "PUT", "PATCH", "DELETE"].includes(m) && !superAdminKpiImport) {
+    const superAdminCallImport = p === "/api/hd/admin/call-performance/import" && m === "POST" && u.isSuperAdmin;
+    if (admin && ["POST", "PUT", "PATCH", "DELETE"].includes(m) && !superAdminKpiImport && !superAdminCallImport) {
       return J({ error: "Admin access is read-only. Operational actions are available to agents only." }, 403);
     }
     if (p === "/api/hd/admin/kpis/import" && !u.isSuperAdmin) {
       return J({ error: "Only Super Admin can publish KPI data." }, 403);
+    }
+    if (p === "/api/hd/admin/call-performance/import" && !u.isSuperAdmin) {
+      return J({ error: "Only Super Admin can import Call Performance data." }, 403);
     }
 
     if (m === "GET" && p === "/api/hd/projects") return J(await projectList(url, env, u, admin));
@@ -71,6 +75,9 @@ export async function handleHelpdesk(req, env) {
     if (m === "POST" && activityMatch) return J(await projectAddActivity(req, Number(activityMatch[1]), env, u, admin));
     if (m === "GET" && p === "/api/hd/kpis/summary") return J(await kpiSummary(url, env, u, admin));
     if (m === "POST" && p === "/api/hd/admin/kpis/import") return J(await kpiImport(req, env, u));
+    if (m === "GET" && p === "/api/hd/admin/call-performance/summary") return J(await callPerformanceSummary(url, env));
+    if (m === "GET" && p === "/api/hd/admin/call-performance/rows") return J(await callPerformanceRows(url, env));
+    if (m === "POST" && p === "/api/hd/admin/call-performance/import") return J(await callPerformanceImport(req, env, u));
     if (m === "GET" && p === "/api/hd/breaks/status") return J(await breakStatus(env, u));
     if (m === "POST" && p === "/api/hd/breaks/start") return J(await breakStart(req, env, u), 201);
     if (m === "POST" && p === "/api/hd/breaks/end") return J(await breakEnd(env, u));
@@ -422,6 +429,115 @@ async function attHistory(url, env, u, admin) {
   const rows=(await env.DB.prepare(`SELECT employee_id employeeId,work_date workDate,check_in_at checkInAt,check_out_at checkOutAt,duration_minutes durationMinutes FROM attendance WHERE ${W} ORDER BY work_date DESC,check_in_at DESC LIMIT 3000`).bind(...b).all()).results;
   const sum=(await env.DB.prepare(`SELECT employee_id employeeId,COUNT(DISTINCT work_date) daysPresent,COALESCE(SUM(duration_minutes),0) totalMinutes FROM attendance WHERE ${W} GROUP BY employee_id ORDER BY employee_id LIMIT 500`).bind(...b).all()).results;
   return {month,from,to,records:rows,summary:sum};
+}
+
+// ---------- Isolated Call Performance ----------
+const cpNormKey = value => String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+function cpPick(row, names) {
+  const wanted = new Set(names.map(cpNormKey));
+  for (const [key, value] of Object.entries(row || {})) {
+    if (key.startsWith("__call_performance_")) continue;
+    if (wanted.has(cpNormKey(key)) && value !== "" && value != null) return value;
+  }
+  return null;
+}
+function cpDate(value) {
+  const s = String(value ?? "").trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return isDate(s) ? s : null;
+  const m = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})$/);
+  if (m) {
+    const year = m[3].length === 2 ? "20" + m[3] : m[3];
+    const out = year + "-" + m[2].padStart(2, "0") + "-" + m[1].padStart(2, "0");
+    return isDate(out) ? out : null;
+  }
+  const parsed = new Date(s);
+  if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
+  return null;
+}
+function cpNormalizeRow(input) {
+  const source = { ...(input || {}) };
+  const helperDate = source.__call_performance_date;
+  const helperAgent = source.__call_performance_agent;
+  delete source.__call_performance_date;
+  delete source.__call_performance_agent;
+  const agentName = clean(helperAgent || cpPick(source, ["agent name", "employee name", "caller name", "caller full name", "full name", "agent", "caller", "employee"]), 200);
+  const employeeId = clean(cpPick(source, ["employee id", "agent id", "employee code", "caller id"]) || agentName, 100);
+  const date = cpDate(helperDate || cpPick(source, ["date", "report date", "call date", "activity date", "created date", "created on", "call start date"]));
+  const disposition = clean(cpPick(source, ["disposition", "call disposition", "call status", "status", "call result", "result"]), 160) || "";
+  return { source, employeeId, employeeName: agentName || employeeId || "", date, disposition };
+}
+function cpWhere(url) {
+  const where = ["1=1"], args = [];
+  const from = url.searchParams.get("from"), to = url.searchParams.get("to"), employee = url.searchParams.get("employee_id");
+  if (from && !isDate(from)) bad("Invalid 'from' date (use YYYY-MM-DD).");
+  if (to && !isDate(to)) bad("Invalid 'to' date (use YYYY-MM-DD).");
+  if (from) { where.push("report_date >= ?"); args.push(from); }
+  if (to) { where.push("report_date <= ?"); args.push(to); }
+  if (employee) { where.push("employee_id = ?"); args.push(employee); }
+  return { where: where.join(" AND "), args };
+}
+async function callPerformanceSummary(url, env) {
+  const { where, args } = cpWhere(url);
+  const one = sql => env.DB.prepare(sql).bind(...args).first();
+  const all = sql => env.DB.prepare(sql).bind(...args).all().then(r => r.results);
+  const [totals, byAgent, daily, byDisposition] = await Promise.all([
+    one(`SELECT COUNT(*) calls, COUNT(DISTINCT employee_id) agents, COUNT(DISTINCT report_date) dates, COUNT(DISTINCT disposition) dispositions FROM call_performance_rows WHERE ${where}`),
+    all(`SELECT employee_id employeeId, MAX(employee_name) employeeName, COUNT(*) calls, MIN(report_date) firstDate, MAX(report_date) lastDate FROM call_performance_rows WHERE ${where} GROUP BY employee_id ORDER BY calls DESC, employee_id`),
+    all(`SELECT report_date date, COUNT(*) calls, COUNT(DISTINCT employee_id) agents FROM call_performance_rows WHERE ${where} GROUP BY report_date ORDER BY report_date`),
+    all(`SELECT disposition, COUNT(*) calls FROM call_performance_rows WHERE ${where} GROUP BY disposition ORDER BY calls DESC, disposition`)
+  ]);
+  return { totals: totals || { calls: 0, agents: 0, dates: 0, dispositions: 0 }, byAgent, daily, byDisposition };
+}
+async function callPerformanceRows(url, env) {
+  const { where, args } = cpWhere(url);
+  const rows = (await env.DB.prepare(`SELECT id, employee_id employeeId, employee_name employeeName, report_date reportDate, disposition, source_json, created_at createdAt FROM call_performance_rows WHERE ${where} ORDER BY report_date DESC, employee_name, id`).bind(...args).all()).results;
+  return { rows: rows.map(r => ({ ...r, source: JSON.parse(r.source_json || "{}"), source_json: undefined })) };
+}
+async function callPerformanceImport(req, env, u) {
+  const body = await req.json().catch(() => bad("Invalid JSON body."));
+  if (!Array.isArray(body?.rows) || !body.rows.length) bad("rows must be a non-empty array.");
+  const normalized = body.rows.map((r, i) => ({ rowNumber: i + 1, ...cpNormalizeRow(r) }));
+  const invalidRows = normalized.filter(r => !r.employeeId || !r.date).map(r => ({ row: r.rowNumber, reason: !r.employeeId ? "Agent/Employee is missing." : "Date is missing or invalid." }));
+  const seen = new Set(), candidates = [];
+  for (const row of normalized) {
+    if (!row.employeeId || !row.date) continue;
+    const rowHash = await sha256(JSON.stringify({ employeeId: row.employeeId, date: row.date, source: row.source }));
+    if (seen.has(rowHash)) continue;
+    seen.add(rowHash);
+    candidates.push({ ...row, rowHash });
+  }
+  const fileHash = await sha256(JSON.stringify(body.rows));
+  const existingImport = await env.DB.prepare("SELECT id FROM call_performance_imports WHERE file_hash=?").bind(fileHash).first();
+  const existingHashes = new Set();
+  for (let i = 0; i < candidates.length; i += 80) {
+    const chunk = candidates.slice(i, i + 80);
+    if (!chunk.length) continue;
+    const marks = chunk.map(() => "?").join(",");
+    const found = (await env.DB.prepare("SELECT row_hash FROM call_performance_rows WHERE row_hash IN (" + marks + ")").bind(...chunk.map(x => x.rowHash)).all()).results;
+    for (const row of found) existingHashes.add(row.row_hash);
+  }
+  const accepted = candidates.filter(r => !existingHashes.has(r.rowHash)).length;
+  const skippedDuplicates = candidates.length - accepted + (normalized.length - candidates.length - invalidRows.length);
+  const dryRun = body.dry_run === true;
+  if (dryRun) return { dryRun: true, totalRows: body.rows.length, accepted: existingImport ? 0 : accepted, skippedDuplicates: existingImport ? body.rows.length - invalidRows.length : skippedDuplicates, invalidCount: invalidRows.length, invalidRows, duplicateFile: !!existingImport };
+  if (existingImport) return { success: true, saved: 0, skippedDuplicates: body.rows.length - invalidRows.length, invalidCount: invalidRows.length, duplicateFile: true, message: "This exact workbook has already been imported." };
+  if (invalidRows.length && body.accept_partial !== true) bad("Some rows are invalid. Validate the workbook or set accept_partial=true.");
+  const t = now();
+  const ins = await env.DB.prepare("INSERT INTO call_performance_imports(file_hash,filename,imported_by,imported_at,rows_received,rows_inserted,rows_skipped) VALUES(?,?,?,?,?,?,?)")
+    .bind(fileHash, clean(body.filename, 255), u.employeeId, t, body.rows.length, 0, 0).run();
+  const importId = ins.meta.last_row_id;
+  let saved = 0;
+  const fresh = candidates.filter(r => !existingHashes.has(r.rowHash));
+  for (let i = 0; i < fresh.length; i += 100) {
+    const statements = fresh.slice(i, i + 100).map(r => env.DB.prepare(
+      "INSERT OR IGNORE INTO call_performance_rows(import_id,employee_id,employee_name,report_date,disposition,row_hash,source_json,created_at) VALUES(?,?,?,?,?,?,?,?)"
+    ).bind(importId, r.employeeId, r.employeeName, r.date, r.disposition, r.rowHash, JSON.stringify(r.source), t));
+    const results = await env.DB.batch(statements);
+    saved += results.reduce((sum, result) => sum + Number(result?.meta?.changes || 0), 0);
+  }
+  const skipped = body.rows.length - saved;
+  await env.DB.prepare("UPDATE call_performance_imports SET rows_inserted=?, rows_skipped=? WHERE id=?").bind(saved, skipped, importId).run();
+  return { success: true, importId, saved, skippedDuplicates: skipped - invalidRows.length, invalidCount: invalidRows.length, duplicateFile: false };
 }
 
 // ---------- Quiz ----------
