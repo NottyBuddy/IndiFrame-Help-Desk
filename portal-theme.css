@@ -1,7 +1,7 @@
 /* IndiFrame unified portal system — shared by Agent, Admin, Super Admin and auth pages. */
 :root{--if-navy:#1d303c;--if-navy-deep:#172832;--if-teal:#219f94;--if-teal-soft:#eaf5f3;--if-canvas:#f1f4f5;--if-ink:#293941;--if-muted:#77858b;--if-line:#e3e9ea;--if-card:#fff;--if-shadow:0 5px 18px rgba(25,48,59,.055)}
 *{box-sizing:border-box}
-body{font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--if-ink)}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--if-ink);background:radial-gradient(circle at 16% 18%,rgba(111,221,203,.26),transparent 26rem),radial-gradient(circle at 84% 78%,rgba(129,160,255,.2),transparent 28rem),linear-gradient(135deg,#172b3a 0%,#1c4650 46%,#238f86 100%);background-attachment:fixed;min-height:100vh}
 .topbar{background:var(--if-navy);color:#fff;box-shadow:0 2px 12px rgba(18,35,45,.12)}
 .topbar .brand{color:#fff;font-weight:750;letter-spacing:-.025em}
 .topbar .subtitle{color:#b9c9ce}
