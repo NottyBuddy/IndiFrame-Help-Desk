@@ -9,12 +9,12 @@ function load(file = "app.html") {
     constructor(id){ this.id=id; this.value=""; this.textContent=""; this.innerHTML=""; this.style={}; this.files=[]; this.dataset={};
       const set=new Set(); this.classList={toggle:(c,f)=>{f?set.add(c):set.delete(c)}, add:c=>set.add(c), remove:c=>set.delete(c), contains:c=>set.has(c)}; }
     addEventListener(){} reset(){} }
-  const document = { getElementById:id=>els[id]||(els[id]=new El(id)), querySelectorAll:()=>[] };
+  const document = { getElementById:id=>els[id]||(els[id]=new El(id)), querySelectorAll:()=>[], addEventListener(){} };
   const store = {};
   const ctx = { document, console, Date, Math, JSON, String, Number, Object, Array, Map, Set, RegExp, Error, Promise, isNaN, Intl,
     localStorage:{getItem:k=>k in store?store[k]:null,setItem:(k,v)=>{store[k]=String(v)}},
     sessionStorage:{getItem:()=>null,setItem(){},removeItem(){}}, fetch:()=>Promise.reject(new Error("no network")),
-    XLSX:{}, window:{confirm:()=>true}, setTimeout, els };
+    XLSX:{}, window:{confirm:()=>true, addEventListener(){}}, setTimeout, els };
   vm.createContext(ctx);
   vm.runInContext(code, ctx);
   ctx.run = s => vm.runInContext(s, ctx);
