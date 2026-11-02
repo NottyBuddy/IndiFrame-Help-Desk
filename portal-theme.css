@@ -157,3 +157,117 @@ radial-gradient(circle at 63% 11%,rgba(0,229,255,.5) 0 1px,transparent 2px);
 animation:ifZeroGravity 42s ease-in-out infinite alternate}
 @media(max-width:680px){body::after,body:has(.login-shell)::after,body:has(.panel)::after{opacity:.35;filter:blur(3px)}}
 @media(prefers-reduced-motion:reduce){body::before,body::after,body:has(.login-shell)::before,body:has(.login-shell)::after,body:has(.panel)::before,body:has(.panel)::after{animation:none!important;transform:none!important}}
+
+
+/* Transparent glass surfaces + high-contrast light typography across every portal page. */
+:root{
+  --if-glass:rgba(9,24,42,.72);
+  --if-glass-strong:rgba(7,19,34,.86);
+  --if-glass-border:rgba(137,231,245,.24);
+  --if-text-primary:#f3fbff;
+  --if-text-secondary:#c5d9e4;
+  --if-text-muted:#a8bfce;
+}
+body .card,
+body .section.card,
+body .stat-card,
+body .admin-module-card,
+body .break-card,
+body .login-shell,
+body .panel,
+body .admin-detail-bar,
+body .profile,
+body .project-toolbar,
+body .project-form,
+body .sa-grid>.card{
+  color:var(--if-text-primary)!important;
+  background:linear-gradient(145deg,rgba(18,43,65,.78),rgba(7,20,36,.72))!important;
+  border:1px solid var(--if-glass-border)!important;
+  box-shadow:0 14px 36px rgba(0,0,0,.24),inset 0 1px 0 rgba(225,250,255,.08)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(135%)!important;
+  backdrop-filter:blur(18px) saturate(135%)!important;
+}
+body .card h1,body .card h2,body .card h3,
+body .section.card h1,body .section.card h2,body .section.card h3,
+body .break-card h1,body .break-card h2,body .break-card h3,
+body .login-shell h1,body .panel h2,
+body .admin-module-card strong,body .admin-detail-bar strong{
+  color:#f4fbff!important;
+}
+body .card p,body .card label,body .card small,
+body .section.card p,body .section.card label,body .section.card small,
+body .break-card label,body .break-card .muted,
+body .admin-module-card small,body .admin-module-card .module-open,
+body .muted,body .note,body .label,body .empty,
+body .sa-form label,body .login-shell label,body .panel label{
+  color:var(--if-text-secondary)!important;
+}
+body .card .value,body .stat-card .value,body .break-time,
+body .card .project-code,body .card .module-icon{
+  color:#8cecff!important;
+}
+body .card input,body .card select,body .card textarea,
+body .break-card input,body .break-card select,
+body .sa-form input,body .sa-form select,
+body .login-shell input,body .panel input,
+body .project-toolbar input,body .project-toolbar select,
+body .project-form input,body .project-form select,body .project-form textarea{
+  color:#f4fbff!important;
+  background:rgba(3,13,25,.72)!important;
+  border:1px solid rgba(157,225,239,.28)!important;
+}
+body input::placeholder,body textarea::placeholder{color:#9eb7c7!important;opacity:1}
+body .card table,body .break-card table{color:#eaf7fc}
+body .card th,body .break-card th{
+  color:#c5e3ed!important;
+  background:rgba(96,166,188,.13)!important;
+  border-color:rgba(166,220,232,.16)!important;
+}
+body .card td,body .break-card td{
+  color:#e4f1f7!important;
+  border-color:rgba(166,220,232,.13)!important;
+}
+body .card tbody tr:hover,body .break-card tbody tr:hover{background:rgba(83,193,213,.09)!important}
+body .card .empty,body .break-card .empty{color:#bfd3df!important}
+body.admin-mode,
+body:not(.admin-mode):has(#view-overview) .wrap{
+  color:var(--if-text-primary)!important;
+}
+body.admin-mode .head h1,
+body:not(.admin-mode):has(#view-overview) .head h1,
+body .head h1{color:#f4fbff!important}
+body.admin-mode .head .muted,
+body.admin-mode .profile,
+body:not(.admin-mode):has(#view-overview) .profile{color:var(--if-text-secondary)!important}
+body.admin-mode #view-admin>.section.card:first-child,
+body.admin-mode #view-admin .admin-report-grid>.section.card,
+body.admin-mode #view-admin #adminHome>button.admin-module-card,
+body.admin-mode .admin-kpi-grid .stat-card{
+  background:linear-gradient(145deg,rgba(18,43,65,.8),rgba(7,20,36,.76))!important;
+  border-color:var(--if-glass-border)!important;
+  color:var(--if-text-primary)!important;
+}
+body.admin-mode #view-admin #adminHome .admin-module-card strong,
+body.admin-mode .admin-kpi-grid .value,
+body.admin-mode #view-admin .admin-report-grid>.section.card h2,
+body.admin-mode #view-admin>.section.card:first-child h2{color:#f4fbff!important}
+body.admin-mode #view-admin #adminHome .admin-module-card small,
+body.admin-mode .admin-kpi-grid .label,
+body.admin-mode .report-filters label,
+body.admin-mode #view-admin td{color:#c5d9e4!important}
+body.admin-mode #view-admin th{color:#c5e3ed!important;background:rgba(96,166,188,.15)!important}
+body.admin-mode #view-admin tbody tr:hover{background:rgba(83,193,213,.09)!important}
+body .topbar{background:rgba(5,15,28,.88)!important;border-bottom:1px solid rgba(137,231,245,.18)!important;backdrop-filter:blur(16px)}
+body .nav{background:rgba(5,15,28,.88)!important;border-right:1px solid rgba(137,231,245,.14)!important;backdrop-filter:blur(16px)}
+body .nav button,body .nav .nav-link{color:#d9edf5!important}
+body .nav button.active{color:#fff!important}
+body .primary-btn,body .sa-btn,body .break-btn{color:#fff!important}
+body .status,body .sa-msg,body .project-message,body .break-message{color:#c5d9e4!important}
+body .status.error,body .sa-msg.error,body .project-message.error,body .break-message.error{color:#ffb8bd!important}
+body:has(.login-shell) .login-shell,
+body:has(.panel) .panel{background:linear-gradient(145deg,rgba(14,35,56,.9),rgba(5,17,31,.88))!important}
+@media(max-width:680px){
+  body .card,body .section.card,body .stat-card,body .admin-module-card,body .break-card{
+    -webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;
+  }
+}
