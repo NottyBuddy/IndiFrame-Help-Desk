@@ -100,3 +100,14 @@ body.admin-mode.admin-detail-mode #view-admin .admin-report-grid>.section.card{d
 body.admin-mode.admin-detail-mode #view-admin .admin-report-grid>.section.card.is-current{display:block!important;min-height:calc(100vh - 180px)}
 body.admin-mode.admin-detail-mode #view-admin .admin-detail-bar{position:sticky;top:70px;z-index:10;box-shadow:0 3px 12px rgba(25,48,59,.06)}
 @media(max-width:520px){body:has(.login-shell){padding:18px 14px!important}body:has(.login-shell) .login-shell{padding:32px 24px 26px}}
+
+
+/* Shared softly blurred ambient motion background across every portal page. */
+body{position:relative;isolation:isolate;min-height:100vh;background:transparent!important}
+.portal-video-backdrop{position:fixed;inset:0;z-index:-1;overflow:hidden;background:linear-gradient(135deg,#172b3a 0%,#1c4650 46%,#238f86 100%);pointer-events:none}
+.portal-video-backdrop video{position:absolute;width:100%;height:100%;inset:0;object-fit:cover;filter:blur(15px) saturate(.72) brightness(.62);transform:scale(1.08);opacity:.78}
+.portal-video-backdrop::after{content:"";position:absolute;inset:0;background:linear-gradient(125deg,rgba(18,39,53,.68),rgba(20,75,78,.48) 52%,rgba(22,115,105,.52)),radial-gradient(circle at 18% 18%,rgba(111,221,203,.18),transparent 28rem)}
+body>:not(.portal-video-backdrop):not(.portal-video-credit){position:relative;z-index:1}
+.portal-video-credit{position:fixed;right:10px;bottom:7px;z-index:50;padding:4px 7px;border-radius:5px;background:rgba(15,35,45,.48);color:rgba(255,255,255,.68);font-size:9px;text-decoration:none;backdrop-filter:blur(8px)}
+.portal-video-credit:hover{color:#fff}
+@media(prefers-reduced-motion:reduce){.portal-video-backdrop video{display:none}}
