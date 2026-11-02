@@ -143,8 +143,15 @@
     button:hover{background:#5149c5}
     .helper strong{color:#635bdb}
 
+    /* Critical first-paint brand palette: prevents the old theme flashing before shared CSS loads. */
+    body{background:linear-gradient(135deg,#172b3a 0%,#1c4650 46%,#238f86 100%)!important;color:#293941}
+    .login-shell{width:min(100%,470px);border:1px solid rgba(255,255,255,.72);border-radius:20px;padding:42px 40px 34px;background:rgba(255,255,255,.97);box-shadow:0 28px 75px rgba(7,24,35,.28)}
+    h1{color:#1d3441}.subtitle{color:#74848a}
+    input{height:47px;border:1px solid #dce6e6;border-radius:9px;background:#f8fbfb}
+    button{height:48px;border-radius:9px;background:linear-gradient(100deg,#1c827d,#25a99b);box-shadow:0 9px 18px rgba(31,151,139,.22)}
+    @media(max-width:520px){.login-shell{padding:32px 24px 26px}}
   </style>
-  <link rel="stylesheet" href="portal-theme.css?v=20261102">
+  <link rel="stylesheet" href="portal-theme.css?v=login-theme-fix-20261103">
 </head>
 <body>
   <main class="login-shell">
