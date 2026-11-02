@@ -120,6 +120,15 @@
         <div class="card stat-card"><div class="label">Agents Checked In</div><div id="adminAttendanceCount" class="value">—</div></div>
         <div class="card stat-card"><div class="label">Active Breaks</div><div id="adminBreakCount" class="value">—</div></div>
       </div>
+      <div id="adminHome" class="admin-home-grid">
+        <button class="admin-module-card" type="button" data-admin-open="admin-team"><span class="module-icon">👥</span><strong>Team Members</strong><small>Employee directory and active status</small><span class="module-open">View details →</span></button>
+        <button class="admin-module-card" type="button" data-admin-open="admin-attendance"><span class="module-icon">◷</span><strong>Attendance</strong><small>Check-ins, check-outs and work hours</small><span class="module-open">View details →</span></button>
+        <button class="admin-module-card" type="button" data-admin-open="admin-breaks"><span class="module-icon">☕</span><strong>Breaks</strong><small>Break history and active breaks</small><span class="module-open">View details →</span></button>
+        <button class="admin-module-card" type="button" data-admin-open="admin-projects"><span class="module-icon">▣</span><strong>Projects</strong><small>Customer projects and assignments</small><span class="module-open">View details →</span></button>
+        <button class="admin-module-card" type="button" data-admin-open="admin-kpi"><span class="module-icon">↗</span><strong>Team KPI</strong><small>Calls, conversions and performance</small><span class="module-open">View details →</span></button>
+        <button class="admin-module-card" type="button" data-admin-open="admin-quiz"><span class="module-icon">✎</span><strong>Quiz Results</strong><small>Weekly attempts and team scores</small><span class="module-open">View details →</span></button>
+      </div>
+      <div id="adminDetailBar" class="admin-detail-bar hidden"><button id="adminBackBtn" class="secondary-btn" type="button">← All sections</button><strong id="adminDetailTitle">Section details</strong><span>Team monitoring</span></div>
       <div class="admin-report-grid"><div id="admin-team" class="section card"><h2>Team Members</h2><div id="adminAgentsTable" class="empty">Loading team…</div></div>
       <div id="admin-projects" class="section card"><h2>Team Projects</h2><button class="secondary-btn export-report" data-export="projects" type="button">Export Excel</button><div id="adminProjectTable" class="empty">Loading projects…</div></div>
       <div id="admin-attendance" class="section card"><h2>Team Attendance</h2><button class="secondary-btn export-report" data-export="attendance" type="button">Export Excel</button><div id="adminAttendanceTable" class="empty">Loading attendance…</div></div>
