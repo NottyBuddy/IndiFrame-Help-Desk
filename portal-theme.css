@@ -100,3 +100,15 @@ body.admin-mode.admin-detail-mode #view-admin .admin-report-grid>.section.card{d
 body.admin-mode.admin-detail-mode #view-admin .admin-report-grid>.section.card.is-current{display:block!important;min-height:calc(100vh - 180px)}
 body.admin-mode.admin-detail-mode #view-admin .admin-detail-bar{position:sticky;top:70px;z-index:10;box-shadow:0 3px 12px rgba(25,48,59,.06)}
 @media(max-width:520px){body:has(.login-shell){padding:18px 14px!important}body:has(.login-shell) .login-shell{padding:32px 24px 26px}}
+
+/* Soft-focus motion video on the employee login screen */
+body:has(.login-shell){overflow:hidden!important;background:#142f3a!important}
+.login-video-backdrop{position:fixed;inset:-18px;z-index:-2;overflow:hidden;background:linear-gradient(125deg,#142e3d,#126d68 55%,#1b4c5e)}
+.login-video-backdrop video{width:100%;height:100%;object-fit:cover;filter:blur(13px) saturate(.78);opacity:.62;transform:scale(1.06)}
+.login-video-backdrop::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(13,38,52,.62),rgba(15,104,96,.43)),radial-gradient(circle at 22% 20%,rgba(84,213,190,.2),transparent 34rem)}
+body:has(.login-shell) .login-shell{z-index:1}
+.login-brand-mark{width:42px;height:42px;display:grid;place-items:center;margin-bottom:18px;border-radius:12px;background:linear-gradient(140deg,#183d4a,#26a596);color:#fff;font-size:14px;font-weight:800;letter-spacing:-.04em;box-shadow:0 7px 16px rgba(30,139,130,.2)}
+.video-credit{position:fixed;bottom:12px;left:0;right:0;z-index:1;text-align:center;color:rgba(255,255,255,.66);font-size:10px}
+.video-credit a{color:rgba(255,255,255,.88);text-decoration:underline;text-underline-offset:2px}
+@media(prefers-reduced-motion:reduce){.login-video-backdrop video{display:none}}
+@media(max-width:520px){.video-credit{font-size:9px;bottom:7px}}
