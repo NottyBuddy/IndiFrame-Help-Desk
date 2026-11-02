@@ -1,7 +1,13 @@
 name = "indiframe-helpdesk-api"
 main = "worker.js"
 compatibility_date = "2025-01-01"
+keep_vars = true
 
-# D1 binding "DB" is already configured in the Cloudflare Worker dashboard.
-# Add database_name and database_id here only if you later choose Wrangler-based deployment.
+# Keep the existing dashboard-managed runtime variables while deploying.
+# D1 database binding used by the Help Desk API.
+[[d1_databases]]
+binding = "DB"
+database_name = "indiframe-helpdesk-db"
+database_id = "8854232a-6e8f-4fe9-849c-5b61dc229602"
+
 # Do not store passwords, API tokens, or other secrets in this file.
