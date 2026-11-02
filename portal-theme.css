@@ -303,3 +303,7 @@ body::after{animation:ifZeroGravity 18s ease-in-out infinite alternate,ifDustDri
 @keyframes ifZeroGravity{0%{transform:translate3d(-2.2%,2.4%,0) rotate(-2deg)}100%{transform:translate3d(2.4%,-2.2%,0) rotate(2deg)}}
 @keyframes ifDustDrift{0%{background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 0}100%{background-position:0 0,0 0,0 0,0 0,95px -70px,-80px 100px,70px 115px,-95px -75px}}
 @media(prefers-reduced-motion:reduce){body::before,body::after{animation:none!important;transform:none!important}}
+
+/* Keep the login and password backdrop moving at the same visible pace. */
+body:has(.login-shell)::before,body:has(.panel)::before{animation:ifVoidGlow 15s ease-in-out infinite alternate!important}
+body:has(.login-shell)::after,body:has(.panel)::after{animation:ifZeroGravity 18s ease-in-out infinite alternate,ifDustDrift 12s linear infinite!important;opacity:.72!important}
