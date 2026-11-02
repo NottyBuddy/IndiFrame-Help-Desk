@@ -1,6 +1,6 @@
 # IndiFrame Help Desk — Live setup checklist (Hinglish)
 
-Ye branch development ke liye hai: `codex/agent-admin-portal`. Is branch ko abhi production mein merge/deploy nahi kiya gaya hai.
+Ye branch development ke liye hai: `feat/isolated-call-performance`. Is branch ko abhi production mein merge/deploy nahi kiya gaya hai.
 
 ## Is update mein kya add hua
 
