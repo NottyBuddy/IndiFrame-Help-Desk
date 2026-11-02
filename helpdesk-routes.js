@@ -131,6 +131,11 @@ async function projectAccess(id, env, u, admin) {
 async function projectList(url, env, u, admin) {
   const where = ["p.archived_at IS NULL"], args = [];
   if (!admin) { where.push("(p.assigned_agent_id=? OR p.created_by_agent_id=?)"); args.push(u.agentId, u.agentId); }
+  const from=url.searchParams.get("from"),to=url.searchParams.get("to");
+  if(from&&!isDate(from))bad("Invalid 'from' date.");
+  if(to&&!isDate(to))bad("Invalid 'to' date.");
+  if(from){where.push("date(p.created_at)>=?");args.push(from);}
+  if(to){where.push("date(p.created_at)<=?");args.push(to);}
   const status = url.searchParams.get("status");
   if (status) { if (!PROJECT_STATUSES.has(status)) bad("Invalid project status."); where.push("p.status=?"); args.push(status); }
   const q = clean(url.searchParams.get("q"), 100);
