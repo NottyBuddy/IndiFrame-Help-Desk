@@ -397,3 +397,10 @@ body.admin-mode #view-admin .admin-report-grid>.section.card.is-current{display:
   body.admin-mode #view-admin #adminHome.admin-home-grid{grid-template-columns:minmax(0,1fr);gap:13px}
   body.admin-mode #view-admin #adminHome > button.admin-module-card{min-height:148px;padding:18px}
 }
+
+/* Crisp line icons and functional top-bar role control. */
+body.admin-mode .role-badge-button{appearance:none;font:inherit;color:#fff;cursor:pointer}
+body.admin-mode .role-badge-button:hover{background:rgba(255,255,255,.23);transform:translateY(-1px)}
+body.admin-mode .role-badge-button:focus-visible,#logoutBtn:focus-visible{outline:3px solid rgba(255,255,255,.55);outline-offset:3px}
+body.admin-mode #view-admin #adminHome .module-icon{display:grid;place-items:center}
+body.admin-mode #view-admin #adminHome .module-icon svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
