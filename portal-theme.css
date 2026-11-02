@@ -115,3 +115,45 @@ body>:not(.portal-video-backdrop):not(.portal-video-credit){position:relative;z-
 @keyframes ifParticleFloat{0%{background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0}100%{background-position:0 0,0 0,90px -70px,-80px 90px,65px 110px,90px -55px,0 0}}
 @media(max-width:680px){body::before{inset:-8%;opacity:.9}body::after{inset:-12%;opacity:.48;filter:blur(1px)}}
 @media(prefers-reduced-motion:reduce){body::before,body::after{animation:none!important}}
+
+
+/* Deep-void ambient glass background — IndiFrame premium identity. */
+:root{--if-bg-void:#060b14;--if-bg-deep:#0a1128;--if-glow-teal:#005c6e;--if-glow-cyan:#00e5ff}
+html{background:var(--if-bg-void)!important}
+body,body:has(.login-shell),body:has(.panel){background:var(--if-bg-void)!important;isolation:isolate;position:relative;min-height:100vh}
+body::before{content:"";position:fixed;inset:-16%;z-index:-2;pointer-events:none;background:
+radial-gradient(ellipse 42% 48% at 0% 8%,rgba(0,229,255,.17),transparent 74%),
+radial-gradient(ellipse 45% 50% at 100% 92%,rgba(0,92,110,.34),transparent 72%),
+radial-gradient(ellipse 34% 38% at 100% 0%,rgba(0,92,110,.18),transparent 75%),
+radial-gradient(ellipse 36% 42% at 0% 100%,rgba(0,229,255,.09),transparent 74%),
+linear-gradient(135deg,#060b14 0%,#0a1128 52%,#071522 100%);
+animation:ifVoidGlow 38s ease-in-out infinite alternate}
+body::after{content:"";position:fixed;inset:-12%;z-index:-1;pointer-events:none;opacity:.62;background:
+radial-gradient(ellipse 115px 82px at 17% 28%,rgba(108,237,247,.16),rgba(0,229,255,.055) 42%,transparent 72%),
+radial-gradient(ellipse 82px 112px at 76% 22%,rgba(83,202,224,.14),rgba(0,92,110,.07) 48%,transparent 74%),
+radial-gradient(ellipse 145px 96px at 83% 78%,rgba(0,229,255,.12),rgba(0,92,110,.06) 48%,transparent 76%),
+radial-gradient(ellipse 72px 92px at 34% 83%,rgba(128,224,238,.12),rgba(0,92,110,.05) 48%,transparent 76%),
+radial-gradient(circle at 12% 17%,rgba(205,250,255,.55) 0 1px,transparent 2px),
+radial-gradient(circle at 63% 11%,rgba(0,229,255,.5) 0 1px,transparent 2px),
+radial-gradient(circle at 91% 47%,rgba(205,250,255,.38) 0 1px,transparent 2px),
+radial-gradient(circle at 46% 68%,rgba(0,229,255,.42) 0 1px,transparent 2px);
+filter:blur(2px);background-size:100% 100%,100% 100%,100% 100%,100% 100%,210px 210px,260px 260px,230px 230px,280px 280px;
+animation:ifZeroGravity 42s ease-in-out infinite alternate,ifDustDrift 31s linear infinite}
+@keyframes ifVoidGlow{0%{transform:scale(1);filter:hue-rotate(-4deg);opacity:.88}100%{transform:scale(1.08);filter:hue-rotate(5deg);opacity:1}}
+@keyframes ifZeroGravity{0%{transform:translate3d(-1.2%,1.5%,0) rotate(-1deg)}100%{transform:translate3d(1.4%,-1.6%,0) rotate(1.5deg)}}
+@keyframes ifDustDrift{0%{background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 0}100%{background-position:0 0,0 0,0 0,0 0,65px -45px,-55px 70px,45px 85px,-75px -55px}}
+/* Retain high-contrast, readable content surfaces above the atmospheric background. */
+.card,.section.card,.break-card,.login-shell,.panel,.stat-card,.admin-module-card{backdrop-filter:blur(12px)}
+body:has(.login-shell)::before,body:has(.panel)::before{content:"";position:fixed;inset:-16%;z-index:-2;background:
+radial-gradient(ellipse 42% 48% at 0% 8%,rgba(0,229,255,.17),transparent 74%),
+radial-gradient(ellipse 45% 50% at 100% 92%,rgba(0,92,110,.34),transparent 72%),
+linear-gradient(135deg,#060b14 0%,#0a1128 52%,#071522 100%);animation:ifVoidGlow 38s ease-in-out infinite alternate}
+body:has(.login-shell)::after,body:has(.panel)::after{content:"";position:fixed;inset:-12%;z-index:-1;width:auto;height:auto;right:auto;top:auto;border:0;border-radius:0;box-shadow:none;pointer-events:none;opacity:.58;background:
+radial-gradient(ellipse 115px 82px at 17% 28%,rgba(108,237,247,.16),transparent 72%),
+radial-gradient(ellipse 82px 112px at 76% 22%,rgba(83,202,224,.14),transparent 74%),
+radial-gradient(ellipse 145px 96px at 83% 78%,rgba(0,229,255,.12),transparent 76%),
+radial-gradient(circle at 12% 17%,rgba(205,250,255,.55) 0 1px,transparent 2px),
+radial-gradient(circle at 63% 11%,rgba(0,229,255,.5) 0 1px,transparent 2px);
+animation:ifZeroGravity 42s ease-in-out infinite alternate}
+@media(max-width:680px){body::after,body:has(.login-shell)::after,body:has(.panel)::after{opacity:.35;filter:blur(3px)}}
+@media(prefers-reduced-motion:reduce){body::before,body::after,body:has(.login-shell)::before,body:has(.login-shell)::after,body:has(.panel)::before,body:has(.panel)::after{animation:none!important;transform:none!important}}
