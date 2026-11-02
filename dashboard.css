@@ -340,3 +340,60 @@ body.admin-mode #view-admin table{min-width:560px}
 body.admin-mode #view-admin td,body.admin-mode #view-admin th{padding:12px 11px;font-size:13px}
 @media(max-width:1000px){.admin-home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.admin-home-grid{grid-template-columns:1fr}.admin-module-card{min-height:145px}.admin-detail-bar{flex-wrap:wrap}.admin-detail-bar span{margin-left:0;width:100%}body.admin-mode .wrap{padding:18px 14px 34px}}
+
+
+/* Admin card rendering hardening: explicit component styles and predictable grid sizing. */
+body.admin-mode #view-admin #adminHome.admin-home-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:stretch;
+  gap:18px;
+  width:100%;
+  margin:18px 0 24px;
+}
+body.admin-mode #view-admin #adminHome > button.admin-module-card{
+  appearance:none;
+  -webkit-appearance:none;
+  display:flex!important;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:10px;
+  width:100%;
+  min-width:0;
+  min-height:178px;
+  margin:0;
+  padding:22px;
+  overflow:hidden;
+  white-space:normal;
+  text-align:left;
+  font:inherit;
+  color:var(--ink);
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(218,214,238,.95);
+  border-radius:18px;
+  box-shadow:0 12px 30px rgba(39,34,91,.075);
+  cursor:pointer;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+body.admin-mode #view-admin #adminHome > button.admin-module-card:hover{
+  transform:translateY(-3px);
+  border-color:#bdb6ff;
+  box-shadow:0 18px 38px rgba(76,67,160,.14);
+}
+body.admin-mode #view-admin #adminHome .module-icon{flex:0 0 44px;width:44px;height:44px}
+body.admin-mode #view-admin #adminHome .admin-module-card strong{display:block;font-size:1.06rem;line-height:1.25}
+body.admin-mode #view-admin #adminHome .admin-module-card small{display:block;font-size:.86rem;line-height:1.45;white-space:normal}
+body.admin-mode #view-admin #adminHome .module-open{display:block;margin-top:auto;padding-top:5px;font-size:.84rem}
+body.admin-mode #view-admin .admin-detail-bar{min-height:58px}
+body.admin-mode #view-admin .admin-report-grid{width:100%;min-width:0}
+body.admin-mode #view-admin .admin-report-grid>.section.card.is-current{display:block!important}
+@media(max-width:1050px){
+  body.admin-mode #view-admin #adminHome.admin-home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px){
+  body.admin-mode #view-admin #adminHome.admin-home-grid{grid-template-columns:minmax(0,1fr);gap:13px}
+  body.admin-mode #view-admin #adminHome > button.admin-module-card{min-height:148px;padding:18px}
+}
