@@ -263,7 +263,12 @@ async function kpiImport(req, env, u) {
   const rows = body.rows;
   if (!Array.isArray(rows) || !rows.length) bad("No rows supplied.");
   // employee_id (as typed in the report) -> canonical agents.employee_id, case-insensitive
-  const agents = new Map((await env.DB.prepare("SELECT employee_id FROM agents").all()).results.map(a => [String(a.employee_id).trim().toLowerCase(), String(a.employee_id)]));
+  const agents = new Map();
+  const agentRows = (await env.DB.prepare("SELECT employee_id, full_name FROM agents WHERE active = 1").all()).results;
+  for (const a of agentRows) {
+    agents.set(String(a.employee_id).trim().toLowerCase(), String(a.employee_id));
+    if (a.full_name) agents.set(String(a.full_name).trim().toLowerCase(), String(a.employee_id));
+  }
   const valid = [], invalid = [], seenAt = new Map();
   rows.forEach((r, i) => {
     const n = i + 1;
@@ -271,7 +276,7 @@ async function kpiImport(req, env, u) {
     const typed = String(r.employee_id ?? "").trim(), d = String(r.report_date ?? "").trim(), disp = String(r.disposition ?? "").trim().slice(0, 60);
     if (!typed) return invalid.push({ row: n, reason: "Missing employee ID" });
     const emp = agents.get(typed.toLowerCase());
-    if (!emp) return invalid.push({ row: n, reason: `Unknown employee ID "${typed.slice(0, 30)}"` });
+    if (!emp) return invalid.push({ row: n, reason: `Unknown Agent/Caller Name or Employee ID "${typed.slice(0, 30)}"` });
     if (!isDate(d)) return invalid.push({ row: n, reason: "Invalid report date (need YYYY-MM-DD)" });
     const o = { n, employee_id: emp, report_date: d, disposition: disp };
     for (const k of NUM) {
