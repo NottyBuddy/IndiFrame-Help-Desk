@@ -102,12 +102,16 @@ body.admin-mode.admin-detail-mode #view-admin .admin-detail-bar{position:sticky;
 @media(max-width:520px){body:has(.login-shell){padding:18px 14px!important}body:has(.login-shell) .login-shell{padding:32px 24px 26px}}
 
 
-/* Shared softly blurred ambient motion background across every portal page. */
-body{position:relative;isolation:isolate;min-height:100vh;background:transparent!important}
-.portal-video-backdrop{position:fixed;inset:0;z-index:-1;overflow:hidden;background:linear-gradient(135deg,#172b3a 0%,#1c4650 46%,#238f86 100%);pointer-events:none}
-.portal-video-backdrop video{position:absolute;width:100%;height:100%;inset:0;object-fit:cover;filter:blur(15px) saturate(.72) brightness(.62);transform:scale(1.08);opacity:.78}
-.portal-video-backdrop::after{content:"";position:absolute;inset:0;background:linear-gradient(125deg,rgba(18,39,53,.68),rgba(20,75,78,.48) 52%,rgba(22,115,105,.52)),radial-gradient(circle at 18% 18%,rgba(111,221,203,.18),transparent 28rem)}
+/* IndiFrame premium CSS ambient background — shared across all portal pages. */
+:root{--if-bg-ink:#071321;--if-bg-blue:#0b1d30;--if-bg-teal:#087f83;--if-bg-aqua:#16c7c2;--if-bg-cyan:#59d9e5}
+html{min-height:100%;background:var(--if-bg-ink)}
+body,body:has(.login-shell),body:has(.panel){position:relative;isolation:isolate;min-height:100vh;background:var(--if-bg-ink)!important}
+body:has(.login-shell){background:var(--if-bg-ink)!important}
+body::before{content:"";position:fixed;inset:-18%;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 14% 20%,rgba(8,127,131,.34),transparent 34%),radial-gradient(ellipse at 82% 72%,rgba(22,199,194,.2),transparent 31%),radial-gradient(ellipse at 52% 105%,rgba(27,92,139,.28),transparent 38%),linear-gradient(128deg,#071321 0%,#0b1d30 48%,#09232f 100%);background-size:140% 140%;animation:ifAmbientBreath 12s ease-in-out infinite alternate}
+body::after{content:"";position:fixed;inset:-30%;z-index:-1;pointer-events:none;opacity:.72;background:radial-gradient(ellipse 48% 16% at 12% 38%,rgba(22,199,194,.17),transparent 72%),radial-gradient(ellipse 42% 13% at 78% 58%,rgba(89,217,229,.13),transparent 74%),radial-gradient(circle at 18% 22%,rgba(210,251,255,.52) 0 1px,transparent 2px),radial-gradient(circle at 68% 14%,rgba(89,217,229,.42) 0 1px,transparent 2px),radial-gradient(circle at 88% 82%,rgba(210,251,255,.4) 0 1px,transparent 2px),radial-gradient(circle at 38% 76%,rgba(89,217,229,.36) 0 1px,transparent 2px),linear-gradient(112deg,transparent 34%,rgba(89,217,229,.055) 42%,transparent 50%,rgba(22,199,194,.07) 64%,transparent 72%);background-size:100% 100%,100% 100%,190px 190px,230px 230px,270px 270px,210px 210px,180% 180%;animation:ifAmbientFlow 26s ease-in-out infinite alternate,ifParticleFloat 19s linear infinite}
 body>:not(.portal-video-backdrop):not(.portal-video-credit){position:relative;z-index:1}
-.portal-video-credit{position:fixed;right:10px;bottom:7px;z-index:50;padding:4px 7px;border-radius:5px;background:rgba(15,35,45,.48);color:rgba(255,255,255,.68);font-size:9px;text-decoration:none;backdrop-filter:blur(8px)}
-.portal-video-credit:hover{color:#fff}
-@media(prefers-reduced-motion:reduce){.portal-video-backdrop video{display:none}}
+@keyframes ifAmbientBreath{0%{background-position:0% 20%}100%{background-position:100% 80%}}
+@keyframes ifAmbientFlow{0%{transform:translate3d(-2%,1%,0) rotate(-2deg);background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0}100%{transform:translate3d(2%,-1%,0) rotate(2deg);background-position:0 0,0 0,70px -45px,-55px 65px,40px 80px,65px -35px,100% 100%}}
+@keyframes ifParticleFloat{0%{background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0}100%{background-position:0 0,0 0,90px -70px,-80px 90px,65px 110px,90px -55px,0 0}}
+@media(max-width:680px){body::before{inset:-8%;opacity:.9}body::after{inset:-12%;opacity:.48;filter:blur(1px)}}
+@media(prefers-reduced-motion:reduce){body::before,body::after{animation:none!important}}
