@@ -271,3 +271,46 @@ body:has(.panel) .panel{background:linear-gradient(145deg,rgba(14,35,56,.9),rgba
     -webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;
   }
 }
+
+
+/* Make the ambient background motion clearly visible while keeping content above it. */
+body::before{
+  z-index:0!important;
+  inset:-22%!important;
+  background-size:180% 180%!important;
+  animation:ifVisibleGlow 22s ease-in-out infinite alternate!important;
+  will-change:transform,background-position,filter;
+}
+body::after{
+  z-index:0!important;
+  inset:-18%!important;
+  opacity:.82!important;
+  background-size:100% 100%,100% 100%,100% 100%,100% 100%,240px 240px,280px 280px,260px 260px,300px 300px!important;
+  animation:ifVisibleDrift 28s ease-in-out infinite alternate,ifVisibleDust 19s linear infinite!important;
+  will-change:transform,background-position;
+}
+body>:not(.portal-video-backdrop):not(.portal-video-credit){
+  position:relative!important;
+  z-index:1!important;
+}
+@keyframes ifVisibleGlow{
+  0%{transform:translate3d(-4%,-2%,0) scale(.96);background-position:0% 15%;filter:hue-rotate(-8deg);opacity:.78}
+  50%{transform:translate3d(2%,2%,0) scale(1.03);background-position:55% 65%;filter:hue-rotate(4deg);opacity:1}
+  100%{transform:translate3d(5%,-3%,0) scale(1.09);background-position:100% 85%;filter:hue-rotate(12deg);opacity:.88}
+}
+@keyframes ifVisibleDrift{
+  0%{transform:translate3d(-3%,2%,0) rotate(-3deg) scale(.98)}
+  50%{transform:translate3d(2%,-2%,0) rotate(1.5deg) scale(1.04)}
+  100%{transform:translate3d(4%,3%,0) rotate(4deg) scale(1.08)}
+}
+@keyframes ifVisibleDust{
+  0%{background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 0}
+  100%{background-position:0 0,0 0,0 0,0 0,100px -75px,-90px 110px,75px 125px,-105px -85px}
+}
+@media(max-width:680px){
+  body::before{inset:-12%!important;opacity:.9}
+  body::after{inset:-14%!important;opacity:.62!important}
+}
+@media(prefers-reduced-motion:reduce){
+  body::before,body::after{animation:none!important;transform:none!important;will-change:auto!important}
+}
