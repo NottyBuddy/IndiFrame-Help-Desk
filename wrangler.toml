@@ -11,3 +11,5 @@ database_name = "indiframe-helpdesk-db"
 database_id = "8854232a-6e8f-4fe9-849c-5b61dc229602"
 
 # Do not store passwords, API tokens, or other secrets in this file.
+
+# Deployment trigger: keep the existing Worker configuration unchanged.
