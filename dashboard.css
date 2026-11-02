@@ -217,3 +217,5 @@ h1 {
 .primary-btn { background:var(--navy); color:#fff; border:1px solid var(--navy); }
 .secondary-btn { background:#fff; color:var(--navy); border:1px solid #cbd5e1; }
 .primary-btn:disabled,.secondary-btn:disabled { opacity:.5; cursor:not-allowed; }
+
+.report-filters{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.report-filters label{display:grid;gap:5px;color:var(--muted);font-size:13px;font-weight:600}.report-filters input,.report-filters select{padding:10px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:var(--ink);font:inherit}.export-report{margin:0 0 12px 8px}

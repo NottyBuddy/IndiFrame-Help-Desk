@@ -104,6 +104,16 @@
     </section>
 
     <section id="view-admin" class="tab-panel hidden">
+      <div class="section card">
+        <h2>Team Reports — Date Filter</h2>
+        <div class="report-filters">
+          <label>Period<select id="adminPeriod"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week" selected>This Week</option><option value="month">This Month</option><option value="lastmonth">Last Month</option><option value="custom">Custom Range</option></select></label>
+          <label>From<input id="adminFrom" type="date" disabled></label>
+          <label>To<input id="adminTo" type="date" disabled></label>
+          <button id="applyAdminFilter" class="primary-btn" type="button">Apply Filter</button>
+        </div>
+        <div id="adminFilterLabel" class="note">This Week</div>
+      </div>
       <div class="grid">
         <div class="card stat-card"><div class="label">Active Employees</div><div id="adminActiveAgents" class="value">—</div></div>
         <div class="card stat-card"><div class="label">Team Quiz Attempts</div><div id="adminQuizAttempts" class="value">—</div></div>
@@ -111,10 +121,11 @@
         <div class="card stat-card"><div class="label">Active Breaks</div><div id="adminBreakCount" class="value">—</div></div>
       </div>
       <div class="section card"><h2>Team Members</h2><div id="adminAgentsTable" class="empty">Loading team…</div></div>
-      <div class="section card"><h2>Team Attendance</h2><div id="adminAttendanceTable" class="empty">Loading attendance…</div></div>
-      <div class="section card"><h2>Active Breaks</h2><div id="adminBreakTable" class="empty">Loading breaks…</div></div>
-      <div class="section card"><h2>Team KPI</h2><div id="adminKpiTable" class="empty">Loading KPI…</div></div>
-      <div class="section card"><h2>Quiz Results</h2><div id="adminQuizTable" class="empty">Loading quiz results…</div></div>
+      <div class="section card"><h2>Team Projects</h2><button class="secondary-btn export-report" data-export="projects" type="button">Export Excel</button><div id="adminProjectTable" class="empty">Loading projects…</div></div>
+      <div class="section card"><h2>Team Attendance</h2><button class="secondary-btn export-report" data-export="attendance" type="button">Export Excel</button><div id="adminAttendanceTable" class="empty">Loading attendance…</div></div>
+      <div class="section card"><h2>Team Break History</h2><button class="secondary-btn export-report" data-export="breaks" type="button">Export Excel</button><div id="adminBreakTable" class="empty">Loading breaks…</div></div>
+      <div class="section card"><h2>Team KPI</h2><button class="secondary-btn export-report" data-export="kpi" type="button">Export Excel</button><div id="adminKpiTable" class="empty">Loading KPI…</div></div>
+      <div class="section card"><h2>Quiz Results</h2><button class="secondary-btn export-report" data-export="quiz" type="button">Export Excel</button><div id="adminQuizTable" class="empty">Loading quiz results…</div></div>
     </section>
 
     <section id="view-quiz" class="tab-panel hidden">
