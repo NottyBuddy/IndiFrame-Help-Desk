@@ -1,7 +1,7 @@
 /* Role-aware dashboard. All access control must still be enforced by the Worker. */
 const $ = (id) => document.getElementById(id);
 const state = { user: null, quizAttempts: [], agents: [], kpis: [] };
-const API_BASE = (window.IndiFrameAPI && window.IndiFrameAPI.API_BASE) || 'https://indiframe-helpdesk-api.mukuls2302.workers.dev';
+const DASHBOARD_API_BASE = (window.IndiFrameAPI && window.IndiFrameAPI.DASHBOARD_API_BASE) || 'https://indiframe-helpdesk-api.mukuls2302.workers.dev';
 
 function normRole(v) {
   return String(v || 'agent').toLowerCase();
@@ -76,7 +76,7 @@ function buildRequest(path, options = {}) {
     headers['Content-Type'] = 'application/json';
   }
 
-  return fetch(API_BASE + path, { ...options, headers });
+  return fetch(DASHBOARD_API_BASE + path, { ...options, headers });
 }
 
 async function request(path, options = {}) {
