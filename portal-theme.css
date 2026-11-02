@@ -271,3 +271,39 @@ body:has(.panel) .panel{background:linear-gradient(145deg,rgba(14,35,56,.9),rgba
     -webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;
   }
 }
+
+
+/* Monthly agent attendance ledger */
+.attendance-live-status{margin:8px 0 14px;padding:12px 15px;border:1px solid rgba(0,229,255,.2);border-radius:12px;background:rgba(0,92,110,.16);color:#e8fbff;font-size:13px}
+.attendance-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 22px}
+.attendance-history-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:20px 0 12px}
+.attendance-history-head h3{margin:0;color:#f4fbff;font-size:17px}
+.attendance-history-head p{margin:4px 0 0;color:#bfd4df;font-size:12px}
+.attendance-history-head label{display:grid;gap:5px;color:#c5d9e4;font-size:12px}
+.attendance-history-head input{padding:8px 10px;border-radius:8px;border:1px solid rgba(137,231,245,.28);background:rgba(3,13,25,.72);color:#f4fbff}
+.attendance-ledger-wrap{min-width:0;color:#eaf7fc}
+.attendance-ledger-scroll{width:100%;overflow:auto;border:1px solid rgba(137,231,245,.2);border-radius:12px}
+.attendance-ledger{width:100%;min-width:850px;border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums}
+.attendance-ledger th{position:sticky;top:0;padding:12px 13px;background:rgba(0,92,110,.36);color:#d9f7ff;text-align:left;font-size:11px;letter-spacing:.035em;white-space:nowrap;border-bottom:1px solid rgba(137,231,245,.2)}
+.attendance-ledger td{padding:11px 13px;color:#e7f5fa;font-size:12px;white-space:nowrap;border-bottom:1px solid rgba(166,220,232,.11)}
+.attendance-ledger tr:last-child td{border-bottom:0}
+.attendance-ledger tbody tr:hover{background:rgba(0,229,255,.07)}
+.attendance-ledger tr.is-absent td{color:#c5d1dc}
+.attendance-ledger tr.is-weekoff td{color:#a9c2ce}
+.attendance-pill{display:inline-flex;min-width:34px;justify-content:center;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:750}
+.attendance-pill.present{background:rgba(32,190,139,.16);color:#80f0c4;border:1px solid rgba(32,190,139,.25)}
+.attendance-pill.absent{background:rgba(255,107,121,.13);color:#ffb6bf;border:1px solid rgba(255,107,121,.22)}
+.attendance-pill.weekoff{background:rgba(143,174,195,.12);color:#c4d6e1;border:1px solid rgba(143,174,195,.2)}
+.attendance-legend{margin:10px 2px 0;color:#aec6d2;font-size:11px}
+@media(max-width:620px){.attendance-history-head{align-items:stretch;flex-direction:column}.attendance-history-head label{max-width:180px}}
+/* Make ambient motion visibly perceptible without creating distracting movement. */
+body::before{animation:ifVoidGlow 15s ease-in-out infinite alternate!important}
+body::after{animation:ifZeroGravity 18s ease-in-out infinite alternate,ifDustDrift 12s linear infinite!important;opacity:.78!important}
+@keyframes ifVoidGlow{0%{transform:scale(.96) translate3d(-1.5%,.8%,0);filter:hue-rotate(-8deg);opacity:.72}100%{transform:scale(1.12) translate3d(1.5%,-.8%,0);filter:hue-rotate(9deg);opacity:1}}
+@keyframes ifZeroGravity{0%{transform:translate3d(-2.2%,2.4%,0) rotate(-2deg)}100%{transform:translate3d(2.4%,-2.2%,0) rotate(2deg)}}
+@keyframes ifDustDrift{0%{background-position:0 0,0 0,0 0,0 0,0 0,0 0,0 0,0 0}100%{background-position:0 0,0 0,0 0,0 0,95px -70px,-80px 100px,70px 115px,-95px -75px}}
+@media(prefers-reduced-motion:reduce){body::before,body::after{animation:none!important;transform:none!important}}
+
+/* Keep the login and password backdrop moving at the same visible pace. */
+body:has(.login-shell)::before,body:has(.panel)::before{animation:ifVoidGlow 15s ease-in-out infinite alternate!important}
+body:has(.login-shell)::after,body:has(.panel)::after{animation:ifZeroGravity 18s ease-in-out infinite alternate,ifDustDrift 12s linear infinite!important;opacity:.72!important}
