@@ -74,7 +74,7 @@ export async function handleHelpdesk(req, env) {
     if (m === "GET" && p === "/api/hd/breaks/status") return J(await breakStatus(env, u));
     if (m === "POST" && p === "/api/hd/breaks/start") return J(await breakStart(req, env, u), 201);
     if (m === "POST" && p === "/api/hd/breaks/end") return J(await breakEnd(env, u));
-    if (m === "GET" && p === "/api/hd/admin/breaks/status") return J(await adminBreakStatus(env));
+    if (m === "GET" && p === "/api/hd/admin/breaks/status") return J(await adminBreakStatus(url, env));
     if (m === "GET" && p === "/api/hd/attendance/status") return J(await attStatus(env, u));
     if (m === "POST" && p === "/api/hd/attendance/check-in") return J(await checkIn(req, env, u));
     if (m === "POST" && p === "/api/hd/attendance/check-out") return J(await checkOut(env, u));
@@ -347,10 +347,16 @@ async function breakEnd(env,u) {
   await env.DB.prepare("UPDATE agent_breaks SET ended_at=?,duration_seconds=?,duration_minutes=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,Math.floor(seconds/60),active.id).run();
   return { id:active.id,breakType:active.break_type,startedAt:active.started_at,endedAt:t,durationSeconds:seconds };
 }
-async function adminBreakStatus(env) {
-  const rows=(await env.DB.prepare("SELECT b.id,b.break_type,b.started_at,a.employee_id,a.full_name FROM agent_breaks b JOIN agents a ON a.id=b.agent_id WHERE b.ended_at IS NULL AND a.active=1 ORDER BY b.started_at ASC").all()).results;
+async function adminBreakStatus(url, env) {
+  const from=url.searchParams.get("from"), to=url.searchParams.get("to");
+  if(from&&!isDate(from))bad("Invalid 'from' date.");
+  if(to&&!isDate(to))bad("Invalid 'to' date.");
+  const where=["a.active=1"],args=[];
+  if(from){where.push("date(b.started_at)>=?");args.push(from);}
+  if(to){where.push("date(b.started_at)<=?");args.push(to);}
+  const rows=(await env.DB.prepare("SELECT b.id,b.break_type,b.started_at,b.ended_at,b.duration_minutes,a.employee_id,a.full_name FROM agent_breaks b JOIN agents a ON a.id=b.agent_id WHERE "+where.join(" AND ")+" ORDER BY b.started_at DESC LIMIT 2000").bind(...args).all()).results;
   const t=Date.now();
-  return { activeBreaks:rows.map(r=>({...r,elapsedSeconds:Math.max(0,Math.floor((t-Date.parse(r.started_at))/1000))})), serverTime:now() };
+  return { breaks:rows.map(r=>({...r,elapsedSeconds:r.ended_at?Math.max(0,Math.floor((Date.parse(r.ended_at)-Date.parse(r.started_at))/1000)):Math.max(0,Math.floor((t-Date.parse(r.started_at))/1000))})), serverTime:now() };
 }
 
 // ---------- Attendance ----------
@@ -378,14 +384,20 @@ async function checkOut(env, u) {
   return { checkInAt: a.check_in_at, checkOutAt: t.toISOString(), durationMinutes: mins };
 }
 async function attHistory(url, env, u, admin) {
-  const month = url.searchParams.get("month") || new Date().toISOString().slice(0, 7);
-  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) bad("Invalid month (use YYYY-MM).");
-  const emp = admin ? (url.searchParams.get("employee_id") || null) : u.employeeId; // agents: own only
-  const w = emp ? "work_date LIKE ? AND employee_id = ?" : "work_date LIKE ?";
-  const b = emp ? [month + "-%", emp] : [month + "-%"];
-  const rows = (await env.DB.prepare(`SELECT employee_id employeeId, work_date workDate, check_in_at checkInAt, check_out_at checkOutAt, duration_minutes durationMinutes FROM attendance WHERE ${w} ORDER BY work_date DESC, check_in_at DESC LIMIT 1000`).bind(...b).all()).results;
-  const sum = (await env.DB.prepare(`SELECT employee_id employeeId, COUNT(DISTINCT work_date) daysPresent, COALESCE(SUM(duration_minutes),0) totalMinutes FROM attendance WHERE ${w} GROUP BY employee_id ORDER BY employee_id LIMIT 500`).bind(...b).all()).results;
-  return { month, records: rows, summary: sum };
+  const month=url.searchParams.get("month"), from=url.searchParams.get("from"), to=url.searchParams.get("to");
+  if(month&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(month))bad("Invalid month (use YYYY-MM).");
+  if(from&&!isDate(from))bad("Invalid 'from' date.");
+  if(to&&!isDate(to))bad("Invalid 'to' date.");
+  const emp=admin?(url.searchParams.get("employee_id")||null):u.employeeId;
+  const w=[],b=[];
+  if(month){w.push("work_date LIKE ?");b.push(month+"-%");}
+  if(from){w.push("work_date>=?");b.push(from);}
+  if(to){w.push("work_date<=?");b.push(to);}
+  if(emp){w.push("employee_id=?");b.push(emp);}
+  const W=w.length?w.join(" AND "):"1=1";
+  const rows=(await env.DB.prepare(`SELECT employee_id employeeId,work_date workDate,check_in_at checkInAt,check_out_at checkOutAt,duration_minutes durationMinutes FROM attendance WHERE ${W} ORDER BY work_date DESC,check_in_at DESC LIMIT 3000`).bind(...b).all()).results;
+  const sum=(await env.DB.prepare(`SELECT employee_id employeeId,COUNT(DISTINCT work_date) daysPresent,COALESCE(SUM(duration_minutes),0) totalMinutes FROM attendance WHERE ${W} GROUP BY employee_id ORDER BY employee_id LIMIT 500`).bind(...b).all()).results;
+  return {month,from,to,records:rows,summary:sum};
 }
 
 // ---------- Quiz ----------
@@ -449,8 +461,13 @@ async function adminQSave(req, env, u, id) {
   return { id };
 }
 async function adminQResults(url, env) {
-  const week = wk(url.searchParams.get("week"));
-  const r = (await env.DB.prepare("SELECT a.employee_id employeeId, qa.score score, qa.total_questions total, qa.completed_at completedAt FROM quiz_attempts qa JOIN agents a ON a.id = qa.agent_id WHERE qa.week_number=? ORDER BY qa.score DESC LIMIT 500").bind(week).all()).results;
-  const s = r.reduce((a, x) => a + x.score, 0), t = r.reduce((a, x) => a + x.total, 0);
-  return { week, attempts: r, team: { attempts: r.length, averagePercent: rate(s, t) } };
+  const week=wk(url.searchParams.get("week")),from=url.searchParams.get("from"),to=url.searchParams.get("to");
+  if(from&&!isDate(from))bad("Invalid 'from' date.");
+  if(to&&!isDate(to))bad("Invalid 'to' date.");
+  const where=["qa.week_number=?"],args=[week];
+  if(from){where.push("date(qa.completed_at)>=?");args.push(from);}
+  if(to){where.push("date(qa.completed_at)<=?");args.push(to);}
+  const r=(await env.DB.prepare("SELECT a.employee_id employeeId,qa.score,qa.total_questions total,qa.completed_at completedAt FROM quiz_attempts qa JOIN agents a ON a.id=qa.agent_id WHERE "+where.join(" AND ")+" ORDER BY qa.score DESC LIMIT 2000").bind(...args).all()).results;
+  const s=r.reduce((a,x)=>a+x.score,0),t=r.reduce((a,x)=>a+x.total,0);
+  return {week,from,to,attempts:r,team:{attempts:r.length,averagePercent:rate(s,t)}};
 }
