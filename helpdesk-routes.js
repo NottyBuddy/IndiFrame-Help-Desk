@@ -460,8 +460,8 @@ function cpNormalizeRow(input) {
   const helperAgent = source.__call_performance_agent;
   delete source.__call_performance_date;
   delete source.__call_performance_agent;
-  const agentName = clean(helperAgent || cpPick(source, ["agent name", "employee name", "caller name", "caller full name", "full name", "agent", "caller", "employee"]), 200);
-  const employeeId = clean(cpPick(source, ["employee id", "agent id", "employee code", "caller id"]) || agentName, 100);
+  const agentName = clean(cpPick(source, ["agent name", "employee name", "caller name", "caller full name", "full name", "agent", "caller", "employee"]) || helperAgent, 200);
+  const employeeId = clean(cpPick(source, ["employee id", "agent id", "employee code", "caller id"]) || helperAgent || agentName, 100);
   const date = cpDate(helperDate || cpPick(source, ["date", "report date", "call date", "activity date", "created date", "created on", "call start date"]));
   const disposition = clean(cpPick(source, ["disposition", "call disposition", "call status", "status", "call result", "result"]), 160) || "";
   return { source, employeeId, employeeName: agentName || employeeId || "", date, disposition };
