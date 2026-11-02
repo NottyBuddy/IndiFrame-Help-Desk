@@ -11,6 +11,7 @@ function renderOwn(){
 async function load(){
  try{
   const me=await api.apiRequest("/api/me"),u=me.user||me;
+  if(String(u.role||"").toLowerCase()==="admin"){location.replace("dashboard.html?view=admin");return;}
   $("profile").textContent=(u.fullName||u.employeeId)+" · "+u.role;
   const own=await api.apiRequest("/api/hd/breaks/status");
   activeBreak=own.active;serverOffset=Date.now()-Date.parse(own.serverTime||new Date().toISOString());renderOwn();

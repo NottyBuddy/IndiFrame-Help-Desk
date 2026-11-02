@@ -24,6 +24,7 @@ async function init(){
   $("logoutBtn").addEventListener("click",()=>{api.clearToken();location.replace("index.html");});
   try{
     const me=await api.apiRequest("/api/me"), user=me.user||me;
+    if(String(user.role||"").toLowerCase()==="admin"){location.replace("dashboard.html?view=admin");return;}
     $("profile").textContent=(user.fullName||user.full_name||user.employeeId||user.employee_id||"Employee")+" · "+(user.role||"agent");
     await loadProjects();
   }catch(e){api.clearToken();location.replace("index.html");return;}
