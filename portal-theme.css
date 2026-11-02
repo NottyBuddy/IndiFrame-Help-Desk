@@ -1,0 +1,81 @@
+/* IndiFrame unified portal system — shared by Agent, Admin, Super Admin and auth pages. */
+:root{--if-navy:#1d303c;--if-navy-deep:#172832;--if-teal:#219f94;--if-teal-soft:#eaf5f3;--if-canvas:#f1f4f5;--if-ink:#293941;--if-muted:#77858b;--if-line:#e3e9ea;--if-card:#fff;--if-shadow:0 5px 18px rgba(25,48,59,.055)}
+*{box-sizing:border-box}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--if-ink)}
+.topbar{background:var(--if-navy);color:#fff;box-shadow:0 2px 12px rgba(18,35,45,.12)}
+.topbar .brand{color:#fff;font-weight:750;letter-spacing:-.025em}
+.topbar .subtitle{color:#b9c9ce}
+.topbar .logout-btn,.topbar .badge{border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.08);color:#fff}
+.topbar .logout-btn:hover,.topbar .badge:hover{background:rgba(255,255,255,.15)}
+.wrap{color:var(--if-ink)}
+.head h1{color:var(--if-ink);letter-spacing:-.04em}
+.head .muted,.profile,.muted{color:var(--if-muted)}
+.card,.section.card,.break-card,.login-shell,.panel{background:var(--if-card);border:1px solid var(--if-line);border-radius:11px;box-shadow:var(--if-shadow)}
+h2{color:#34464d;letter-spacing:-.02em}
+input,select,textarea{border:1px solid #dce4e6;border-radius:8px;background:#fff;color:var(--if-ink);font:inherit}
+input:focus,select:focus,textarea:focus{outline:0;border-color:#70bdb4;box-shadow:0 0 0 3px rgba(33,159,148,.12)}
+button,.primary-btn,.sa-btn,.break-btn{font:inherit}
+.primary-btn,.sa-btn,.break-btn{border:1px solid var(--if-teal);border-radius:8px;background:var(--if-teal);color:#fff;font-weight:650;box-shadow:0 4px 10px rgba(33,159,148,.13)}
+.primary-btn:hover,.sa-btn:hover,.break-btn:hover{background:#188b81}
+.secondary-btn,.sa-small,.export-report{border:1px solid #dce8e6;border-radius:8px;background:#f4f9f8;color:#287f77}
+table{border-collapse:separate;border-spacing:0}
+th{background:#f5f8f8;color:#66767c}
+td,th{border-bottom:1px solid #edf1f1}
+.empty{color:#849197}
+.status,.sa-msg,.project-message,.break-message{color:#63757b}
+.status.error,.sa-msg.error,.project-message.error,.break-message.error{color:#b54747}
+
+/* Login and password pages */
+body:has(.login-shell),body:has(.panel){background:radial-gradient(ellipse at 15% 12%,rgba(33,159,148,.13),transparent 32rem),linear-gradient(145deg,#edf2f2,#f6f8f8 55%,#eaf1f0);padding:24px}
+.login-shell,.panel{width:min(100%,460px);padding:34px 32px 28px;border-radius:16px;box-shadow:0 22px 55px rgba(24,48,58,.11)}
+.login-shell h1,.panel h2{color:var(--if-navy);font-size:clamp(27px,4vw,35px);line-height:1.12}
+.login-shell .subtitle,.panel .subtitle{font-size:14px;color:var(--if-muted)}
+.login-shell label,.panel label{font-size:12px;font-weight:650;color:#45575e}
+.login-shell input,.panel input{height:45px;padding:11px 13px;font-size:14px}
+.login-shell button[type=submit],.panel button[type=submit]{height:46px;margin-top:12px;background:var(--if-teal);border-radius:8px;font-size:14px;box-shadow:0 7px 15px rgba(33,159,148,.16)}
+.login-shell button[type=submit]:hover,.panel button[type=submit]:hover{background:#188b81}
+.message,.status{font-size:13px}
+
+/* Shared operational pages */
+body:has(.project-layout) .wrap,body:has(.break-grid) .wrap,body:has(.sa-grid) .wrap{max-width:1440px;margin:0 auto;padding:26px 30px 40px}
+body:has(.project-layout) .project-layout{gap:16px}
+body:has(.project-layout) .project-layout>.card,body:has(.break-grid) .break-card,body:has(.sa-grid) .sa-grid>.card{padding:20px;border-radius:11px}
+.project-table-wrap,.sa-table-wrap{border:1px solid #edf1f1;border-radius:8px}
+.project-table th,.sa-table th{background:#f5f8f8;color:#63747a;font-size:11px;text-transform:uppercase;letter-spacing:.035em}
+.project-table td,.sa-table td{font-size:12px;color:#506168}
+.project-code{color:#258d83}
+.project-status{background:#edf6f4;color:#287f77;border-radius:6px}
+.break-time{color:var(--if-teal)}
+.break-grid{gap:16px}
+.break-card h2,.sa-grid h2{font-size:15px}
+.sa-form label{font-size:12px;color:#4d5e64}
+.sa-form input,.sa-form select{min-height:42px;padding:10px 12px}
+.sa-small{padding:7px 10px;font-size:11px}
+.sa-table th,.sa-table td{padding:12px}
+
+/* Agent workspace uses the same sidebar shell as Admin, while preserving its sections/actions. */
+body:not(.admin-mode):has(#view-overview) .topbar{height:62px;padding:0 26px;position:sticky;top:0;z-index:30}
+body:not(.admin-mode):has(#view-overview) .wrap{width:100%;max-width:none;min-height:calc(100vh - 62px);margin:0;padding:0 28px 34px 252px;display:block;position:relative}
+body:not(.admin-mode):has(#view-overview) .nav{position:fixed;z-index:20;left:0;top:62px;bottom:0;width:224px;min-height:0;margin:0;padding:20px 12px;display:flex;flex-direction:column;align-items:stretch;gap:5px;overflow-y:auto;background:var(--if-navy);border:0;border-radius:0;box-shadow:4px 0 18px rgba(20,39,49,.08)}
+body:not(.admin-mode):has(#view-overview) .nav button,body:not(.admin-mode):has(#view-overview) .nav .nav-link{display:flex;align-items:center;gap:12px;width:100%;min-height:43px;padding:10px 13px;border:0;border-radius:7px;background:transparent;color:#d5e0e3;font-size:12px;font-weight:500;text-align:left;text-decoration:none}
+body:not(.admin-mode):has(#view-overview) .nav button:hover,body:not(.admin-mode):has(#view-overview) .nav .nav-link:hover{background:rgba(255,255,255,.08);color:#fff}
+body:not(.admin-mode):has(#view-overview) .nav button.active{background:var(--if-teal);color:#fff}
+body:not(.admin-mode):has(#view-overview) .head{margin:0;padding:26px 0 18px}
+body:not(.admin-mode):has(#view-overview) .head h1{font-size:26px}
+body:not(.admin-mode):has(#view-overview) .tab-panel>.grid{gap:14px}
+body:not(.admin-mode):has(#view-overview) .stat-card{border-radius:10px;padding:17px;box-shadow:var(--if-shadow)}
+body:not(.admin-mode):has(#view-overview) .section.card{padding:19px;border-radius:10px;margin-top:15px}
+body:not(.admin-mode):has(#view-overview) .alert{border-radius:9px}
+@media(max-width:1000px){
+ body:not(.admin-mode):has(#view-overview) .wrap{padding-left:218px;padding-right:20px}
+ body:not(.admin-mode):has(#view-overview) .nav{width:194px}
+}
+@media(max-width:680px){
+ body:not(.admin-mode):has(#view-overview) .topbar{height:auto;min-height:60px;padding:10px 14px}
+ body:not(.admin-mode):has(#view-overview) .wrap{padding:0 13px 25px}
+ body:not(.admin-mode):has(#view-overview) .nav{position:relative;top:auto;left:auto;bottom:auto;width:auto;min-height:0;margin:0 -13px;padding:8px 12px;flex-direction:row;overflow-x:auto;overflow-y:hidden}
+ body:not(.admin-mode):has(#view-overview) .nav button,body:not(.admin-mode):has(#view-overview) .nav .nav-link{width:auto;min-width:max-content;min-height:38px;padding:8px 11px}
+ body:has(.project-layout) .wrap,body:has(.break-grid) .wrap,body:has(.sa-grid) .wrap{padding:18px 13px 28px}
+ body:has(.login-shell),body:has(.panel){padding:14px}
+ .login-shell,.panel{padding:27px 22px}
+}
