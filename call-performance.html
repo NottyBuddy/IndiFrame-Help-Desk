@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Call Performance — IndiFrame Help Desk</title>
+<link rel="stylesheet" href="dashboard.css?v=call-performance-20261102">
+<link rel="stylesheet" href="portal-theme.css?v=attendance-ledger-motion-20261102">
+<style>
+.cp-toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:end}.cp-toolbar label{display:grid;gap:5px;font-size:13px;color:var(--muted)}.cp-toolbar input,.cp-toolbar select{padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff;font:inherit;color:var(--ink)}.cp-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}.cp-card{background:rgba(255,255,255,.78);border:1px solid var(--line);border-radius:12px;padding:16px}.cp-card small{color:var(--muted)}.cp-card strong{display:block;font-size:1.65rem;margin-top:8px}.cp-table-wrap{overflow:auto}.cp-table{border-collapse:collapse;width:100%;min-width:600px}.cp-table th,.cp-table td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:12px;text-align:left;vertical-align:top}.cp-table th{white-space:nowrap;color:var(--muted)}.cp-actions{display:flex;gap:8px;flex-wrap:wrap}.cp-status{min-height:24px;color:var(--muted);margin:10px 0}.cp-muted{color:var(--muted);font-size:12px}.cp-section{margin-top:18px}.cp-section h2{font-size:1.05rem}@media(max-width:760px){.cp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header class="topbar"><div><div class="brand">IndiFrame Help Desk</div><div class="subtitle">Call Performance Analysis</div></div><div class="topright"><a href="dashboard.html" class="logout-btn" style="text-decoration:none">Dashboard</a><button id="logoutBtn" class="logout-btn" type="button">Logout</button></div></header>
+<main class="wrap">
+<div class="head"><div><h1>Call Performance</h1><div class="muted">Independent report · Date &amp; agent analysis</div></div><div id="cpProfile" class="profile muted">Checking access…</div></div>
+<section class="card">
+<h2>Report Filters</h2>
+<div class="cp-toolbar">
+<label>From<input id="cpFrom" type="date"></label><label>To<input id="cpTo" type="date"></label>
+<label>Agent<select id="cpAgent"><option value="">All agents</option></select></label>
+<div class="cp-actions"><button id="cpApply" class="primary-btn" type="button">Apply</button><button id="cpReset" class="secondary-btn" type="button">Reset</button><button id="cpExport" class="secondary-btn" type="button">Export CSV</button></div>
+</div><div id="cpStatus" class="cp-status" role="status"></div>
+</section>
+<div class="cp-grid">
+<div class="cp-card"><small>Total call records</small><strong id="cpTotal">—</strong></div>
+<div class="cp-card"><small>Agents represented</small><strong id="cpAgents">—</strong></div>
+<div class="cp-card"><small>Dates represented</small><strong id="cpDates">—</strong></div>
+<div class="cp-card"><small>Dispositions</small><strong id="cpDispositions">—</strong></div>
+</div>
+<section class="card cp-section"><h2>Agent-wise Performance</h2><div id="cpByAgent" class="cp-table-wrap">Loading…</div></section>
+<section class="card cp-section"><h2>Date-wise Performance</h2><div id="cpByDate" class="cp-table-wrap">Loading…</div></section>
+<section class="card cp-section"><h2>Disposition Breakdown</h2><div id="cpByDisposition" class="cp-table-wrap">Loading…</div></section>
+<section class="card cp-section"><h2>Call Performance Records</h2><p class="cp-muted">All matching records are shown. Source workbook fields are preserved as uploaded, excluding the problematic “Req Filed” field.</p><div id="cpRows" class="cp-table-wrap">Loading…</div></section>
+</main>
+<script src="api.js"></script><script src="call-performance.js?v=1"></script>
+</body></html>

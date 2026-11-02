@@ -1,6 +1,6 @@
 # IndiFrame Help Desk — Live setup checklist (Hinglish)
 
-Ye branch development ke liye hai: `codex/agent-admin-portal`. Is branch ko abhi production mein merge/deploy nahi kiya gaya hai.
+Ye branch development ke liye hai: `feat/isolated-call-performance`. Is branch ko abhi production mein merge/deploy nahi kiya gaya hai.
 
 ## Is update mein kya add hua
 
@@ -12,6 +12,8 @@ Ye branch development ke liye hai: `codex/agent-admin-portal`. Is branch ko abhi
 - Break start/end, break duration aur Admin ka active-break monitor.
 - Project create/list/update/activity APIs.
 - Project database: `projects`, `project_products`, `project_activity`.
+- Separate Call Performance import, date-wise, agent-wise aur disposition-wise report APIs/UI.
+- Call Performance ke liye `call_performance_imports` aur `call_performance_rows` tables; existing KPI tables aur APIs untouched.
 - Super Admin account-management APIs aur UI.
 - Demo employee/KPI/quiz records ko Worker se hata diya gaya hai.
 
@@ -26,8 +28,10 @@ Ye branch development ke liye hai: `codex/agent-admin-portal`. Is branch ko abhi
    - `004_audit_log.sql`
    - `005_breaks_superadmin.sql`
    - `006_projects.sql`
+   - `007_call_performance.sql`
 4. `005_breaks_superadmin.sql` mein `ALTER TABLE agents ADD COLUMN` hai. Is migration ko dobara run na karein.
-5. Migration ke baad existing approved Admin account ko Super Admin mark karne ke liye sirf confirmed Employee ID par one-time update run hoga. Is file mein kisi account ko automatic Super Admin nahi banaya gaya.
+5. `007_call_performance.sql` sirf nayi Call Performance tables aur indexes banata hai. Ye `weekly_kpis`, `kpi_daily`, `kpi_imports` ya existing KPI APIs ko alter nahi karta.
+6. Migration ke baad existing approved Admin account ko Super Admin mark karne ke liye sirf confirmed Employee ID par one-time update run hoga. Is file mein kisi account ko automatic Super Admin nahi banaya gaya.
 
 ## Super Admin account assignment — approval required
 
