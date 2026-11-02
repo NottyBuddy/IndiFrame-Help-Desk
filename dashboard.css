@@ -249,3 +249,55 @@ body.admin-mode .nav .admin-side-link{width:100%;text-align:left;justify-content
 body.admin-mode .nav .admin-side-link.active{background:#cfe5fa;color:#173b70}
 body.admin-mode #view-admin [id^="admin-"]{scroll-margin-top:18px}
 body.admin-mode #view-admin .section.card{padding:18px}
+
+
+/* IndiFrame GenZ visual system — applied consistently to agent and admin pages. */
+:root{
+  --navy:#28245f;--blue:#635bdb;--bg:#f6f5f1;--ink:#24233b;--muted:#77758d;
+  --line:#e9e7ef;--white:#fff;--green:#23866a;--red:#c65362;--amber:#a86d24;
+  --surface:#fff;--accent-soft:#eeecff;--shadow:0 10px 30px rgba(39,34,91,.07);
+}
+html{background:var(--bg)}
+body{background:#f6f5f1;color:var(--ink);font-family:Inter,"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.topbar{background:#29245f;padding:17px clamp(18px,3vw,38px);box-shadow:0 5px 20px rgba(35,30,84,.12)}
+.brand{font-size:1.08rem;letter-spacing:-.025em}
+.subtitle{color:rgba(255,255,255,.72);letter-spacing:.015em}
+.badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.12)}
+.logout-btn{border-radius:10px;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);transition:.18s ease}
+.logout-btn:hover{background:rgba(255,255,255,.2)}
+.wrap{max-width:1480px;padding:28px clamp(16px,3vw,36px) 44px}
+h1{font-size:clamp(1.8rem,2.8vw,2.55rem);letter-spacing:-.055em;color:#28245f}
+h2{letter-spacing:-.025em;color:#302d58}
+.muted,.note,.label{color:var(--muted)}
+.head{margin:8px 0 22px}
+.nav{gap:8px;margin-bottom:20px}
+.nav button,.nav-link{border:1px solid #e5e2ed;border-radius:11px;background:#fff;padding:10px 15px;transition:background .18s,border-color .18s,transform .18s}
+.nav button:hover,.nav-link:hover{background:#f0efff;border-color:#d8d4ff;transform:translateY(-1px)}
+.nav button.active{background:#635bdb;border-color:#635bdb;color:#fff;box-shadow:0 5px 12px rgba(99,91,219,.18)}
+.card,.break-card{background:#fff;border:1px solid #eae8f0;border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.stat-card{min-height:126px}
+.stat-card .label{font-size:.84rem;font-weight:600;letter-spacing:.01em}
+.value{color:#29245f;letter-spacing:-.04em}
+.section{margin-top:16px}
+.section.card h2{font-size:1.08rem}
+.grid{gap:14px}
+.primary-btn,.break-btn,.sa-btn{background:#635bdb;border:1px solid #635bdb;border-radius:10px;color:#fff;box-shadow:0 5px 12px rgba(99,91,219,.14);transition:.18s ease}
+.primary-btn:hover,.break-btn:hover,.sa-btn:hover{background:#5149c5;transform:translateY(-1px)}
+.secondary-btn,.sa-small{background:#f1f0ff;color:#5149c5;border:1px solid #e1defe;border-radius:10px}
+input,select,textarea{border:1px solid #e3e1eb!important;border-radius:10px!important;background:#fff;color:#29283e}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#8e87ee!important;box-shadow:0 0 0 3px rgba(99,91,219,.12)}
+.alert{background:#fff8e9;border:1px solid #f0e2c7;color:#805b26;border-radius:13px}
+.status{color:var(--muted)}
+.empty{border-radius:12px;color:var(--muted)}
+.footer{color:#9693a5}
+body.admin-mode .nav{background:#fff;border-color:#eae8f0;border-radius:16px;box-shadow:var(--shadow)}
+body.admin-mode .nav button.active,body.admin-mode .nav .admin-side-link.active{background:#eeecff;color:#5149c5}
+body.admin-mode #view-admin .section.card{box-shadow:var(--shadow)}
+body.admin-mode #view-admin th{color:#77758d}
+body.admin-mode #view-admin td,body.admin-mode #view-admin th{border-bottom-color:#efedf3}
+.project-table th,.break-list th,.sa-table th{color:#77758d}
+.project-table td,.break-list td,.sa-table td{border-bottom-color:#efedf3}
+.project-status{background:#eeecff;color:#5149c5;border-radius:7px}
+.break-card{box-shadow:var(--shadow)}
+.break-time{color:#635bdb}
+@media(max-width:640px){.wrap{padding:20px 14px 32px}.card,.break-card{padding:16px}.topbar{gap:12px}}
