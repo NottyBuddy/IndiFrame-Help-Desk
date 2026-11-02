@@ -455,7 +455,7 @@ function cpDate(value) {
   return null;
 }
 function cpNormalizeRow(input) {
-  const source = { ...(input || {}) };
+  const source = Object.fromEntries(Object.entries(input || {}).filter(([key]) => cpNormKey(key) !== "req filed"));
   const helperDate = source.__call_performance_date;
   const helperAgent = source.__call_performance_agent;
   delete source.__call_performance_date;
