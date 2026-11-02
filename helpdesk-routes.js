@@ -25,10 +25,10 @@ async function authenticate(req, env) {
   if (!m) return null;
   const hash = await sha256(m[1]);
   const row = await env.DB.prepare(
-    "SELECT a.id, a.employee_id, a.full_name, a.role FROM sessions s JOIN agents a ON a.id = s.agent_id WHERE s.token_hash = ? AND s.expires_at > ? AND a.active = 1"
+    "SELECT a.id, a.employee_id, a.full_name, a.role, a.is_super_admin FROM sessions s JOIN agents a ON a.id = s.agent_id WHERE s.token_hash = ? AND s.expires_at > ? AND a.active = 1"
   ).bind(hash, new Date().toISOString()).first();
   if (!row || !Number.isInteger(row.id) || !row.employee_id) return null;
-  return { agentId: row.id, employeeId: String(row.employee_id), name: row.full_name, role: String(row.role || "").toLowerCase() };
+  return { agentId: row.id, employeeId: String(row.employee_id), name: row.full_name, role: String(row.role || "").toLowerCase(), isSuperAdmin: Number(row.is_super_admin) === 1 };
 }
 // =========================================================================================
 
@@ -52,6 +52,14 @@ export async function handleHelpdesk(req, env) {
     if (!u) return J({ error: "Session expired or invalid. Please log in again." }, 401);
     const admin = u.role === "admin";
     if (p.startsWith("/api/hd/admin/") && !admin) return J({ error: "Admin access required." }, 403);
+    // Admin accounts are monitoring-only. The sole write exception is KPI publishing by Super Admin.
+    const superAdminKpiImport = p === "/api/hd/admin/kpis/import" && m === "POST" && u.isSuperAdmin;
+    if (admin && ["POST", "PUT", "PATCH", "DELETE"].includes(m) && !superAdminKpiImport) {
+      return J({ error: "Admin access is read-only. Operational actions are available to agents only." }, 403);
+    }
+    if (p === "/api/hd/admin/kpis/import" && !u.isSuperAdmin) {
+      return J({ error: "Only Super Admin can publish KPI data." }, 403);
+    }
 
     if (m === "GET" && p === "/api/hd/projects") return J(await projectList(url, env, u, admin));
     if (m === "POST" && p === "/api/hd/projects") return J(await projectCreate(req, env, u, admin), 201);
