@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#173b70">
   <title>IndiFrame Help Desk — Dashboard</title>
   <link rel="stylesheet" href="dashboard.css?v=admin-detail-view-fix-20261103">
-  <link rel="stylesheet" href="portal-theme.css?v=deep-void-glass-20261102">
+  <link rel="stylesheet" href="portal-theme.css?v=glass-attendance-motion-20261102">
 </head>
 <body> <header class="topbar">
     <div>
@@ -90,13 +90,17 @@
     <section id="view-attendance" class="tab-panel hidden">
       <div class="section card">
         <h2>Attendance</h2>
-        <div id="attendancePanel" class="empty">Loading attendance status…</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+        <div id="attendancePanel" class="attendance-live-status">Loading attendance status…</div>
+        <div class="attendance-actions">
           <button id="checkInBtn" class="primary-btn" type="button">Check In</button>
           <button id="checkOutBtn" class="primary-btn" type="button" disabled>Check Out</button>
           <button id="refreshAttendanceBtn" class="secondary-btn" type="button">Refresh</button>
         </div>
-        <div id="attendanceHistory" class="empty" style="margin-top:16px">Loading attendance history…</div>
+        <div class="attendance-history-head">
+          <div><h3>Monthly Attendance</h3><p>Daily roster, login/logout timing and attendance status</p></div>
+          <label for="attendanceMonth">Month <input id="attendanceMonth" type="month"></label>
+        </div>
+        <div id="attendanceHistory" class="attendance-ledger-wrap">Loading attendance history…</div>
       </div>
       <div class="alert">
         Attendance ka time server par save hota hai. Check-in / check-out ek hi baar active session mein allowed hai.
