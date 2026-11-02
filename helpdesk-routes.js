@@ -256,13 +256,12 @@ async function kpiSummary(url, env, u, admin) {
 }
 
 const NUM = ["assigned_leads", "total_attempts", "unique_leads", "connected_calls", "interested", "not_interested", "follow_ups", "callbacks", "qualified"];
-const MAX_IMPORT = 500; // keeps the whole save in ONE atomic D1 batch
+// No application-level row cap. D1 writes are chunked to keep batches within practical statement limits.
 // Every received row ends up in exactly one bucket: accepted, skippedExisting, or invalid. Nothing is dropped silently.
 async function kpiImport(req, env, u) {
   const body = await req.json().catch(() => bad("Invalid JSON body."));
   const rows = body.rows;
   if (!Array.isArray(rows) || !rows.length) bad("No rows supplied.");
-  if (rows.length > MAX_IMPORT) bad(`Too many rows (max ${MAX_IMPORT} per import). Split the file.`);
   // employee_id (as typed in the report) -> canonical agents.employee_id, case-insensitive
   const agents = new Map((await env.DB.prepare("SELECT employee_id FROM agents").all()).results.map(a => [String(a.employee_id).trim().toLowerCase(), String(a.employee_id)]));
   const valid = [], invalid = [], seenAt = new Map();
