@@ -256,13 +256,12 @@ async function kpiSummary(url, env, u, admin) {
 }
 
 const NUM = ["assigned_leads", "total_attempts", "unique_leads", "connected_calls", "interested", "not_interested", "follow_ups", "callbacks", "qualified"];
-const MAX_IMPORT = 500; // keeps the whole save in ONE atomic D1 batch
+// No application-level row cap. D1 writes are chunked to keep batches within practical statement limits.
 // Every received row ends up in exactly one bucket: accepted, skippedExisting, or invalid. Nothing is dropped silently.
 async function kpiImport(req, env, u) {
   const body = await req.json().catch(() => bad("Invalid JSON body."));
   const rows = body.rows;
   if (!Array.isArray(rows) || !rows.length) bad("No rows supplied.");
-  if (rows.length > MAX_IMPORT) bad(`Too many rows (max ${MAX_IMPORT} per import). Split the file.`);
   // employee_id (as typed in the report) -> canonical agents.employee_id, case-insensitive
   const agents = new Map((await env.DB.prepare("SELECT employee_id FROM agents").all()).results.map(a => [String(a.employee_id).trim().toLowerCase(), String(a.employee_id)]));
   const valid = [], invalid = [], seenAt = new Map();
@@ -310,18 +309,33 @@ async function kpiImport(req, env, u) {
   const hash = await sha256(JSON.stringify(fresh.map(({ n, key, ...r }) => r)));
   if (await env.DB.prepare("SELECT 1 FROM kpi_imports WHERE file_hash = ?").bind(hash).first()) bad("This exact data was already imported.", 409);
   const ins = env.DB.prepare(`INSERT INTO kpi_daily(employee_id,kpi_date,report_date,disposition,calls,leads,site_visits,bookings,revenue,${NUM.join(",")},import_id,created_at) VALUES(?,?,?,?,?,?,?,?,?,${NUM.map(() => "?").join(",")},(SELECT id FROM kpi_imports WHERE file_hash = ?),?)`);
+  let imp;
   try {
-    // ONE atomic batch: import record + every row. Plain INSERT (not OR IGNORE): any conflict aborts everything, so rows are never silently dropped.
-    await env.DB.batch([
-      env.DB.prepare("INSERT INTO kpi_imports(file_hash,file_name,filename,imported_by,imported_at,total_rows,successful_rows,failed_rows,rows_accepted,rows_skipped) VALUES(?,?,?,?,?,?,?,?,?,?)")
-        .bind(hash, String(body.filename || "").slice(0, 120) || "kpi-import", String(body.filename || "").slice(0, 120), u.employeeId, now(), fresh.length + skipped.length + invalid.length, fresh.length, skipped.length + invalid.length, fresh.length, skipped.length + invalid.length),
-      ...fresh.map(o => ins.bind(o.employee_id, o.report_date, o.report_date, o.disposition, o.total_attempts, o.assigned_leads, 0, 0, 0, ...NUM.map(k => o[k]), hash, now())),
-    ]);
+    // Create the import record, then write rows in bounded D1 batches. On any failure,
+    // remove this import's rows and record so a partial import is not presented as complete.
+    await env.DB.prepare("INSERT INTO kpi_imports(file_hash,file_name,filename,imported_by,imported_at,total_rows,successful_rows,failed_rows,rows_accepted,rows_skipped) VALUES(?,?,?,?,?,?,?,?,?,?)")
+      .bind(hash, String(body.filename || "").slice(0, 120) || "kpi-import", String(body.filename || "").slice(0, 120), u.employeeId, now(), fresh.length + skipped.length + invalid.length, fresh.length, skipped.length + invalid.length, fresh.length, skipped.length + invalid.length).run();
+    imp = await env.DB.prepare("SELECT id FROM kpi_imports WHERE file_hash = ?").bind(hash).first();
+    const CHUNK_SIZE = 80;
+    for (let start = 0; start < fresh.length; start += CHUNK_SIZE) {
+      const chunk = fresh.slice(start, start + CHUNK_SIZE);
+      await env.DB.batch(chunk.map(o => ins.bind(o.employee_id, o.report_date, o.report_date, o.disposition, o.total_attempts, o.assigned_leads, 0, 0, 0, ...NUM.map(k => o[k]), hash, now())));
+    }
   } catch (e) {
-    console.error("kpi import batch failed", e && e.message);
-    bad("Import failed and NOTHING was saved (the data may have changed since the check). Run the check again.", 409);
+    console.error("kpi import chunk failed", e && e.message);
+    try {
+      if (imp?.id) {
+        await env.DB.prepare("DELETE FROM kpi_daily WHERE import_id = ?").bind(imp.id).run();
+        await env.DB.prepare("DELETE FROM kpi_imports WHERE id = ?").bind(imp.id).run();
+      } else {
+        await env.DB.prepare("DELETE FROM kpi_imports WHERE file_hash = ?").bind(hash).run();
+      }
+    } catch (rollbackError) {
+      console.error("kpi import rollback failed", rollbackError && rollbackError.message);
+      bad("Import failed and rollback needs administrator review. Do not retry until the import log is checked.", 500);
+    }
+    bad("Import failed; saved chunks were rolled back. Check the data and retry.", 409);
   }
-  const imp = await env.DB.prepare("SELECT id FROM kpi_imports WHERE file_hash = ?").bind(hash).first();
   const saved = (await env.DB.prepare("SELECT COUNT(*) c FROM kpi_daily WHERE import_id = ?").bind(imp.id).first()).c;
   if (saved !== fresh.length) throw new Error(`kpi import count mismatch: expected ${fresh.length}, saved ${saved}`);
   await audit(env, u, "kpi_import", `import ${imp.id}: ${saved} saved, ${skipped.length} existing skipped, ${invalid.length} invalid, file ${String(body.filename || "").slice(0, 60)}`);
