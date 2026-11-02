@@ -114,18 +114,18 @@
         </div>
         <div id="adminFilterLabel" class="note">This Week</div>
       </div>
-      <div class="grid admin-kpi-grid">
+      <div id="admin-summary" class="grid admin-kpi-grid">
         <div class="card stat-card"><div class="label">Active Employees</div><div id="adminActiveAgents" class="value">—</div></div>
         <div class="card stat-card"><div class="label">Team Quiz Attempts</div><div id="adminQuizAttempts" class="value">—</div></div>
         <div class="card stat-card"><div class="label">Agents Checked In</div><div id="adminAttendanceCount" class="value">—</div></div>
         <div class="card stat-card"><div class="label">Active Breaks</div><div id="adminBreakCount" class="value">—</div></div>
       </div>
-      <div class="admin-report-grid"><div class="section card"><h2>Team Members</h2><div id="adminAgentsTable" class="empty">Loading team…</div></div>
-      <div class="section card"><h2>Team Projects</h2><button class="secondary-btn export-report" data-export="projects" type="button">Export Excel</button><div id="adminProjectTable" class="empty">Loading projects…</div></div>
-      <div class="section card"><h2>Team Attendance</h2><button class="secondary-btn export-report" data-export="attendance" type="button">Export Excel</button><div id="adminAttendanceTable" class="empty">Loading attendance…</div></div>
-      <div class="section card"><h2>Team Break History</h2><button class="secondary-btn export-report" data-export="breaks" type="button">Export Excel</button><div id="adminBreakTable" class="empty">Loading breaks…</div></div>
-      <div class="section card"><h2>Team KPI</h2><button class="secondary-btn export-report" data-export="kpi" type="button">Export Excel</button><div id="adminKpiTable" class="empty">Loading KPI…</div></div>
-      <div class="section card"><h2>Quiz Results</h2><button class="secondary-btn export-report" data-export="quiz" type="button">Export Excel</button><div id="adminQuizTable" class="empty">Loading quiz results…</div></div></div>
+      <div class="admin-report-grid"><div id="admin-team" class="section card"><h2>Team Members</h2><div id="adminAgentsTable" class="empty">Loading team…</div></div>
+      <div id="admin-projects" class="section card"><h2>Team Projects</h2><button class="secondary-btn export-report" data-export="projects" type="button">Export Excel</button><div id="adminProjectTable" class="empty">Loading projects…</div></div>
+      <div id="admin-attendance" class="section card"><h2>Team Attendance</h2><button class="secondary-btn export-report" data-export="attendance" type="button">Export Excel</button><div id="adminAttendanceTable" class="empty">Loading attendance…</div></div>
+      <div id="admin-breaks" class="section card"><h2>Team Break History</h2><button class="secondary-btn export-report" data-export="breaks" type="button">Export Excel</button><div id="adminBreakTable" class="empty">Loading breaks…</div></div>
+      <div id="admin-kpi" class="section card"><h2>Team KPI</h2><button class="secondary-btn export-report" data-export="kpi" type="button">Export Excel</button><div id="adminKpiTable" class="empty">Loading KPI…</div></div>
+      <div id="admin-quiz" class="section card"><h2>Quiz Results</h2><button class="secondary-btn export-report" data-export="quiz" type="button">Export Excel</button><div id="adminQuizTable" class="empty">Loading quiz results…</div></div></div>
     </section>
 
     <section id="view-quiz" class="tab-panel hidden">

@@ -242,3 +242,10 @@ body.admin-mode #view-overview,body.admin-mode #view-kpis,body.admin-mode #view-
 body.admin-mode .footer{margin-top:12px}
 @media(max-width:900px){body.admin-mode .wrap{grid-template-columns:1fr}body.admin-mode .nav,body.admin-mode .head,body.admin-mode #globalStatus,body.admin-mode #view-admin,body.admin-mode .footer{grid-column:1;grid-row:auto}body.admin-mode .nav{min-height:0;flex-direction:row;flex-wrap:wrap}body.admin-mode #view-admin .admin-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){body.admin-mode #view-admin .admin-report-grid{grid-template-columns:1fr}body.admin-mode .report-filters{align-items:stretch}body.admin-mode .report-filters label{flex:1 1 130px}}
+
+
+/* Admin section navigation */
+body.admin-mode .nav .admin-side-link{width:100%;text-align:left;justify-content:flex-start;border:0;border-radius:9px;padding:12px 13px;background:transparent;color:var(--ink);font-weight:600;cursor:pointer}
+body.admin-mode .nav .admin-side-link.active{background:#cfe5fa;color:#173b70}
+body.admin-mode #view-admin [id^="admin-"]{scroll-margin-top:18px}
+body.admin-mode #view-admin .section.card{padding:18px}
