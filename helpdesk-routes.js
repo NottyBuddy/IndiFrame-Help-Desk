@@ -78,6 +78,7 @@ export async function handleHelpdesk(req, env) {
     if (m === "GET" && p === "/api/hd/call-performance/rows") return J(await callPerformanceRows(url, env, u, false));
     if (m === "POST" && p === "/api/hd/admin/kpis/import") return J(await kpiImport(req, env, u));
     if (m === "GET" && p === "/api/hd/admin/call-performance/summary") return J(await callPerformanceSummary(url, env, u, true));
+    if (m === "GET" && p === "/api/hd/admin/call-performance/sections") return J(await callPerformanceSections(url, env, u));
     if (m === "GET" && p === "/api/hd/admin/call-performance/rows") return J(await callPerformanceRows(url, env, u, true));
     if (m === "POST" && p === "/api/hd/admin/call-performance/import") return J(await callPerformanceImport(req, env, u));
     if (m === "GET" && p === "/api/hd/breaks/status") return J(await breakStatus(env, u));
@@ -504,19 +505,54 @@ async function callPerformanceRows(url, env, u, admin = false) {
   const rows = (await env.DB.prepare(`SELECT id, employee_id employeeId, employee_name employeeName, report_date reportDate, disposition, source_json, created_at createdAt FROM call_performance_rows WHERE ${where} ORDER BY report_date DESC, employee_name, id`).bind(...args).all()).results;
   return { rows: rows.map(r => ({ ...r, source: JSON.parse(r.source_json || "{}"), source_json: undefined })) };
 }
+async function callPerformanceSections(url, env, u) {
+  await ensureCallPerformanceSections(env);
+  const from = url.searchParams.get("from"), to = url.searchParams.get("to");
+  if (from && !isDate(from)) bad("Invalid 'from' date (use YYYY-MM-DD).");
+  if (to && !isDate(to)) bad("Invalid 'to' date (use YYYY-MM-DD).");
+  const where = ["1=1"], args = [];
+  if (from) { where.push("(report_date IS NULL OR report_date >= ?)"); args.push(from); }
+  if (to) { where.push("(report_date IS NULL OR report_date <= ?)"); args.push(to); }
+  const employee = url.searchParams.get("employee_id");
+  if (employee) { where.push("employee_id = ?"); args.push(employee); }
+  const disposition = url.searchParams.get("disposition");
+  if (disposition) { where.push("lower(trim(label)) = lower(trim(?))"); args.push(disposition.trim()); }
+  const rows = (await env.DB.prepare(`SELECT report_type reportType, employee_id employeeId, employee_name employeeName, report_date reportDate, label, data_json dataJson FROM call_performance_report_rows WHERE ${where.join(" AND ")} ORDER BY COALESCE(report_date,''), employee_name, label`).bind(...args).all()).results || [];
+  return { sections: rows.map(r => ({ ...r, data: JSON.parse(r.dataJson || "{}"), dataJson: undefined })) };
+}
+async function ensureCallPerformanceSections(env) {
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS call_performance_report_rows (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    import_id INTEGER NOT NULL,
+    report_type TEXT NOT NULL,
+    employee_id TEXT,
+    employee_name TEXT NOT NULL DEFAULT '',
+    report_date TEXT,
+    label TEXT NOT NULL DEFAULT '',
+    row_hash TEXT NOT NULL UNIQUE,
+    data_json TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (import_id) REFERENCES call_performance_imports(id) ON DELETE RESTRICT
+  )`).run();
+  await env.DB.prepare("CREATE INDEX IF NOT EXISTS ix_cp_report_type_date ON call_performance_report_rows(report_type, report_date)").run();
+  await env.DB.prepare("CREATE INDEX IF NOT EXISTS ix_cp_report_agent ON call_performance_report_rows(employee_id, report_type)").run();
+}
 async function callPerformanceImport(req, env, u) {
   const body = await req.json().catch(() => bad("Invalid JSON body."));
   if (!Array.isArray(body?.rows) || !body.rows.length) bad("rows must be a non-empty array.");
   const normalized = body.rows.map((r, i) => ({ rowNumber: i + 1, ...cpNormalizeRow(r) }));
+  const reportRows = Array.isArray(body.report_rows) ? body.report_rows : [];
   // Resolve name-only workbook rows to the canonical Help Desk employee ID.
   const agents = (await env.DB.prepare("SELECT employee_id, full_name FROM agents").all()).results || [];
   const agentByName = new Map(agents.map(a => [String(a.full_name || "").trim().toLowerCase(), a.employee_id]));
+  const resolveAgent = name => { const n=String(name||"").trim().toLowerCase(); if(agentByName.has(n)) return agentByName.get(n); const matches=agents.filter(a=>String(a.full_name||"").toLowerCase().split(/\\s+/).includes(n)); return matches.length===1?matches[0].employee_id:null; };
   for (const row of normalized) {
     const matchedId = agentByName.get(String(row.employeeName || "").trim().toLowerCase());
     if (matchedId && (!row.employeeId || String(row.employeeId).trim().toLowerCase() === String(row.employeeName || "").trim().toLowerCase())) {
       row.employeeId = String(matchedId);
     }
   }
+  for (const rr of reportRows) { if (rr.employeeName && !rr.employeeId) rr.employeeId=String(resolveAgent(rr.employeeName)||""); else if (rr.employeeName && rr.employeeId===rr.employeeName) rr.employeeId=String(resolveAgent(rr.employeeName)||""); }
   const invalidRows = normalized.filter(r => !r.employeeId || !r.date).map(r => ({ row: r.rowNumber, reason: !r.employeeId ? "Agent/Employee is missing." : "Date is missing or invalid." }));
   const seen = new Set(), candidates = [];
   for (const row of normalized) {
@@ -526,7 +562,8 @@ async function callPerformanceImport(req, env, u) {
     seen.add(rowHash);
     candidates.push({ ...row, rowHash });
   }
-  const fileHash = await sha256(JSON.stringify(body.rows));
+  const reportCandidates = reportRows.filter(r => r && r.type && r.data && (String(r.type).startsWith("team_") || r.employeeId)).map(r => ({...r, employeeId:r.employeeId?String(r.employeeId):null, employeeName:clean(r.employeeName,200)||"", reportDate:r.reportDate&&isDate(r.reportDate)?r.reportDate:null, label:clean(r.label,200)||"", type:clean(r.type,40)}));
+  const fileHash = await sha256(JSON.stringify({rows:body.rows, report_rows:reportRows}));
   const existingImport = await env.DB.prepare("SELECT id FROM call_performance_imports WHERE file_hash=?").bind(fileHash).first();
   const existingHashes = new Set();
   for (let i = 0; i < candidates.length; i += 80) {
@@ -539,7 +576,7 @@ async function callPerformanceImport(req, env, u) {
   const accepted = candidates.filter(r => !existingHashes.has(r.rowHash)).length;
   const skippedDuplicates = candidates.length - accepted + (normalized.length - candidates.length - invalidRows.length);
   const dryRun = body.dry_run === true;
-  if (dryRun) return { dryRun: true, totalRows: body.rows.length, accepted: existingImport ? 0 : accepted, skippedDuplicates: existingImport ? body.rows.length - invalidRows.length : skippedDuplicates, invalidCount: invalidRows.length, invalidRows, duplicateFile: !!existingImport };
+  if (dryRun) return { dryRun: true, totalRows: body.rows.length, reportRows: reportCandidates.length, accepted: existingImport ? 0 : accepted, skippedDuplicates: existingImport ? body.rows.length - invalidRows.length : skippedDuplicates, invalidCount: invalidRows.length, invalidRows, duplicateFile: !!existingImport };
   if (existingImport) return { success: true, saved: 0, skippedDuplicates: body.rows.length - invalidRows.length, invalidCount: invalidRows.length, duplicateFile: true, message: "This exact workbook has already been imported." };
   if (invalidRows.length && body.accept_partial !== true) bad("Some rows are invalid. Validate the workbook or set accept_partial=true.");
   const t = now();
@@ -548,6 +585,7 @@ async function callPerformanceImport(req, env, u) {
   const importId = ins.meta.last_row_id;
   let saved = 0;
   const fresh = candidates.filter(r => !existingHashes.has(r.rowHash));
+  await ensureCallPerformanceSections(env);
   for (let i = 0; i < fresh.length; i += 100) {
     const statements = fresh.slice(i, i + 100).map(r => env.DB.prepare(
       "INSERT OR IGNORE INTO call_performance_rows(import_id,employee_id,employee_name,report_date,disposition,row_hash,source_json,created_at) VALUES(?,?,?,?,?,?,?,?)"
@@ -555,9 +593,14 @@ async function callPerformanceImport(req, env, u) {
     const results = await env.DB.batch(statements);
     saved += results.reduce((sum, result) => sum + Number(result?.meta?.changes || 0), 0);
   }
+  let savedReports=0;
+  for (let i=0;i<reportCandidates.length;i+=100) {
+    const batch=[]; for(const r of reportCandidates.slice(i,i+100)){const payload={type:r.type,employeeId:r.employeeId,employeeName:r.employeeName,reportDate:r.reportDate,label:r.label,data:r.data};const hash=await sha256(JSON.stringify(payload));batch.push(env.DB.prepare("INSERT OR IGNORE INTO call_performance_report_rows(import_id,report_type,employee_id,employee_name,report_date,label,row_hash,data_json,created_at) VALUES(?,?,?,?,?,?,?,?,?)").bind(importId,r.type,r.employeeId,r.employeeName,r.reportDate,r.label,hash,JSON.stringify(r.data),t));}
+    const results=await env.DB.batch(batch); savedReports+=results.reduce((n,x)=>n+Number(x?.meta?.changes||0),0);
+  }
   const skipped = body.rows.length - saved;
   await env.DB.prepare("UPDATE call_performance_imports SET rows_inserted=?, rows_skipped=? WHERE id=?").bind(saved, skipped, importId).run();
-  return { success: true, importId, saved, skippedDuplicates: skipped - invalidRows.length, invalidCount: invalidRows.length, duplicateFile: false };
+  return { success: true, importId, saved, savedReports, skippedDuplicates: skipped - invalidRows.length, invalidCount: invalidRows.length, duplicateFile: false };
 }
 
 // ---------- Quiz ----------
