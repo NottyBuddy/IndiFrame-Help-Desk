@@ -3,18 +3,16 @@ main = "worker.js"
 compatibility_date = "2025-01-01"
 keep_vars = true
 
-# Keep the existing dashboard-managed runtime variables while deploying.
-# D1 database binding used by the Help Desk API.
+# Production D1 binding.
 [[d1_databases]]
 binding = "DB"
 database_name = "indiframe-helpdesk-db"
 database_id = "8854232a-6e8f-4fe9-849c-5b61dc229602"
 
-# Preview builds use the same D1 binding so Worker code can resolve env.DB.
+# Preview deployments must expose the same binding name used by worker.js.
 [[previews.d1_databases]]
-binding = "indiframe-helpdesk-db"
+binding = "DB"
 database_id = "8854232a-6e8f-4fe9-849c-5b61dc229602"
 
 # Do not store passwords, API tokens, or other secrets in this file.
-
 # Deployment trigger: keep the existing Worker configuration unchanged.
