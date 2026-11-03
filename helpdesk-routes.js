@@ -518,7 +518,8 @@ async function callPerformanceSections(url, env, u) {
   const disposition = url.searchParams.get("disposition");
   if (disposition) { where.push("lower(trim(label)) = lower(trim(?))"); args.push(disposition.trim()); }
   const rows = (await env.DB.prepare(`SELECT report_type reportType, employee_id employeeId, employee_name employeeName, report_date reportDate, label, data_json dataJson FROM call_performance_report_rows WHERE ${where.join(" AND ")} ORDER BY COALESCE(report_date,''), employee_name, label`).bind(...args).all()).results || [];
-  return { sections: rows.map(r => ({ ...r, data: JSON.parse(r.dataJson || "{}"), dataJson: undefined })) };
+  const dispositions=(await env.DB.prepare("SELECT DISTINCT label FROM call_performance_report_rows WHERE report_type=? AND label<>'' ORDER BY label").bind("team_day_disposition").all()).results.map(r=>r.label);
+  return { sections: rows.map(r => ({ ...r, data: JSON.parse(r.dataJson || "{}"), dataJson: undefined })), dispositions };
 }
 async function ensureCallPerformanceSections(env) {
   await env.DB.prepare(`CREATE TABLE IF NOT EXISTS call_performance_report_rows (
