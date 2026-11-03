@@ -145,6 +145,28 @@ async function coreRoute(request, env, url) {
     const rows=(await env.DB.prepare("SELECT id,employee_id employeeId,full_name fullName,role,active,is_super_admin isSuperAdmin,created_at createdAt FROM agents ORDER BY role DESC,full_name").all()).results;
     return json(request,{agents:rows});
   }
+  if (path === "/api/admin/agents/" && method === "PATCH") {
+    requireRole(user,"admin");
+    return json(request,{error:"Invalid agent account route."},404);
+  }
+  const adminAgentMatch=path.match(/^\\/api\\/admin\\/agents\\/(\\d+)$/);
+  if(adminAgentMatch && method==="PUT"){
+    requireRole(user,"admin");
+    const id=Number(adminAgentMatch[1]),b=await body(request);
+    const target=await env.DB.prepare("SELECT id,employee_id,role,is_super_admin FROM agents WHERE id=?").bind(id).first();
+    if(!target)return json(request,{error:"Agent account not found."},404);
+    if(String(target.role).toLowerCase()!=="agent"||Number(target.is_super_admin)===1)return json(request,{error:"Admin can manage Agent accounts only."},403);
+    const sets=[],args=[];
+    if(typeof b?.active==="boolean"){sets.push("active=?");args.push(b.active?1:0);}
+    if(typeof b?.password==="string"&&b.password.length){
+      if(b.password.length<10)return json(request,{error:"Password must contain at least 10 characters."},400);
+      sets.push("password_hash=?","must_change_password=1");args.push(await hashPassword(b.password));
+    }
+    if(!sets.length)return json(request,{error:"Only active status and password reset are permitted."},400);
+    args.push(id);await env.DB.prepare("UPDATE agents SET "+sets.join(",")+" WHERE id=?").bind(...args).run();
+    await audit(env,user,(typeof b.password==="string"?"agent_password_reset":"agent_status_changed"),"Agent account updated by Admin: "+target.employee_id);
+    return json(request,{success:true,mustChangePassword:typeof b.password==="string"});
+  }
   if (path === "/api/admin/kpis" && method === "GET") {
     requireRole(user,"admin");
     const rows=(await env.DB.prepare("SELECT a.employee_id employeeId,a.full_name fullName,w.week_start weekStart,w.week_end weekEnd,w.metrics_json metricsJson,w.created_at createdAt FROM weekly_kpis w JOIN agents a ON a.id=w.agent_id ORDER BY w.week_start DESC,a.full_name LIMIT 2000").all()).results;
