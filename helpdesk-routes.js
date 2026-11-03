@@ -478,10 +478,13 @@ function cpWhere(url, u, admin) {
   if (admin) {
     if (employee) { where.push("employee_id = ?"); args.push(employee); }
   } else {
-    // Agent scope is enforced server-side; client-supplied employee_id is ignored.
-    where.push("(employee_id = ? OR lower(trim(employee_name)) = lower(trim(?)) OR lower(trim(employee_id)) = lower(trim(?)))");
-    args.push(u.employeeId, u.name || "", u.name || "");
+    // Agent access is strictly tied to the authenticated Help Desk employee ID.
+    // Never trust an employee_id supplied by the browser.
+    where.push("employee_id = ?");
+    args.push(u.employeeId);
   }
+  const disposition = url.searchParams.get("disposition");
+  if (disposition) { where.push("lower(trim(disposition)) = lower(trim(?))"); args.push(disposition.trim()); }
   return { where: where.join(" AND "), args };
 }
 async function callPerformanceSummary(url, env, u, admin = false) {
