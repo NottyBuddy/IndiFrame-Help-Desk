@@ -145,14 +145,11 @@ async function coreRoute(request, env, url) {
     const rows=(await env.DB.prepare("SELECT id,employee_id employeeId,full_name fullName,role,active,is_super_admin isSuperAdmin,created_at createdAt FROM agents ORDER BY role DESC,full_name").all()).results;
     return json(request,{agents:rows});
   }
-  if (path === "/api/admin/agents/" && method === "PATCH") {
+  const adminAgentPrefix="/api/admin/agents/";
+  const adminAgentId=path.startsWith(adminAgentPrefix)?Number(path.slice(adminAgentPrefix.length)):0;
+  if(adminAgentId>0 && Number.isInteger(adminAgentId) && method==="PUT"){
     requireRole(user,"admin");
-    return json(request,{error:"Invalid agent account route."},404);
-  }
-  const adminAgentMatch=path.match(/^\\/api\\/admin\\/agents\\/(\\d+)$/);
-  if(adminAgentMatch && method==="PUT"){
-    requireRole(user,"admin");
-    const id=Number(adminAgentMatch[1]),b=await body(request);
+    const id=adminAgentId,b=await body(request);
     const target=await env.DB.prepare("SELECT id,employee_id,role,is_super_admin FROM agents WHERE id=?").bind(id).first();
     if(!target)return json(request,{error:"Agent account not found."},404);
     if(String(target.role).toLowerCase()!=="agent"||Number(target.is_super_admin)===1)return json(request,{error:"Admin can manage Agent accounts only."},403);
