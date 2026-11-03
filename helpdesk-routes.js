@@ -50,7 +50,7 @@ export async function handleHelpdesk(req, env) {
   try {
     const u = await authenticate(req, env);
     if (!u) return J({ error: "Session expired or invalid. Please log in again." }, 401);
-    const admin = u.role === "admin";
+    const admin = u.role === "admin" || u.isSuperAdmin;
     if (p.startsWith("/api/hd/admin/") && !admin) return J({ error: "Admin access required." }, 403);
     // Admin accounts are monitoring-only. Separate KPI and Call Performance imports are Super Admin-only.
     const superAdminKpiImport = p === "/api/hd/admin/kpis/import" && m === "POST" && u.isSuperAdmin;
