@@ -9,9 +9,10 @@ binding = "DB"
 database_name = "indiframe-helpdesk-db"
 database_id = "8854232a-6e8f-4fe9-849c-5b61dc229602"
 
-# Intentionally no previews.d1_databases binding here.
-# Preview must not inherit or write to the production database.
-# Add a dedicated Preview D1 database ID before enabling preview DB-backed routes.
+# Cloudflare Workers Preview deployments use an isolated D1 database.
+[[previews.d1_databases]]
+binding = "DB"
+database_name = "indiframe-helpdesk-preview-db"
+database_id = "abb0abb1-3a62-47e1-a254-c64d48a74602"
 
 # Do not store passwords, API tokens, or other secrets in this file.
-# Deployment trigger: keep the existing Worker configuration unchanged.
