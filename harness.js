@@ -25,6 +25,8 @@ function load(file = "call-performance-import.js") {
   };
   vm.createContext(ctx);
   vm.runInContext(code, ctx);
+  // Expose parser in both the namespaced and legacy global forms for regression tests.
+  ctx.parseCallSheet = ctx.window.__callPerformanceTestHooks?.parseCallSheet;
   ctx.run = s => vm.runInContext(s, ctx);
   return ctx;
 }
