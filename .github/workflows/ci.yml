@@ -1,0 +1,28 @@
+name: Help Desk CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - feature/role-kpi-call-account-governance
+
+permissions:
+  contents: read
+
+jobs:
+  check-and-test:
+    name: Syntax check and regression tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run syntax checks
+        run: npm run check
+      - name: Run regression tests
+        run: npm test
