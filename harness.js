@@ -18,7 +18,7 @@ function load(file = "call-performance-import.js") {
   };
   const XLSX = { utils: { sheet_to_json: sheet => sheet } };
   const ctx = {
-    document, console, Date, Math, JSON, String, Number, Object, Array, Map, Set,
+    document, console, Date, Math, JSON, String, Number, Object, Array, Map, Set, XLSX,
     RegExp, Error, Promise, isNaN, Intl, XLSX,
     window:{XLSX, IndiFrameAPI:{apiRequest:async()=>({}),clearToken(){}}},
     location:{replace(){}}, setTimeout, confirm:()=>true, els
