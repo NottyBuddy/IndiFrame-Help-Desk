@@ -545,7 +545,7 @@ async function callPerformanceImport(req, env, u) {
   // Resolve name-only workbook rows to the canonical Help Desk employee ID.
   const agents = (await env.DB.prepare("SELECT employee_id, full_name FROM agents").all()).results || [];
   const agentByName = new Map(agents.map(a => [String(a.full_name || "").trim().toLowerCase(), a.employee_id]));
-  const resolveAgent = name => { const n=String(name||"").trim().toLowerCase(); if(agentByName.has(n)) return agentByName.get(n); const matches=agents.filter(a=>String(a.full_name||"").toLowerCase().split(/\\s+/).includes(n)); return matches.length===1?matches[0].employee_id:null; };
+  const resolveAgent = name => { const n=String(name||"").trim().toLowerCase(); if(agentByName.has(n)) return agentByName.get(n); const matches=agents.filter(a=>String(a.full_name||"").toLowerCase().split(/\s+/).includes(n)); return matches.length===1?matches[0].employee_id:null; };
   for (const row of normalized) {
     const matchedId = agentByName.get(String(row.employeeName || "").trim().toLowerCase());
     if (matchedId && (!row.employeeId || String(row.employeeId).trim().toLowerCase() === String(row.employeeName || "").trim().toLowerCase())) {
