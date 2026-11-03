@@ -74,9 +74,11 @@ export async function handleHelpdesk(req, env) {
     if (m === "GET" && activityMatch) return J(await projectActivity(Number(activityMatch[1]), env, u, admin));
     if (m === "POST" && activityMatch) return J(await projectAddActivity(req, Number(activityMatch[1]), env, u, admin));
     if (m === "GET" && p === "/api/hd/kpis/summary") return J(await kpiSummary(url, env, u, admin));
+    if (m === "GET" && p === "/api/hd/call-performance/summary") return J(await callPerformanceSummary(url, env, u, false));
+    if (m === "GET" && p === "/api/hd/call-performance/rows") return J(await callPerformanceRows(url, env, u, false));
     if (m === "POST" && p === "/api/hd/admin/kpis/import") return J(await kpiImport(req, env, u));
-    if (m === "GET" && p === "/api/hd/admin/call-performance/summary") return J(await callPerformanceSummary(url, env));
-    if (m === "GET" && p === "/api/hd/admin/call-performance/rows") return J(await callPerformanceRows(url, env));
+    if (m === "GET" && p === "/api/hd/admin/call-performance/summary") return J(await callPerformanceSummary(url, env, u, true));
+    if (m === "GET" && p === "/api/hd/admin/call-performance/rows") return J(await callPerformanceRows(url, env, u, true));
     if (m === "POST" && p === "/api/hd/admin/call-performance/import") return J(await callPerformanceImport(req, env, u));
     if (m === "GET" && p === "/api/hd/breaks/status") return J(await breakStatus(env, u));
     if (m === "POST" && p === "/api/hd/breaks/start") return J(await breakStart(req, env, u), 201);
@@ -466,18 +468,24 @@ function cpNormalizeRow(input) {
   const disposition = clean(cpPick(source, ["disposition", "call disposition", "call status", "status", "call result", "result"]), 160) || "";
   return { source, employeeId, employeeName: agentName || employeeId || "", date, disposition };
 }
-function cpWhere(url) {
+function cpWhere(url, u, admin) {
   const where = ["1=1"], args = [];
   const from = url.searchParams.get("from"), to = url.searchParams.get("to"), employee = url.searchParams.get("employee_id");
   if (from && !isDate(from)) bad("Invalid 'from' date (use YYYY-MM-DD).");
   if (to && !isDate(to)) bad("Invalid 'to' date (use YYYY-MM-DD).");
   if (from) { where.push("report_date >= ?"); args.push(from); }
   if (to) { where.push("report_date <= ?"); args.push(to); }
-  if (employee) { where.push("employee_id = ?"); args.push(employee); }
+  if (admin) {
+    if (employee) { where.push("employee_id = ?"); args.push(employee); }
+  } else {
+    // Agent scope is enforced server-side; client-supplied employee_id is ignored.
+    where.push("(employee_id = ? OR lower(trim(employee_name)) = lower(trim(?)) OR lower(trim(employee_id)) = lower(trim(?)))");
+    args.push(u.employeeId, u.name || "", u.name || "");
+  }
   return { where: where.join(" AND "), args };
 }
-async function callPerformanceSummary(url, env) {
-  const { where, args } = cpWhere(url);
+async function callPerformanceSummary(url, env, u, admin = false) {
+  const { where, args } = cpWhere(url, u, admin);
   const one = sql => env.DB.prepare(sql).bind(...args).first();
   const all = sql => env.DB.prepare(sql).bind(...args).all().then(r => r.results);
   const [totals, byAgent, daily, byDisposition] = await Promise.all([
@@ -488,8 +496,8 @@ async function callPerformanceSummary(url, env) {
   ]);
   return { totals: totals || { calls: 0, agents: 0, dates: 0, dispositions: 0 }, byAgent, daily, byDisposition };
 }
-async function callPerformanceRows(url, env) {
-  const { where, args } = cpWhere(url);
+async function callPerformanceRows(url, env, u, admin = false) {
+  const { where, args } = cpWhere(url, u, admin);
   const rows = (await env.DB.prepare(`SELECT id, employee_id employeeId, employee_name employeeName, report_date reportDate, disposition, source_json, created_at createdAt FROM call_performance_rows WHERE ${where} ORDER BY report_date DESC, employee_name, id`).bind(...args).all()).results;
   return { rows: rows.map(r => ({ ...r, source: JSON.parse(r.source_json || "{}"), source_json: undefined })) };
 }
@@ -497,6 +505,15 @@ async function callPerformanceImport(req, env, u) {
   const body = await req.json().catch(() => bad("Invalid JSON body."));
   if (!Array.isArray(body?.rows) || !body.rows.length) bad("rows must be a non-empty array.");
   const normalized = body.rows.map((r, i) => ({ rowNumber: i + 1, ...cpNormalizeRow(r) }));
+  // Resolve name-only workbook rows to the canonical Help Desk employee ID.
+  const agents = (await env.DB.prepare("SELECT employee_id, full_name FROM agents").all()).results || [];
+  const agentByName = new Map(agents.map(a => [String(a.full_name || "").trim().toLowerCase(), a.employee_id]));
+  for (const row of normalized) {
+    const matchedId = agentByName.get(String(row.employeeName || "").trim().toLowerCase());
+    if (matchedId && (!row.employeeId || String(row.employeeId).trim().toLowerCase() === String(row.employeeName || "").trim().toLowerCase())) {
+      row.employeeId = String(matchedId);
+    }
+  }
   const invalidRows = normalized.filter(r => !r.employeeId || !r.date).map(r => ({ row: r.rowNumber, reason: !r.employeeId ? "Agent/Employee is missing." : "Date is missing or invalid." }));
   const seen = new Set(), candidates = [];
   for (const row of normalized) {
