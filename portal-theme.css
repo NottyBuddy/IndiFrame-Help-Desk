@@ -307,3 +307,32 @@ body::after{animation:ifZeroGravity 18s ease-in-out infinite alternate,ifDustDri
 /* Keep the login and password backdrop moving at the same visible pace. */
 body:has(.login-shell)::before,body:has(.panel)::before{animation:ifVoidGlow 15s ease-in-out infinite alternate!important}
 body:has(.login-shell)::after,body:has(.panel)::after{animation:ifZeroGravity 18s ease-in-out infinite alternate,ifDustDrift 12s linear infinite!important;opacity:.72!important}
+
+
+/* IndiFrame unified motion layer — restrained motion across all role portals. */
+@keyframes ifCardEnter{from{opacity:0;transform:translate3d(0,14px,0) scale(.985)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes ifIconFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-3deg)}}
+@keyframes ifSoftPulse{0%,100%{box-shadow:0 0 0 0 rgba(65,210,205,0)}50%{box-shadow:0 0 0 5px rgba(65,210,205,.08)}}
+body .card,body .section.card,body .stat-card,body .break-card,body .admin-module-card,body .cp-card{
+  animation:ifCardEnter .55s cubic-bezier(.2,.75,.25,1) both;
+  transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease,background-color .28s ease;
+}
+body .card:hover,body .section.card:hover,body .stat-card:hover,body .break-card:hover,body .admin-module-card:hover,body .cp-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(89,220,219,.38)!important;
+  box-shadow:0 16px 38px rgba(0,8,20,.2),0 0 0 1px rgba(89,220,219,.08);
+}
+body button,body .nav-link,body a.logout-btn,body .primary-btn,body .sa-btn,body .break-btn{
+  transition:transform .2s ease,box-shadow .2s ease,background-color .2s ease,border-color .2s ease;
+}
+body button:hover,body .nav-link:hover,body a.logout-btn:hover,body .primary-btn:hover,body .sa-btn:hover,body .break-btn:hover{transform:translateY(-2px)}
+body button:active,body .nav-link:active,body .primary-btn:active,body .sa-btn:active,body .break-btn:active{transform:translateY(0) scale(.98)}
+body svg,body .icon,body [data-icon]{transform-origin:center;transition:transform .28s ease,filter .28s ease}
+body button:hover svg,body a:hover svg,body .admin-module-card:hover svg{transform:translateY(-2px) rotate(-5deg);filter:drop-shadow(0 0 6px rgba(77,225,222,.35))}
+body .nav button.active{animation:ifSoftPulse 3s ease-in-out infinite}
+body table tbody tr{transition:background-color .2s ease}
+body table tbody tr:hover{background:rgba(73,205,207,.075)}
+@media(prefers-reduced-motion:reduce){
+  body .card,body .section.card,body .stat-card,body .break-card,body .admin-module-card,body .cp-card{animation:none!important;transition:none!important}
+  body button,body .nav-link,body svg,body .icon,body [data-icon]{transition:none!important}
+}
