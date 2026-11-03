@@ -83,8 +83,20 @@
     <section id="view-kpis" class="tab-panel hidden">
       <div class="section card">
         <h2>My KPI</h2>
-        <div id="myKpiTable" class="empty">Loading KPI data…</div>
-        <div class="note">Personal KPI access will appear here when the API responds.</div>
+        <div class="report-filters my-kpi-filters">
+          <label>Period<select id="myKpiPeriod"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="week">This Week</option><option value="month" selected>This Month</option><option value="lastmonth">Last Month</option><option value="custom">Custom Range</option></select></label>
+          <label>From<input id="myKpiFrom" type="date" disabled></label>
+          <label>To<input id="myKpiTo" type="date" disabled></label>
+          <button id="myKpiApply" class="primary-btn" type="button">Apply Filter</button>
+        </div>
+        <div id="myKpiRangeLabel" class="note">This Month</div>
+        <div id="myKpiSummary" class="grid my-kpi-summary"></div>
+        <div class="section"><h3>Date-wise Call Performance</h3><div id="myKpiDaily" class="empty">Loading daily performance…</div></div>
+        <div class="section"><h3>My Agent-wise Analysis</h3><div id="myKpiAgent" class="empty">Loading agent analysis…</div></div>
+        <div class="section"><h3>My Disposition Summary</h3><div id="myKpiDisposition" class="empty">Loading disposition summary…</div></div>
+        <div class="section"><h3>Day-wise Disposition</h3><div id="myKpiDayDisposition" class="empty">Date-wise disposition detail is not available in the current KPI API response.</div></div>
+        <div class="note">This portal displays only your own KPI. Outgoing/incoming split, total call duration and date-by-disposition matrix will appear when those fields are available in the published report data.</div>
+        <div id="myKpiTable" class="hidden"></div>
       </div>
     </section>
 
@@ -162,6 +174,6 @@
   </main>
 
   <script src="api.js"></script>
-  <script src="dashboard.js?v=call-performance-access-20261103"></script>
+  <script src="dashboard.js?v=agent-kpi-live-fix-20261103"></script>
 </body>
 </html>
