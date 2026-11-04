@@ -174,8 +174,9 @@
 
   </main>
 
+  <script src="api.js"></script>
   <script>
-    const API = 'https://indiframe-helpdesk-api.mukuls2302.workers.dev';
+    const API = window.IndiFrameAPI.API_BASE;
     const showMessage = (text, type = 'error') => {
       const message = document.getElementById('message');
       message.textContent = text;
