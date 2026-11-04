@@ -3,14 +3,17 @@ main = "worker.js"
 compatibility_date = "2025-01-01"
 keep_vars = true
 
-# Production D1 binding.
+# Production D1 binding. Keep this database isolated from preview.
 [[d1_databases]]
 binding = "DB"
 database_name = "indiframe-helpdesk-db"
 database_id = "8854232a-6e8f-4fe9-849c-5b61dc229602"
 
-# Cloudflare Workers Preview deployments use an isolated D1 database.
-[[previews.d1_databases]]
+# Named preview environment uses only the isolated preview D1 database.
+[env.preview]
+name = "indiframe-helpdesk-api-preview"
+
+[[env.preview.d1_databases]]
 binding = "DB"
 database_name = "indiframe-helpdesk-preview-db"
 database_id = "abb0abb1-3a62-47e1-a254-c64d48a74602"
