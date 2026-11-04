@@ -11,7 +11,7 @@ const rows=[
   ["25-09-2026","Ravi","Callback","No","C-002"],
   ["2026-09-26T10:30:00","Meera","Not Interested","No","C-003"]
 ];
-const parsed=A.run("parseCallSheet("+JSON.stringify(rows)+")");
+const parsed=A.window.__callPerformanceTestHooks.parseCallSheet(rows).rows;
 test("parses all data rows",parsed.length,3);
 test("normalizes DD/MM/YYYY date",parsed[0].__call_performance_date,"2026-09-24");
 test("normalizes DD-MM-YYYY date",parsed[1].__call_performance_date,"2026-09-25");

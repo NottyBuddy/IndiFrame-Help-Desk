@@ -18,13 +18,15 @@ function load(file = "call-performance-import.js") {
   };
   const XLSX = { utils: { sheet_to_json: sheet => sheet } };
   const ctx = {
-    document, console, Date, Math, JSON, String, Number, Object, Array, Map, Set,
+    document, console, Date, Math, JSON, String, Number, Object, Array, Map, Set, XLSX,
     RegExp, Error, Promise, isNaN, Intl, XLSX,
     window:{XLSX, IndiFrameAPI:{apiRequest:async()=>({}),clearToken(){}}},
     location:{replace(){}}, setTimeout, confirm:()=>true, els
   };
   vm.createContext(ctx);
   vm.runInContext(code, ctx);
+  // Expose parser in both the namespaced and legacy global forms for regression tests.
+  ctx.parseCallSheet = ctx.window.__callPerformanceTestHooks?.parseCallSheet;
   ctx.run = s => vm.runInContext(s, ctx);
   return ctx;
 }

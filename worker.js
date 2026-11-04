@@ -145,6 +145,25 @@ async function coreRoute(request, env, url) {
     const rows=(await env.DB.prepare("SELECT id,employee_id employeeId,full_name fullName,role,active,is_super_admin isSuperAdmin,created_at createdAt FROM agents ORDER BY role DESC,full_name").all()).results;
     return json(request,{agents:rows});
   }
+  const adminAgentPrefix="/api/admin/agents/";
+  const adminAgentId=path.startsWith(adminAgentPrefix)?Number(path.slice(adminAgentPrefix.length)):0;
+  if(adminAgentId>0 && Number.isInteger(adminAgentId) && method==="PUT"){
+    requireRole(user,"admin");
+    const id=adminAgentId,b=await body(request);
+    const target=await env.DB.prepare("SELECT id,employee_id,role,is_super_admin FROM agents WHERE id=?").bind(id).first();
+    if(!target)return json(request,{error:"Agent account not found."},404);
+    if(String(target.role).toLowerCase()!=="agent"||Number(target.is_super_admin)===1)return json(request,{error:"Admin can manage Agent accounts only."},403);
+    const sets=[],args=[];
+    if(typeof b?.active==="boolean"){sets.push("active=?");args.push(b.active?1:0);}
+    if(typeof b?.password==="string"&&b.password.length){
+      if(b.password.length<10)return json(request,{error:"Password must contain at least 10 characters."},400);
+      sets.push("password_hash=?","must_change_password=1");args.push(await hashPassword(b.password));
+    }
+    if(!sets.length)return json(request,{error:"Only active status and password reset are permitted."},400);
+    args.push(id);await env.DB.prepare("UPDATE agents SET "+sets.join(",")+" WHERE id=?").bind(...args).run();
+    await audit(env,user,(typeof b.password==="string"?"agent_password_reset":"agent_status_changed"),"Agent account updated by Admin: "+target.employee_id);
+    return json(request,{success:true,mustChangePassword:typeof b.password==="string"});
+  }
   if (path === "/api/admin/kpis" && method === "GET") {
     requireRole(user,"admin");
     const rows=(await env.DB.prepare("SELECT a.employee_id employeeId,a.full_name fullName,w.week_start weekStart,w.week_end weekEnd,w.metrics_json metricsJson,w.created_at createdAt FROM weekly_kpis w JOIN agents a ON a.id=w.agent_id ORDER BY w.week_start DESC,a.full_name LIMIT 2000").all()).results;
@@ -171,17 +190,18 @@ async function coreRoute(request, env, url) {
   }
   if (path === "/api/superadmin/agents" && method === "POST") {
     requireRole(user,"super_admin");
-    const b=await body(request), employeeId=String(b?.employeeId||"").trim(), fullName=String(b?.fullName||"").trim(), password=String(b?.password||"");
-    if(!employeeId||employeeId.length>50||!fullName||fullName.length>160) return json(request,{error:"Employee ID aur full name required hain."},400);
-    if(password.length<10) return json(request,{error:"Temporary password kam se kam 10 characters ka hona chahiye."},400);
+    const b=await body(request), employeeId=String(b?.employeeId||"").trim(), fullName=String(b?.fullName||"").trim(), password=String(b?.password||""), role=String(b?.role||"agent").toLowerCase();
+    if(!employeeId||employeeId.length>50||!fullName||fullName.length>160) return json(request,{error:"Employee ID and full name are required."},400);
+    if(!["agent","admin"].includes(role)) return json(request,{error:"Only Agent or Admin account creation is permitted here."},400);
+    if(password.length<10) return json(request,{error:"Temporary password must contain at least 10 characters."},400);
     const duplicate=await env.DB.prepare("SELECT id FROM agents WHERE employee_id=? COLLATE NOCASE LIMIT 1").bind(employeeId).first();
-    if(duplicate)return json(request,{error:"Ye Employee ID pehle se registered hai."},409);
+    if(duplicate)return json(request,{error:"This Employee ID is already registered."},409);
     const hash=await hashPassword(password);
     try{
-      const r=await env.DB.prepare("INSERT INTO agents(employee_id,full_name,password_hash,role,active,is_super_admin,must_change_password,created_at) VALUES(?,?,?,'agent',1,0,1,?)").bind(employeeId,fullName,hash,now()).run();
-      await audit(env,user,"agent_created","Agent account created: "+employeeId);
-      return json(request,{success:true,id:r.meta.last_row_id,employeeId,role:"agent"},201);
-    }catch(e){return json(request,{error:"Agent account create nahi ho paya."},409);}
+      const r=await env.DB.prepare("INSERT INTO agents(employee_id,full_name,password_hash,role,active,is_super_admin,must_change_password,created_at) VALUES(?,?,?,?,1,0,1,?)").bind(employeeId,fullName,hash,role,now()).run();
+      await audit(env,user,role+"_created",role+" account created: "+employeeId);
+      return json(request,{success:true,id:r.meta.last_row_id,employeeId,role},201);
+    }catch(e){return json(request,{error:"Account could not be created."},409);}
   }
   const accountMatch=path.match(/^\/api\/superadmin\/agents\/(\d+)$/);
   if(accountMatch && method==="PUT"){
