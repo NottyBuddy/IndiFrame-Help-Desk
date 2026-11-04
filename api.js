@@ -1,5 +1,8 @@
-/* IndiFrame Help Desk API client. Production API only: never fabricate employee or KPI data. */
-const API_BASE = "https://indiframe-helpdesk-api.mukuls2302.workers.dev";
+/* IndiFrame Help Desk API client. Production remains the default; preview can be selected explicitly. */
+const configuredApiBase = typeof window.INDIFRAME_API_BASE === "string"
+  ? window.INDIFRAME_API_BASE.trim().replace(/\/+$/, "")
+  : "";
+const API_BASE = configuredApiBase || "https://indiframe-helpdesk-api.mukuls2302.workers.dev";
 const TOKEN_KEY = "indiframe_token";
 
 function getToken() {
