@@ -4,7 +4,7 @@ const apiQuery = new URLSearchParams(window.location.search);
 if (apiQuery.get("preview") === "1") sessionStorage.setItem("indiframe_api_environment", "preview");
 const previewMode = sessionStorage.getItem("indiframe_api_environment") === "preview";
 const configuredApiBase = typeof window.INDIFRAME_API_BASE === "string"
-  ? window.INDIFRAME_API_BASE.trim().replace(/\\/+$/, "")
+  ? window.INDIFRAME_API_BASE.trim().replace(/\/+$/, "")
   : "";
 const API_BASE = configuredApiBase || (previewMode
   ? "https://d9ec26e2-indiframe-helpdesk-api.mukuls2302.workers.dev"
