@@ -481,3 +481,127 @@ body:has(#view-overview) .admin-visual-analytics{margin-top:16px}
 @media(max-width:760px){.agent-overview-panels{grid-template-columns:1fr}.agent-activity-links a{align-items:flex-start;flex-direction:column;gap:4px}.agent-activity-links span{text-align:left}}
 /* Keep the login scene motion active while respecting a slower, low-distraction cycle. */
 body:has(.login-layout) .house-scene,body:has(.login-layout) .house-scene:before,body:has(.login-layout) .house-scene:after,body:has(.login-layout) .scene-sun,body:has(.login-layout) .scene-moon,body:has(.login-layout) .scene-stars,body:has(.login-layout) .scene-rain,body:has(.login-layout) .scene-snow,body:has(.login-layout) .win,body:has(.login-layout) .glass-pane,body:has(.login-layout) .door,body:has(.login-layout) .door-panel{animation-play-state:running}
+
+
+/* INDINEXT LOGIN — cinematic weather layers and clean brand hierarchy. */
+body:has(.login-layout) .showcase-brand{
+ top:25px;left:30px;z-index:12;font-size:14px;font-weight:800;letter-spacing:.24em;
+ color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.55)
+}
+body:has(.login-layout) .showcase-copy{
+ position:absolute;z-index:10;top:66px;left:30px;right:28px;bottom:auto;
+ padding:0!important;border:0!important;border-radius:0!important;
+ background:transparent!important;backdrop-filter:none!important;box-shadow:none!important;
+ color:#fff;max-width:510px
+}
+body:has(.login-layout) .showcase-eyebrow{
+ margin:0 0 10px;color:rgba(255,255,255,.78);font-size:9px;
+ font-weight:700;letter-spacing:.19em;line-height:1.4
+}
+body:has(.login-layout) .showcase-copy h2{
+ margin:0 0 8px;color:#fff!important;font-family:Georgia,"Times New Roman",serif;
+ font-size:clamp(22px,2.25vw,30px);font-weight:500;line-height:1.13;letter-spacing:-.025em;
+ text-shadow:0 3px 20px rgba(0,0,0,.48)
+}
+body:has(.login-layout) .showcase-copy h2 em{font-weight:400;color:#f4d2b4}
+body:has(.login-layout) .showcase-copy p{
+ max-width:410px;margin:0;color:rgba(255,255,255,.78);font-size:10px;
+ line-height:1.55;letter-spacing:.015em;text-shadow:0 2px 12px rgba(0,0,0,.65)
+}
+body:has(.login-layout) .house-art{z-index:2;bottom:3%;height:77%;filter:drop-shadow(0 26px 35px rgba(0,0,0,.52))}
+body:has(.login-layout) .house-scene{
+ background:linear-gradient(180deg,#101a2a 0%,#263b50 45%,#17222d 100%);
+}
+body:has(.login-layout) .house-scene:before{
+ z-index:6;pointer-events:none;
+ background:linear-gradient(180deg,rgba(4,10,20,.18),transparent 28%,rgba(5,9,15,.04) 58%,rgba(4,8,14,.44));
+ animation:ixTint 36s linear infinite
+}
+body:has(.login-layout) .scene-rain,
+body:has(.login-layout) .scene-rain-streaks,
+body:has(.login-layout) .scene-rain-drops,
+body:has(.login-layout) .scene-icefall,
+body:has(.login-layout) .scene-ice-haze{position:absolute;inset:0;pointer-events:none}
+body:has(.login-layout) .scene-rain{
+ z-index:4;opacity:0;mix-blend-mode:screen;
+ background:
+ radial-gradient(ellipse at 18% 35%,rgba(153,211,255,.22),transparent 38%),
+ radial-gradient(ellipse at 78% 48%,rgba(128,190,238,.17),transparent 42%);
+ animation:ixRainGlow 36s linear infinite
+}
+body:has(.login-layout) .scene-rain-streaks{
+ z-index:5;opacity:0;mix-blend-mode:screen;
+ background-image:
+ repeating-linear-gradient(103deg,transparent 0 10px,rgba(196,226,255,.72) 10.5px,rgba(108,171,224,.24) 11.5px,transparent 12px 25px),
+ repeating-linear-gradient(103deg,transparent 0 31px,rgba(225,242,255,.44) 31.5px,transparent 33px 58px),
+ repeating-linear-gradient(103deg,transparent 0 73px,rgba(154,204,246,.55) 74px,transparent 75px 112px);
+ filter:drop-shadow(0 0 4px rgba(126,194,255,.38));
+ animation:ixRainStreaks 36s linear infinite
+}
+body:has(.login-layout) .scene-rain-drops{
+ z-index:7;opacity:0;
+ background:
+ radial-gradient(ellipse 2px 7px at 13% 24%,rgba(220,241,255,.9),transparent 75%),
+ radial-gradient(ellipse 2px 8px at 37% 61%,rgba(181,220,255,.75),transparent 75%),
+ radial-gradient(ellipse 2px 7px at 62% 33%,rgba(220,241,255,.85),transparent 75%),
+ radial-gradient(ellipse 2px 8px at 84% 70%,rgba(181,220,255,.7),transparent 75%),
+ radial-gradient(ellipse 2px 6px at 93% 18%,rgba(220,241,255,.8),transparent 75%);
+ filter:blur(.2px) drop-shadow(0 0 5px rgba(133,194,255,.7));
+ animation:ixRainDrops 36s linear infinite
+}
+body:has(.login-layout) .scene-icefall{
+ z-index:8;opacity:0;mix-blend-mode:screen;
+ background-image:
+ radial-gradient(circle,rgba(255,255,255,.96) 0 1.1px,transparent 1.8px),
+ radial-gradient(circle,rgba(206,239,255,.9) 0 1.8px,transparent 2.7px),
+ radial-gradient(circle,rgba(255,255,255,.82) 0 2.6px,transparent 3.6px),
+ radial-gradient(circle,rgba(180,224,255,.82) 0 1px,transparent 1.7px);
+ background-size:43px 57px,89px 101px,137px 149px,61px 83px;
+ background-position:0 0,22px 35px,71px 11px,13px 47px;
+ filter:drop-shadow(0 0 5px rgba(186,228,255,.65));
+ animation:ixIcefall 36s linear infinite
+}
+body:has(.login-layout) .scene-ice-haze{
+ z-index:7;opacity:0;
+ background:
+ radial-gradient(ellipse at 0% 45%,rgba(167,222,255,.2),transparent 48%),
+ radial-gradient(ellipse at 100% 58%,rgba(185,232,255,.18),transparent 45%),
+ linear-gradient(180deg,rgba(174,222,255,.06),transparent 45%,rgba(202,237,255,.14));
+ backdrop-filter:blur(0);
+ animation:ixIceHaze 36s linear infinite
+}
+@keyframes ixRainGlow{0%,47%{opacity:0}50%,68%{opacity:.9}72%,100%{opacity:0}}
+@keyframes ixRainStreaks{
+ 0%,47%{opacity:0;background-position:0 -100vh,0 -70vh,0 -120vh}
+ 51%,68%{opacity:.84;background-position:-100px 100vh,80px 110vh,-45px 120vh}
+ 72%,100%{opacity:0;background-position:-120px 130vh,90px 140vh,-60px 150vh}
+}
+@keyframes ixRainDrops{
+ 0%,48%{opacity:0;transform:translate3d(0,-10%,0)}
+ 52%,67%{opacity:.85;transform:translate3d(-2%,18%,0)}
+ 71%,100%{opacity:0;transform:translate3d(-3%,30%,0)}
+}
+@keyframes ixIcefall{
+ 0%,69%{opacity:0;background-position:0 0,22px 35px,71px 11px,13px 47px}
+ 73%{opacity:.15}
+ 78%,91%{opacity:.92;background-position:30px 85vh,-38px 100vh,105px 110vh,-25px 90vh}
+ 96%,100%{opacity:0;background-position:45px 120vh,-60px 130vh,120px 145vh,-40px 120vh}
+}
+@keyframes ixIceHaze{0%,69%{opacity:0}76%,91%{opacity:.92}97%,100%{opacity:0}}
+@media(max-width:900px){
+ body:has(.login-layout) .showcase-copy{top:62px;left:24px;right:20px}
+ body:has(.login-layout) .showcase-brand{top:22px;left:24px}
+ body:has(.login-layout) .house-art{height:73%;bottom:2%}
+}
+@media(max-width:520px){
+ body:has(.login-layout) .showcase-copy{top:58px;left:18px;right:15px}
+ body:has(.login-layout) .showcase-eyebrow{font-size:8px;margin-bottom:7px}
+ body:has(.login-layout) .showcase-copy h2{font-size:23px}
+ body:has(.login-layout) .showcase-copy p{font-size:9px;max-width:290px}
+ body:has(.login-layout) .house-art{height:68%;bottom:1%}
+}
+@media(prefers-reduced-motion:reduce){
+ body:has(.login-layout) .scene-rain,body:has(.login-layout) .scene-rain-streaks,
+ body:has(.login-layout) .scene-rain-drops,body:has(.login-layout) .scene-icefall,
+ body:has(.login-layout) .scene-ice-haze{animation:none!important;opacity:0!important}
+}
