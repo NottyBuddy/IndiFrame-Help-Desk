@@ -673,9 +673,14 @@ async function quizSubmit(req, env, u) {
     return { id: q.id, correct: ok, correctIndex: q.correct_index, explanation: q.explanation || "" };
   });
   const answersJson = JSON.stringify(Object.fromEntries(qs.map(q => [String(q.id), ans[String(q.id)]])));
-  const ins = await env.DB.prepare(
-    "INSERT INTO quiz_attempts(agent_id,week_number,score,total_questions,answers_json,completed_at) SELECT ?,?,?,?,?,? WHERE NOT EXISTS (SELECT 1 FROM quiz_attempts WHERE agent_id=? AND week_number=?)"
-  ).bind(u.agentId, week, score, qs.length, answersJson, now(), u.agentId, week).run();
+  let ins;
+  try {
+    ins = await env.DB.prepare(
+      "INSERT INTO quiz_attempts(agent_id,week_number,score,total_questions,answers_json,completed_at) SELECT ?,?,?,?,?,? WHERE NOT EXISTS (SELECT 1 FROM quiz_attempts WHERE agent_id=? AND week_number=?)"
+    ).bind(u.agentId, week, score, qs.length, answersJson, now(), u.agentId, week).run();
+  } catch {
+    bad("You have already submitted this week's quiz.", 409);
+  }
   if (!ins.meta.changes) bad("You have already submitted this week's quiz.", 409);
   return { week, score, total: qs.length, percent: rate(score, qs.length), review };
 }
