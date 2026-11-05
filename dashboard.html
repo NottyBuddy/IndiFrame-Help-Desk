@@ -139,6 +139,10 @@
         <div class="card stat-card"><div class="label">Agents Checked In</div><div id="adminAttendanceCount" class="value">—</div></div>
         <div class="card stat-card"><div class="label">Active Breaks</div><div id="adminBreakCount" class="value">—</div></div>
       </div>
+      <div id="adminVisualAnalytics" class="admin-visual-analytics" aria-label="Team performance charts">
+        <section class="admin-chart-card"><h3>Team activity</h3><p class="chart-caption">Attempts by agent · selected date range</p><div id="adminAttemptsChart" class="admin-chart-empty">Loading team activity…</div><div class="admin-chart-legend"><span>Call attempts</span></div></section>
+        <section class="admin-chart-card"><h3>Qualified leads</h3><p class="chart-caption">Qualified leads by agent · selected date range</p><div id="adminQualifiedChart" class="admin-chart-empty">Loading qualified leads…</div><div class="admin-chart-legend"><span>Qualified leads</span></div></section>
+      </div>
       <div id="adminHome" class="admin-home-grid">
         <button class="admin-module-card" type="button" data-admin-open="admin-team"><span class="module-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><strong>Team Members</strong><small>Employee directory and active status</small><span class="module-open">View details →</span></button>
         <button class="admin-module-card" type="button" data-admin-open="admin-attendance"><span class="module-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><strong>Attendance</strong><small>Check-ins, check-outs and work hours</small><span class="module-open">View details →</span></button>
