@@ -128,6 +128,7 @@ export async function handleHelpdesk(req, env) {
     if (m === "POST" && p === "/api/hd/breaks/start") return J(await breakStart(req, env, u), 201);
     if (m === "POST" && p === "/api/hd/breaks/end") return J(await breakEnd(env, u));
     if (m === "GET" && p === "/api/hd/admin/breaks/status") return J(await adminBreakStatus(url, env));
+    if (m === "GET" && p === "/api/hd/agent-overview/live") return J(await agentOverviewLive(url, env, u));
     if (m === "GET" && p === "/api/hd/attendance/status") return J(await attStatus(env, u));
     if (m === "POST" && p === "/api/hd/attendance/check-in") return J(await checkIn(req, env, u));
     if (m === "POST" && p === "/api/hd/attendance/check-out") return J(await checkOut(env, u));
@@ -434,6 +435,41 @@ async function adminBreakStatus(url, env) {
   const rows=(await env.DB.prepare("SELECT b.id,b.break_type,b.started_at,b.ended_at,b.duration_minutes,a.employee_id,a.full_name FROM agent_breaks b JOIN agents a ON a.id=b.agent_id WHERE "+where.join(" AND ")+" ORDER BY b.started_at DESC LIMIT 2000").bind(...args).all()).results;
   const t=Date.now();
   return { breaks:rows.map(r=>({...r,elapsedSeconds:r.ended_at?Math.max(0,Math.floor((Date.parse(r.ended_at)-Date.parse(r.started_at))/1000)):Math.max(0,Math.floor((t-Date.parse(r.started_at))/1000))})), serverTime:now() };
+}
+
+// ---------- Agent Overview live work summary ----------
+async function agentOverviewLive(url, env, u) {
+  const date = url.searchParams.get("date");
+  const offset = Number(url.searchParams.get("tzOffsetMinutes") ?? 0);
+  if (!isDate(date)) bad("Valid local date is required (YYYY-MM-DD).");
+  if (!Number.isInteger(offset) || offset < -840 || offset > 840) bad("Invalid timezone offset.");
+  const [year, month, day] = date.split("-").map(Number);
+  const startMs = Date.UTC(year, month - 1, day) - offset * 60000;
+  const start = new Date(startMs).toISOString();
+  const end = new Date(startMs + 86400000).toISOString();
+  const [attendance, breaks] = await Promise.all([
+    env.DB.prepare("SELECT check_in_at,check_out_at FROM attendance WHERE employee_id=? AND work_date=? ORDER BY check_in_at DESC LIMIT 1").bind(u.employeeId, date).first(),
+    env.DB.prepare("SELECT started_at,ended_at,duration_seconds FROM agent_breaks WHERE employee_id=? AND started_at>=? AND started_at<? ORDER BY started_at").bind(u.employeeId, start, end).all()
+  ]);
+  const currentMs = Date.now();
+  let breakSeconds = 0;
+  for (const item of (breaks.results || [])) {
+    const begin = Date.parse(item.started_at);
+    const finish = item.ended_at ? Date.parse(item.ended_at) : currentMs;
+    if (Number.isFinite(begin) && Number.isFinite(finish)) breakSeconds += Math.max(0, Math.floor((finish - begin) / 1000));
+  }
+  const checkInMs = attendance?.check_in_at ? Date.parse(attendance.check_in_at) : NaN;
+  const finishMs = attendance?.check_out_at ? Date.parse(attendance.check_out_at) : currentMs;
+  const grossSeconds = Number.isFinite(checkInMs) ? Math.max(0, Math.floor((finishMs - checkInMs) / 1000)) : 0;
+  return {
+    date,
+    loginTime: attendance?.check_in_at || null,
+    checkOutTime: attendance?.check_out_at || null,
+    active: !!attendance && !attendance.check_out_at,
+    breakSeconds,
+    netWorkSeconds: Math.max(0, grossSeconds - breakSeconds),
+    serverTime: now()
+  };
 }
 
 // ---------- Attendance ----------
