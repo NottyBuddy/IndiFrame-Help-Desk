@@ -1,7 +1,7 @@
 /* First-visit session preloader for Indinext. Internal page navigation remains uninterrupted. */
 (function(){
   "use strict";
-  var KEY="indiframe_preloader_seen_v1";
+  var KEY="indinext_liquid_glass_seen_v1";
   try {
     if (sessionStorage.getItem(KEY)==="1") return;
     sessionStorage.setItem(KEY,"1");
