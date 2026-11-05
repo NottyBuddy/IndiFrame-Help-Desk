@@ -908,3 +908,102 @@ body:not(:has(.login-layout)) ::selection{background:rgba(117,216,208,.3);color:
 @media(prefers-reduced-motion:reduce){
  body:not(:has(.login-layout)) *,body:not(:has(.login-layout)) *::before,body:not(:has(.login-layout)) *::after{scroll-behavior:auto!important;transition:none!important}
 }
+
+
+/* v2: cache-verified Liquid Glass system and architectural material identity */
+body:not(:has(.login-layout)){
+  --ix-bg:#08131c;--ix-panel:rgba(20,38,49,.76);--ix-line:rgba(192,225,224,.16);
+  --ix-text:#edf6f3;--ix-muted:#9bb0b3;--ix-cyan:#7ce0d5;--ix-gold:#dfbd98;
+  background:radial-gradient(ellipse at 10% 0%,rgba(42,143,139,.2),transparent 35%),
+    radial-gradient(ellipse at 92% 12%,rgba(198,148,104,.13),transparent 28%),
+    linear-gradient(145deg,#08131c,#112630 58%,#0a1720)!important;color:var(--ix-text)!important;color-scheme:dark;
+}
+body:not(:has(.login-layout)) .nav{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px!important;margin:18px 0 22px!important;
+  border:1px solid rgba(190,224,226,.15)!important;border-radius:15px!important;
+  background:rgba(13,29,39,.66)!important;backdrop-filter:blur(22px) saturate(145%);
+  box-shadow:0 14px 38px rgba(0,0,0,.18)!important;
+}
+body:not(:has(.login-layout)) .nav button,
+body:not(:has(.login-layout)) .nav .nav-link,
+body:not(:has(.login-layout)) .admin-side-link{
+  display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:9px 13px!important;
+  color:#bfd0cf!important;background:transparent!important;border:1px solid transparent!important;
+  border-radius:9px!important;text-decoration:none;font-size:12px;font-weight:650;
+}
+body:not(:has(.login-layout)) .nav button.active,
+body:not(:has(.login-layout)) .nav .nav-link:hover,
+body:not(:has(.login-layout)) .admin-side-link.active{
+  color:#eafffb!important;background:linear-gradient(110deg,rgba(35,139,132,.32),rgba(116,197,187,.12))!important;
+  border-color:rgba(124,224,213,.25)!important;box-shadow:inset 0 1px rgba(255,255,255,.08);
+}
+body:not(:has(.login-layout)) .admin-overview-card,
+body:not(:has(.login-layout)) .admin-report-card{
+  background:linear-gradient(145deg,rgba(30,55,66,.82),rgba(12,27,37,.8))!important;
+  border:1px solid var(--ix-line)!important;border-radius:17px!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.06)!important;backdrop-filter:blur(20px);
+}
+body:not(:has(.login-layout)) .card,
+body:not(:has(.login-layout)) .section,
+body:not(:has(.login-layout)) .break-card,
+body:not(:has(.login-layout)) .cp-section,
+body:not(:has(.login-layout)) .panel,
+body:not(:has(.login-layout)) .agent-info-card,
+body:not(:has(.login-layout)) .stat-card{
+  color:var(--ix-text)!important;background:linear-gradient(145deg,rgba(30,51,62,.8),rgba(12,27,37,.78))!important;
+  border:1px solid var(--ix-line)!important;border-radius:17px!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.055)!important;backdrop-filter:blur(20px) saturate(135%);
+}
+body:not(:has(.login-layout)) .value{color:#f2fbf8!important}
+body:not(:has(.login-layout)) .label,
+body:not(:has(.login-layout)) .note,
+body:not(:has(.login-layout)) .agent-panel-kicker{color:#9edbd4!important}
+body:not(:has(.login-layout)) .topbar{
+ background:rgba(8,20,28,.78)!important;border-bottom:1px solid var(--ix-line)!important;
+ box-shadow:0 12px 36px rgba(0,0,0,.2)!important;backdrop-filter:blur(24px) saturate(145%);
+}
+body:not(:has(.login-layout)) .brand{color:#f2f7f4!important;letter-spacing:.05em}
+body:not(:has(.login-layout)) h1,body:not(:has(.login-layout)) h2,body:not(:has(.login-layout)) h3{color:#eff8f5!important;letter-spacing:-.025em}
+body:not(:has(.login-layout)) .subtitle,body:not(:has(.login-layout)) .muted,body:not(:has(.login-layout)) .profile,body:not(:has(.login-layout)) .footer{color:var(--ix-muted)!important}
+body:not(:has(.login-layout)) button,body:not(:has(.login-layout)) .primary-btn,body:not(:has(.login-layout)) .break-btn,body:not(:has(.login-layout)) .sa-btn,body:not(:has(.login-layout)) .logout-btn{
+ background:linear-gradient(110deg,#176b70,#248c86)!important;color:#f4fffc!important;border:1px solid rgba(124,224,213,.26)!important;border-radius:10px!important;box-shadow:0 8px 22px rgba(12,116,111,.2)!important;
+}
+body:not(:has(.login-layout)) .secondary-btn,body:not(:has(.login-layout)) .sa-small{background:rgba(154,190,192,.1)!important;color:#dcebe8!important;border:1px solid var(--ix-line)!important}
+body:not(:has(.login-layout)) input,body:not(:has(.login-layout)) select,body:not(:has(.login-layout)) textarea{
+ color:#eaf4f1!important;background:rgba(5,17,25,.55)!important;border:1px solid rgba(173,211,211,.2)!important;border-radius:10px!important;
+}
+body:not(:has(.login-layout)) input::placeholder,body:not(:has(.login-layout)) textarea::placeholder{color:#789095!important}
+body:not(:has(.login-layout)) input:focus,body:not(:has(.login-layout)) select:focus,body:not(:has(.login-layout)) textarea:focus{outline:none!important;border-color:rgba(124,224,213,.75)!important;box-shadow:0 0 0 3px rgba(124,224,213,.13)!important}
+body:not(:has(.login-layout)) option{background:#142630;color:#edf5f3}
+body:not(:has(.login-layout)) table{color:var(--ix-text)!important}
+body:not(:has(.login-layout)) th{color:#a8e6dd!important;background:rgba(107,169,166,.1)!important;border-bottom:1px solid var(--ix-line)!important}
+body:not(:has(.login-layout)) td{color:#d9e7e4!important;border-bottom:1px solid rgba(190,224,226,.1)!important}
+body:not(:has(.login-layout)) .empty,body:not(:has(.login-layout)) .cp-status,body:not(:has(.login-layout)) .project-message,body:not(:has(.login-layout)) .break-message,body:not(:has(.login-layout)) .sa-msg{color:var(--ix-muted)!important}
+body:not(:has(.login-layout)) a:not(.logout-btn){color:#8de0d6}
+body:not(:has(.login-layout)) .project-code,body:not(:has(.login-layout)) .break-time{color:#9ce5dc!important}
+body:not(:has(.login-layout)) .project-status{color:#d5ece7!important;background:rgba(111,192,183,.14)!important;border:1px solid var(--ix-line)}
+body:not(:has(.login-layout)) .hidden[hidden]{display:none!important}
+body:not(:has(.login-layout)) ::selection{background:rgba(124,224,213,.3);color:#fff}
+body:has(.login-layout) .login-showcase{background:radial-gradient(ellipse at 50% 40%,#2b4655 0%,#182d3a 48%,#101923 100%)!important}
+body:has(.login-layout) .material-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+body:has(.login-layout) .material-halo{position:absolute;width:560px;height:560px;right:-4%;top:0;border-radius:50%;background:radial-gradient(circle,rgba(96,207,194,.19),rgba(206,158,119,.1) 42%,transparent 70%);filter:blur(10px);animation:ixMaterialHalo 13s ease-in-out infinite alternate}
+body:has(.login-layout) .glass-slab{position:absolute;display:block;overflow:hidden;border:1px solid rgba(226,239,235,.25);background:linear-gradient(135deg,rgba(231,248,244,.17),rgba(117,169,175,.045) 48%,rgba(221,178,139,.13));box-shadow:inset 1px 1px rgba(255,255,255,.2),0 28px 80px rgba(0,0,0,.2);backdrop-filter:blur(5px)}
+body:has(.login-layout) .slab-back{width:45%;height:43%;right:5%;top:18%;transform:skewY(-17deg) rotate(13deg);opacity:.55;animation:ixSlabBack 18s ease-in-out infinite alternate}
+body:has(.login-layout) .slab-mid{width:40%;height:48%;right:20%;top:21%;transform:skewY(-17deg) rotate(-8deg);opacity:.76;animation:ixSlabMid 16s ease-in-out infinite alternate}
+body:has(.login-layout) .slab-front{width:34%;height:39%;right:33%;top:29%;transform:skewY(-17deg) rotate(-8deg);border-color:rgba(232,198,166,.42);animation:ixSlabFront 14s ease-in-out infinite alternate}
+body:has(.login-layout) .slab-reflection{position:absolute;inset:-40%;background:linear-gradient(110deg,transparent 40%,rgba(255,255,255,.42) 48%,rgba(255,225,194,.2) 51%,transparent 58%);animation:ixSlabShine 8s ease-in-out infinite}
+body:has(.login-layout) .champagne-filament{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(232,190,148,.9),transparent);filter:drop-shadow(0 0 7px rgba(228,184,139,.5));transform:rotate(-17deg)}
+body:has(.login-layout) .filament-a{width:90%;right:-13%;top:28%;animation:ixFilament 11s ease-in-out infinite alternate}
+body:has(.login-layout) .filament-b{width:68%;right:0;top:72%;opacity:.48;animation:ixFilament 14s ease-in-out infinite alternate-reverse}
+body:has(.login-layout) .material-glint{position:absolute;width:190px;height:190px;right:22%;top:28%;border-radius:50%;background:radial-gradient(circle,rgba(255,239,217,.22),transparent 70%);filter:blur(5px);animation:ixMaterialHalo 9s ease-in-out infinite alternate-reverse}
+body:has(.login-layout) .material-caption{position:absolute;right:35px;bottom:34%;color:rgba(236,229,218,.58);font-size:8px;font-weight:700;letter-spacing:.2em;writing-mode:vertical-rl}
+body:has(.login-layout) .material-caption span{color:#dfbd98;margin:10px 0}
+@keyframes ixMaterialHalo{from{transform:translate3d(-14px,12px,0) scale(.9);opacity:.6}to{transform:translate3d(22px,-20px,0) scale(1.1);opacity:1}}
+@keyframes ixSlabBack{from{translate:-8px 8px;rotate:-2deg}to{translate:15px -10px;rotate:2deg}}
+@keyframes ixSlabMid{from{translate:10px 12px;scale:.97}to{translate:-12px -10px;scale:1.03}}
+@keyframes ixSlabFront{from{translate:-8px 10px;scale:.96}to{translate:12px -8px;scale:1.04}}
+@keyframes ixSlabShine{0%,12%{transform:translateX(-55%);opacity:0}35%,65%{opacity:1}90%,100%{transform:translateX(55%);opacity:0}}
+@keyframes ixFilament{from{translate:-2% 8px;opacity:.3}to{translate:3% -10px;opacity:.9}}
+@media(max-width:700px){body:not(:has(.login-layout)) .topbar{gap:12px;padding:14px 16px!important}body:not(:has(.login-layout)) .wrap{padding-left:14px!important;padding-right:14px!important}body:not(:has(.login-layout)) .nav{gap:5px;padding:7px!important}body:not(:has(.login-layout)) .nav button,body:not(:has(.login-layout)) .nav .nav-link{font-size:11px;padding:8px 9px!important}}
+@media(max-width:900px){body:has(.login-layout) .glass-slab{max-height:44%}body:has(.login-layout) .material-caption{right:18px}}
+@media(prefers-reduced-motion:reduce){body:has(.login-layout) .glass-slab,body:has(.login-layout) .material-halo,body:has(.login-layout) .slab-reflection,body:has(.login-layout) .champagne-filament{animation:none!important}}
