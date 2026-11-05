@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17191e">
+<title>Disposition Performance — Indinext</title>
+<link rel="stylesheet" href="dashboard.css?v=disposition-performance-v1">
+<link rel="stylesheet" href="portal-clean.css?v=portal-ui-v2-20261105">
+<link rel="stylesheet" href="indinext-premium.css?v=indinext-ember-glass-20261105">
+<link rel="stylesheet" href="disposition-performance.css?v=dp-v1-20261106">
+</head>
+<body class="dp-page">
+<header class="topbar">
+  <div><div class="brand">Indinext</div><div class="subtitle">Disposition Performance Centre</div></div>
+  <div class="topright"><a class="logout-btn" href="dashboard.html">Admin Dashboard</a><a class="logout-btn" href="call-performance.html">Call Performance</a><button id="logoutBtn" class="logout-btn" type="button">Logout</button></div>
+</header>
+<main class="dp-wrap">
+  <div class="dp-topline"><a href="dashboard.html">← Back to Admin Panel</a><span id="dpProfile">Checking access…</span></div>
+  <section class="dp-hero">
+    <div><span class="dp-eyebrow">TEAM OPERATIONS / REPORTING</span><h1>Disposition-wise Performance</h1><p>See completed call records by disposition, agent and call direction. This report is separate from Call Performance.</p></div>
+    <div class="dp-hero-mark"><span>DP</span><small>REPORTING</small></div>
+  </section>
+  <section class="dp-filter-panel">
+    <div class="dp-filter-title"><div><span class="dp-eyebrow">REPORT CONTROLS</span><h2>Choose report range</h2></div><button id="dpRefresh" class="dp-btn dp-btn-muted" type="button">↻ Refresh</button></div>
+    <div class="dp-filters">
+      <label>Period<select id="dpPeriod"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="this_week" selected>This Week</option><option value="last_week">Last Week</option><option value="this_month">This Month</option><option value="last_month">Last Month</option><option value="custom">Custom range</option><option value="all">All available dates</option></select></label>
+      <div id="dpCustomRange" class="dp-date-range" hidden><label>From<input id="dpFrom" type="date"></label><label>To<input id="dpTo" type="date"></label></div>
+      <label class="dp-agent-filter">Search agent by name<input id="dpAgentSearch" type="search" list="dpAgentNames" placeholder="Start typing agent name…"><datalist id="dpAgentNames"></datalist></label>
+      <label>Disposition<select id="dpDisposition"><option value="">All dispositions</option></select></label>
+      <button id="dpApply" class="dp-btn dp-btn-primary" type="button">Apply filters</button>
+    </div>
+    <div id="dpRangeLabel" class="dp-range-label">This week</div>
+  </section>
+  <section class="dp-metrics" aria-label="Disposition report summary">
+    <article class="dp-metric"><span>Total call records</span><strong id="dpTotalCalls">—</strong><small>From published Call Performance records</small></article>
+    <article class="dp-metric"><span>Connected calls</span><strong id="dpConnectedCalls">—</strong><small id="dpConnectedNote">Only when source data provides it</small></article>
+    <article class="dp-metric"><span>Connect rate</span><strong id="dpConnectRate">—</strong><small>Connected ÷ total calls</small></article>
+    <article class="dp-metric"><span>Agents reported</span><strong id="dpAgentCount">—</strong><small>Matched by agent identity</small></article>
+  </section>
+  <section class="dp-grid-two">
+    <article class="dp-card">
+      <div class="dp-section-head"><div><span class="dp-eyebrow">DISPOSITION MIX</span><h2>Completed records by disposition</h2></div><span id="dpDispositionCount" class="dp-count-pill">—</span></div>
+      <div id="dpDispositionChart" class="dp-bars"><div class="dp-empty">Loading disposition data…</div></div>
+    </article>
+    <article class="dp-card">
+      <div class="dp-section-head"><div><span class="dp-eyebrow">CALL DIRECTION</span><h2>Incoming vs Outgoing</h2></div></div>
+      <div id="dpDirection" class="dp-direction-grid"><div class="dp-empty">Checking source fields…</div></div>
+      <p class="dp-source-note">Direction and missed-call metrics appear only when the uploaded report contains those fields. No values are inferred.</p>
+    </article>
+  </section>
+  <section class="dp-card dp-agent-card">
+    <div class="dp-section-head dp-agent-head"><div><span class="dp-eyebrow">AGENT-WISE REPORT</span><h2>Disposition count by agent</h2><p>Agent name is the primary lookup. Employee ID is used to verify duplicate names or resolve missing names.</p></div><span id="dpAgentRows" class="dp-count-pill">—</span></div>
+    <div id="dpAgentTable" class="dp-table-wrap"><div class="dp-empty">Loading agent report…</div></div>
+  </section>
+  <section class="dp-card">
+    <div class="dp-section-head"><div><span class="dp-eyebrow">DATE COVERAGE</span><h2>Daily call record trend</h2></div></div>
+    <div id="dpDailyTrend" class="dp-bars"><div class="dp-empty">Loading daily trend…</div></div>
+  </section>
+  <section class="dp-footer-panel">
+    <div><strong>Report data source</strong><p id="dpDataStatus">Connecting to published Call Performance records…</p></div>
+    <a id="dpImportLink" class="dp-btn dp-btn-muted" href="superadmin.html">Super Admin · Excel upload</a>
+  </section>
+  <p id="dpStatus" class="dp-status" role="status"></p>
+</main>
+<script src="api.js"></script>
+<script src="disposition-performance.js?v=dp-v1-20261106"></script>
+</body></html>
