@@ -127,6 +127,10 @@ export async function handleHelpdesk(req, env) {
     if (m === "GET" && p === "/api/hd/breaks/status") return J(await breakStatus(env, u));
     if (m === "POST" && p === "/api/hd/breaks/start") return J(await breakStart(req, env, u), 201);
     if (m === "POST" && p === "/api/hd/breaks/end") return J(await breakEnd(env, u));
+    if (m === "GET" && p === "/api/hd/acw/status") return J(await acwStatus(env, u));
+    if (m === "POST" && p === "/api/hd/acw/start") return J(await acwStart(env, u), 201);
+    if (m === "POST" && p === "/api/hd/acw/end") return J(await acwEnd(env, u));
+    if (m === "GET" && p === "/api/hd/admin/acw/sessions") return J(await adminAcwSessions(url, env)); 
     if (m === "GET" && p === "/api/hd/admin/breaks/status") return J(await adminBreakStatus(url, env));
     if (m === "GET" && p === "/api/hd/agent-overview/live") return J(await agentOverviewLive(url, env, u));
     if (m === "GET" && p === "/api/hd/attendance/status") return J(await attStatus(env, u));
@@ -412,11 +416,13 @@ async function breakStart(req,env,u) {
   const b=await req.json().catch(()=>({}));
   const type=String(b.break_type||"").toLowerCase();
   if(!BREAK_TYPES.has(type)) bad("Select a valid break type.");
+  const activeAcw=await env.DB.prepare("SELECT id FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(activeAcw) bad("End your ACW session before starting a break.",409);
   const t=now();
   try {
     const r=await env.DB.prepare("INSERT INTO agent_breaks(employee_id,agent_id,break_type,started_at,created_at) VALUES(?,?,?,?,?)").bind(u.employeeId,u.agentId,type,t,t).run();
     return { id:r.meta.last_row_id, breakType:type, startedAt:t };
-  } catch(e) { bad("An active break already exists. End it before starting another break.",409); }
+  } catch(e) { bad("An active break or ACW session already exists. End it before starting a new activity.",409); }
 }
 async function breakEnd(env,u) {
   const active=await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
@@ -424,6 +430,42 @@ async function breakEnd(env,u) {
   const t=now(), seconds=Math.max(0,Math.floor((Date.parse(t)-Date.parse(active.started_at))/1000));
   await env.DB.prepare("UPDATE agent_breaks SET ended_at=?,duration_seconds=?,duration_minutes=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,Math.floor(seconds/60),active.id).run();
   return { id:active.id,breakType:active.break_type,startedAt:active.started_at,endedAt:t,durationSeconds:seconds };
+}
+async function acwStatus(env,u) {
+  const active=await env.DB.prepare("SELECT id,started_at FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  return { active:active?{...active,elapsedSeconds:Math.max(0,Math.floor((Date.now()-Date.parse(active.started_at))/1000))}:null,serverTime:now() };
+}
+async function acwStart(env,u) {
+  const attendance=await env.DB.prepare("SELECT id FROM attendance WHERE employee_id=? AND check_out_at IS NULL").bind(u.employeeId).first();
+  if(!attendance) bad("Check in before starting ACW.",409);
+  const activeBreak=await env.DB.prepare("SELECT id FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(activeBreak) bad("End your break before starting ACW.",409);
+  const t=now();
+  try {
+    const r=await env.DB.prepare("INSERT INTO agent_acw_sessions(employee_id,agent_id,started_at,created_at) VALUES(?,?,?,?)").bind(u.employeeId,u.agentId,t,t).run();
+    return {id:r.meta.last_row_id,startedAt:t};
+  } catch(e) { bad("An active break or ACW session already exists.",409); }
+}
+async function acwEnd(env,u) {
+  const active=await env.DB.prepare("SELECT id,started_at FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(!active) bad("There is no active ACW session to end.",409);
+  const t=now(),seconds=Math.max(0,Math.floor((Date.parse(t)-Date.parse(active.started_at))/1000));
+  const result=await env.DB.prepare("UPDATE agent_acw_sessions SET ended_at=?,duration_seconds=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,active.id).run();
+  if(!result.meta.changes) bad("ACW session was already ended.",409);
+  return {id:active.id,startedAt:active.started_at,endedAt:t,durationSeconds:seconds};
+}
+async function adminAcwSessions(url,env) {
+  const from=url.searchParams.get("from"),to=url.searchParams.get("to"),employeeId=url.searchParams.get("employee_id");
+  if(from&&!isDate(from))bad("Invalid 'from' date.");
+  if(to&&!isDate(to))bad("Invalid 'to' date.");
+  if(from&&to&&from>to)bad("From date cannot be after To date.");
+  const where=["1=1"],args=[];
+  if(from){where.push("date(s.started_at)>=?");args.push(from);}
+  if(to){where.push("date(s.started_at)<=?");args.push(to);}
+  if(employeeId){where.push("a.employee_id=? COLLATE NOCASE");args.push(employeeId);}
+  const sessions=(await env.DB.prepare("SELECT s.id,s.employee_id,a.full_name,s.started_at,s.ended_at,s.duration_seconds FROM agent_acw_sessions s JOIN agents a ON a.id=s.agent_id WHERE "+where.join(" AND ")+" ORDER BY s.started_at DESC LIMIT 3000").bind(...args).all()).results;
+  const t=Date.now();
+  return {sessions:sessions.map(x=>({...x,elapsedSeconds:x.ended_at?Number(x.duration_seconds||0):Math.max(0,Math.floor((t-Date.parse(x.started_at))/1000))})),serverTime:now()};
 }
 async function adminBreakStatus(url, env) {
   const from=url.searchParams.get("from"), to=url.searchParams.get("to");
@@ -492,6 +534,8 @@ async function checkIn(req, env, u) {
 async function checkOut(env, u) {
   const a = await env.DB.prepare("SELECT id,check_in_at FROM attendance WHERE employee_id=? AND check_out_at IS NULL").bind(u.employeeId).first();
   if (!a) bad("No active check-in to check out from.", 409);
+  const activeAcw=await env.DB.prepare("SELECT id FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(activeAcw) bad("End your ACW session before checking out.",409);
   const t = new Date(), mins = Math.max(0, Math.round((t - new Date(a.check_in_at)) / 60000));
   await env.DB.prepare("UPDATE attendance SET check_out_at=?, duration_minutes=? WHERE id=? AND check_out_at IS NULL").bind(t.toISOString(), mins, a.id).run();
   return { checkInAt: a.check_in_at, checkOutAt: t.toISOString(), durationMinutes: mins };
