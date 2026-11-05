@@ -53,3 +53,6 @@
 @media(max-width:980px){#adminOverviewNew .adm-fixed-grid{grid-template-columns:1fr}#adminOverviewNew .adm-split-grid{grid-template-columns:1fr}}
 @media(max-width:680px){#adminOverviewNew .adm-hero{align-items:flex-start;flex-direction:column;padding:19px}#adminOverviewNew .adm-quick-grid{grid-template-columns:1fr 1fr}#adminOverviewNew .adm-period-metrics{grid-template-columns:1fr}#adminOverviewNew .adm-custom-summary{grid-template-columns:repeat(2,minmax(0,1fr))}#adminOverviewNew .adm-period-metrics div{display:flex;justify-content:space-between;align-items:center}#adminOverviewNew .adm-period-metrics strong{margin:0;font-size:20px}}
 @media(prefers-reduced-motion:reduce){#adminOverviewNew *{scroll-behavior:auto!important}}
+
+/* Retire legacy generic KPI and Projects cards from the Admin feature menu; data/routes remain untouched. */
+body.admin-mode #view-admin [data-admin-open="admin-kpi"],body.admin-mode #view-admin #admin-kpi{display:none!important}
