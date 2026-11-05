@@ -97,3 +97,41 @@ body:not(:has(.login-layout)) .sa-msg{color:#b7c2ce!important}
  body:not(:has(.login-layout)) .card,body:not(:has(.login-layout)) .break-card{border-radius:16px!important}
 }
 @media(prefers-reduced-motion:reduce){body:not(:has(.login-layout)):before,body:not(:has(.login-layout)):after{animation:none!important}}
+
+
+/* Mobile operations polish: prevent form/table overflow and improve touch targets. */
+body:not(:has(.login-layout)) .project-layout,
+body:not(:has(.login-layout)) .break-grid{min-width:0}
+body:not(:has(.login-layout)) .project-layout>*,
+body:not(:has(.login-layout)) .break-grid>*{min-width:0}
+body:not(:has(.login-layout)) .project-toolbar{align-items:stretch}
+body:not(:has(.login-layout)) .project-toolbar input{flex:1 1 220px;min-width:0;max-width:none}
+body:not(:has(.login-layout)) .project-toolbar select{flex:1 1 170px;min-width:0;max-width:none;min-height:44px}
+body:not(:has(.login-layout)) .project-toolbar button,
+body:not(:has(.login-layout)) .project-form button,
+body:not(:has(.login-layout)) .break-controls button{min-height:44px}
+body:not(:has(.login-layout)) .project-table-wrap,
+body:not(:has(.login-layout)) .break-card>div[style*="overflow"],
+body:not(:has(.login-layout)) #history>div[style*="overflow"]{
+ max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch
+}
+body:not(:has(.login-layout)) .project-table,
+body:not(:has(.login-layout)) .break-list{min-width:560px}
+body:not(:has(.login-layout)) .project-form input,
+body:not(:has(.login-layout)) .project-form select,
+body:not(:has(.login-layout)) .project-form textarea{min-width:0;max-width:100%;min-height:44px}
+body:not(:has(.login-layout)) .project-form textarea{min-height:100px}
+body:not(:has(.login-layout)) .break-controls{align-items:stretch}
+body:not(:has(.login-layout)) .break-controls select{min-height:44px;min-width:0;flex:1 1 100%}
+body:not(:has(.login-layout)) .break-controls button{flex:1 1 130px}
+@media(max-width:560px){
+ body:not(:has(.login-layout)) .topbar{gap:10px;padding:11px 13px}
+ body:not(:has(.login-layout)) .topright{gap:7px;flex-wrap:wrap;justify-content:flex-end}
+ body:not(:has(.login-layout)) .topright .logout-btn{padding:8px 10px;font-size:12px}
+ body:not(:has(.login-layout)) .head{align-items:flex-start;gap:10px;flex-wrap:wrap}
+ body:not(:has(.login-layout)) .project-toolbar{display:grid;grid-template-columns:minmax(0,1fr)}
+ body:not(:has(.login-layout)) .project-toolbar>*{width:100%;max-width:none}
+ body:not(:has(.login-layout)) .project-form .two{grid-template-columns:minmax(0,1fr)}
+ body:not(:has(.login-layout)) .break-card{padding:16px!important}
+ body:not(:has(.login-layout)) .break-time{font-size:30px!important}
+}
