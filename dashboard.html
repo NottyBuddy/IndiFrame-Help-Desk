@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="admin-glass.css?v=admin-glass-v2-20261105">
   <link rel="stylesheet" href="preloader.css?v=indinext-loader-snake-v3-20261105">
   <link rel="stylesheet" href="indinext-premium.css?v=indinext-ember-glass-20261105">
-  <link rel="stylesheet" href="dashboard-redesign.css?v=animated-glass-v1-20261105">
+  <link rel="stylesheet" href="dashboard-redesign.css?v=animated-glass-v1-20261105">\n  <link rel="stylesheet" href="agent-overview.css?v=agent-overview-v1-20261105">
 </head>
 <body>
 <script src="preloader.js?v=indinext-loader-snake-v3-20261105"></script> <header class="topbar">
@@ -48,58 +48,55 @@
 
     <div id="globalStatus" class="status" role="status"></div>
 
-    <section id="view-overview" class="tab-panel">
-      <div class="grid">
-        <div class="card stat-card">
-          <div class="label">KPI Weeks Loaded</div>
-          <div id="metricWeeks" class="value">—</div>
-          <div class="note">From the existing API</div>
-        </div>
-
-        <div class="card stat-card">
-          <div class="label">Calls</div>
-          <div id="metricCalls" class="value">—</div>
-          <div class="note">Available KPI total</div>
-        </div>
-
-        <div class="card stat-card">
-          <div class="label">Qualified Leads</div>
-          <div id="metricQualified" class="value">—</div>
-          <div class="note">Available KPI total</div>
-        </div>
-
-        <div class="card stat-card">
-          <div class="label">Quiz Attempts</div>
-          <div id="metricAttempts" class="value">—</div>
-          <div class="note">Saved quiz history</div>
-        </div>
+    <section id="view-overview" class="tab-panel agent-overview">
+      <div class="overview-heading">
+        <div><span class="overview-eyebrow">AGENT WORKSPACE</span><h2>My Overview</h2><p>Your weekly performance, monthly progress and attendance at a glance.</p></div>
+        <div class="overview-period-chip" id="overviewTodayDate">Today</div>
       </div>
 
-      <div class="agent-overview-panels">
-        <section class="agent-info-card">
-          <div class="agent-panel-kicker">YOUR WORKSPACE</div>
-          <h2>Employee profile</h2>
-          <div id="agentProfileDetails" class="agent-profile-details"><span>Loading your profile…</span></div>
-        </section>
-        <section class="agent-info-card">
-          <div class="agent-panel-kicker">QUICK ACCESS</div>
-          <h2>Daily activity</h2>
-          <div class="agent-activity-links">
-            <a href="call-performance.html"><strong>Call Performance</strong><span>Review call outcomes and conversion</span></a>
-            <a href="projects.html"><strong>Projects</strong><span>Track customer project progress</span></a>
-            <a href="breaks.html"><strong>Break Management</strong><span>View and manage break sessions</span></a>
-          </div>
-        </section>
-      </div>
+      <section class="overview-block">
+        <div class="overview-block-head"><div><span class="overview-eyebrow">CALL PERFORMANCE</span><h3>Weekly overview</h3></div><span class="overview-period-label" id="overviewWeekRange">Monday – Sunday</span></div>
+        <div class="overview-metric-grid">
+          <article class="overview-metric-card"><span>Total Calls</span><strong id="weekTotalCalls">—</strong><small>Current week</small></article>
+          <article class="overview-metric-card"><span>Connect Calls</span><strong id="weekConnectCalls">—</strong><small>Current week</small></article>
+          <article class="overview-metric-card overview-rate-card"><span>Connect Rate</span><strong id="weekConnectRate">—</strong><small>Connected ÷ total calls</small></article>
+        </div>
+      </section>
 
-      <div class="section card">
-        <h2>Project connection status</h2>
-        <div id="connectionStatus" class="empty">Checking the existing API…</div>
-      </div>
+      <section class="overview-block">
+        <div class="overview-block-head"><div><span class="overview-eyebrow">CALL PERFORMANCE</span><h3>Monthly overview</h3></div><span class="overview-period-label" id="overviewMonthLabel">Current month</span></div>
+        <div class="overview-metric-grid">
+          <article class="overview-metric-card"><span>Total Calls</span><strong id="monthTotalCalls">—</strong><small>Current month</small></article>
+          <article class="overview-metric-card"><span>Connect Calls</span><strong id="monthConnectCalls">—</strong><small>Current month</small></article>
+          <article class="overview-metric-card overview-rate-card"><span>Connect Rate</span><strong id="monthConnectRate">—</strong><small>Connected ÷ total calls</small></article>
+        </div>
+      </section>
 
-      <div class="section alert">
-        Important: this dashboard uses your existing Worker endpoints only. Daily check-in/check-out, new quiz submission, and KPI CSV publishing are not enabled here because their write endpoints have not been confirmed as deployed. The Worker will not be changed or deployed by this page.
-      </div>
+      <section class="overview-block">
+        <div class="overview-block-head"><div><span class="overview-eyebrow">ATTENDANCE</span><h3>Attendance summary</h3></div><span class="overview-period-label">Excel records</span></div>
+        <div class="overview-metric-grid overview-four-grid">
+          <article class="overview-metric-card"><span>Present</span><strong id="overviewPresent">—</strong><small>Selected period</small></article>
+          <article class="overview-metric-card"><span>Half Day</span><strong id="overviewHalfDay">—</strong><small>Selected period</small></article>
+          <article class="overview-metric-card"><span>Absent</span><strong id="overviewAbsent">—</strong><small>Selected period</small></article>
+          <article class="overview-metric-card"><span>On-time Logins</span><strong id="overviewOnTime">—</strong><small>Excel punctuality</small></article>
+          <article class="overview-metric-card"><span>Late Logins</span><strong id="overviewLate">—</strong><small>Excel punctuality</small></article>
+        </div>
+      </section>
+
+      <section class="overview-lower-grid">
+        <article class="overview-panel">
+          <div class="overview-block-head"><div><span class="overview-eyebrow">LOGIN HISTORY</span><h3>My login times</h3></div><span class="overview-period-label">This week</span></div>
+          <div id="overviewLoginHistory" class="overview-empty">Historical login records will appear after the Attendance Excel is imported.</div>
+        </article>
+        <article class="overview-panel overview-live-panel">
+          <div class="overview-block-head"><div><span class="overview-eyebrow">LIVE TRACKING</span><h3>Today's work</h3></div><span class="overview-live-indicator"><i></i> Live</span></div>
+          <div class="overview-live-row"><span>Today's login time</span><strong id="overviewTodayLogin">—</strong></div>
+          <div class="overview-live-row overview-work-total"><span>Total working hours</span><strong id="overviewTodayWork">—</strong></div>
+          <p class="overview-live-note">Break duration is excluded. Only today's working time is shown here.</p>
+          <div id="overviewLiveStatus" class="overview-live-status">Checking today's attendance…</div>
+        </article>
+      </section>
+      <div id="overviewDataNote" class="overview-data-note" role="status">Historical Excel data has not been connected yet.</div>
     </section>
 
     <section id="view-kpis" class="tab-panel hidden">
@@ -200,6 +197,6 @@
   </main>
 
   <script src="api.js"></script>
-  <script src="dashboard.js?v=admin-section-navigation-v2-20261105"></script>
+  <script src="dashboard.js?v=admin-section-navigation-v2-20261105"></script>\n  <script src="agent-overview.js?v=agent-overview-v1-20261105"></script>
 </body>
 </html>
