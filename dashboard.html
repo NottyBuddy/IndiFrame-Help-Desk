@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="dashboard-redesign.css?v=animated-glass-v1-20261105">
   <link rel="stylesheet" href="agent-overview.css?v=agent-overview-v1-20261105">
   <link rel="stylesheet" href="agent-attendance.css?v=attendance-centre-v1-20261106">
-  <link rel="stylesheet" href="admin-command-centre.css?v=admin-command-centre-v1-20261106">
+  <link rel="stylesheet" href="admin-command-centre.css?v=admin-command-centre-v1-20261106">\n  <link rel="stylesheet" href="admin-overview.css?v=admin-overview-v1-20261106">
 </head>
 <body>
 <script src="preloader.js?v=indinext-loader-snake-v3-20261105"></script> <header class="topbar">
@@ -168,6 +168,32 @@
     </section>
 
     <section id="view-admin" class="tab-panel hidden">
+      <div id="adminOverviewNew">
+        <section class="adm-hero"><div><span class="adm-eyebrow">INDINEXT / ADMIN COMMAND CENTRE</span><h2>Team Overview</h2><p>Live operations, verified call performance and team-wide reporting.</p></div><button id="admRefresh" class="adm-refresh" type="button">↻ Refresh data</button></section>
+        <section class="adm-fixed-grid" aria-label="Fixed call performance periods">
+          <article class="adm-period-card"><h3>Today</h3><div class="adm-period-metrics"><div><span>Total Calls</span><strong id="admTodayCalls">—</strong></div><div><span>Connect Calls</span><strong id="admTodayConnected">—</strong></div><div><span>Connect Rate</span><strong id="admTodayRate">—</strong></div></div></article>
+          <article class="adm-period-card"><h3>This Week</h3><div class="adm-period-metrics"><div><span>Total Calls</span><strong id="admWeekCalls">—</strong></div><div><span>Connect Calls</span><strong id="admWeekConnected">—</strong></div><div><span>Connect Rate</span><strong id="admWeekRate">—</strong></div></div></article>
+          <article class="adm-period-card"><h3>This Month</h3><div class="adm-period-metrics"><div><span>Total Calls</span><strong id="admMonthCalls">—</strong></div><div><span>Connect Calls</span><strong id="admMonthConnected">—</strong></div><div><span>Connect Rate</span><strong id="admMonthRate">—</strong></div></div></article>
+        </section>
+        <section class="adm-quick-grid">
+          <article class="adm-mini-stat"><span>Today Present · Website Check-in</span><strong id="admPresent">—</strong></article>
+          <article class="adm-mini-stat"><span>Live Agents on Break</span><strong id="admOnBreak">—</strong></article>
+        </section>
+        <section class="adm-split-grid">
+          <article class="adm-panel"><div class="adm-panel-head"><div><span class="adm-eyebrow">DISPOSITION MIX</span><h3>Disposition-wise records</h3><p>One record per agent per date; only populated dispositions.</p></div></div><div id="admDispositionChart"><div class="adm-empty">Loading dispositions…</div></div></article>
+          <article class="adm-panel"><div class="adm-panel-head"><div><span class="adm-eyebrow">CALL DIRECTION</span><h3>Incoming &amp; Outgoing</h3></div></div><div class="adm-direction-grid">
+            <div class="adm-direction-item"><span>Incoming Calls</span><strong id="admIncoming">—</strong></div><div class="adm-direction-item"><span>Incoming Connected</span><strong id="admIncomingConnected">—</strong></div><div class="adm-direction-item"><span>Incoming Not Connected</span><strong id="admIncomingMissed">—</strong></div>
+            <div class="adm-direction-item"><span>Outgoing Calls</span><strong id="admOutgoing">—</strong></div><div class="adm-direction-item"><span>Outgoing Connected</span><strong id="admOutgoingConnected">—</strong></div><div class="adm-direction-item"><span>Outgoing Not Connected</span><strong id="admOutgoingMissed">—</strong></div>
+            <div class="adm-direction-item"><span>Combined Total Calls</span><strong id="admCombinedCalls">—</strong></div><div class="adm-direction-item"><span>Combined Connect Calls</span><strong id="admCombinedConnected">—</strong></div><div class="adm-direction-item"><span>Combined Connect Rate</span><strong id="admCombinedRate">—</strong></div>
+          </div><p class="adm-footnote">Not connected / missed and connection rates are shown only when source fields support the calculation.</p></article>
+        </section>
+        <section class="adm-panel"><div class="adm-panel-head"><div><span class="adm-eyebrow">LIVE AGENT MONITORING</span><h3>Current team status</h3><p>Select an agent to open their filtered report below.</p></div></div><div id="admLiveAgents"><div class="adm-empty">Loading live agent status…</div></div></section>
+        <section id="admCustomReport" class="adm-panel"><div class="adm-panel-head"><div><span class="adm-eyebrow">CUSTOM DATE REPORT</span><h3>Detailed team report</h3><p>Custom dates affect this report only. Today / Week / Month cards above remain fixed.</p></div></div>
+          <div class="adm-custom-controls"><label>From<input id="admCustomFrom" type="date"></label><label>To<input id="admCustomTo" type="date"></label><label>Search agent by name<input id="admAgentSearch" type="search" placeholder="Agent name"></label><button id="admCustomApply" type="button">Apply custom report</button><button id="admCustomReset" type="button">Reset agent</button></div>
+          <div id="admCustomSummary" class="adm-custom-summary"></div><div id="admCustomTable"><div class="adm-empty">Choose a date range and apply the report.</div></div><p id="admCustomStatus" class="adm-source"></p>
+        </section>
+        <p id="admDataStatus" class="adm-source">Connecting to published reports…</p>
+      </div>
       <div class="section card">
         <h2>Team Reports — Date Filter</h2>
         <div class="report-filters">
@@ -227,6 +253,6 @@
 
   <script src="api.js"></script>
   <script src="dashboard.js?v=admin-section-navigation-v2-20261105"></script>
-  <script src="agent-overview.js?v=agent-overview-v1-20261105"></script>
+  <script src="agent-overview.js?v=agent-overview-v1-20261105"></script>\n  <script src="admin-overview.js?v=admin-overview-v1-20261106"></script>
 </body>
 </html>
