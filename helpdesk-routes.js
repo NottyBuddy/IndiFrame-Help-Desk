@@ -446,7 +446,7 @@ async function attHistory(url, env, u, admin) {
   if(to){w.push("work_date<=?");b.push(to);}
   if(emp){w.push("employee_id=?");b.push(emp);}
   const W=w.length?w.join(" AND "):"1=1";
-  const rows=(await env.DB.prepare(`SELECT employee_id employeeId,work_date workDate,check_in_at checkInAt,check_out_at checkOutAt,duration_minutes durationMinutes FROM attendance WHERE ${W} ORDER BY work_date DESC,check_in_at DESC LIMIT 3000`).bind(...b).all()).results;
+  const rows=(await env.DB.prepare(`SELECT id,employee_id employeeId,work_date workDate,check_in_at checkInAt,check_out_at checkOutAt,duration_minutes durationMinutes FROM attendance WHERE ${W} ORDER BY work_date DESC,check_in_at DESC LIMIT 3000`).bind(...b).all()).results;
   const sum=(await env.DB.prepare(`SELECT employee_id employeeId,COUNT(DISTINCT work_date) daysPresent,COALESCE(SUM(duration_minutes),0) totalMinutes FROM attendance WHERE ${W} GROUP BY employee_id ORDER BY employee_id LIMIT 500`).bind(...b).all()).results;
   return {month,from,to,records:rows,summary:sum};
 }
@@ -688,7 +688,7 @@ async function adminQResults(url, env) {
   const where=["qa.week_number=?"],args=[week];
   if(from){where.push("date(qa.completed_at)>=?");args.push(from);}
   if(to){where.push("date(qa.completed_at)<=?");args.push(to);}
-  const r=(await env.DB.prepare("SELECT a.employee_id employeeId,qa.score,qa.total_questions total,qa.completed_at completedAt FROM quiz_attempts qa JOIN agents a ON a.id=qa.agent_id WHERE "+where.join(" AND ")+" ORDER BY qa.score DESC LIMIT 2000").bind(...args).all()).results;
+  const r=(await env.DB.prepare("SELECT qa.id,a.employee_id employeeId,qa.week_number weekNumber,qa.score,qa.total_questions total,qa.completed_at completedAt FROM quiz_attempts qa JOIN agents a ON a.id=qa.agent_id WHERE "+where.join(" AND ")+" ORDER BY qa.score DESC LIMIT 2000").bind(...args).all()).results;
   const s=r.reduce((a,x)=>a+x.score,0),t=r.reduce((a,x)=>a+x.total,0);
   return {week,from,to,attempts:r,team:{attempts:r.length,averagePercent:rate(s,t)}};
 }
