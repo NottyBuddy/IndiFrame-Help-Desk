@@ -263,3 +263,258 @@ body:has(.login-layout){
 @media(prefers-reduced-motion:reduce){
   .cp-kpi,.cp-kpi-link,body:not(:has(.login-layout)) button{transition:none!important}
 }
+
+
+/* 2026-11-05 — INDINEXT full-site animated black / red / orange / white glass theme */
+:root{
+  color-scheme:dark;
+  --if-text:#fff8f3;
+  --if-text-soft:#e4d9d4;
+  --if-text-muted:#c3b8b2;
+  --if-glass-bg:rgba(19,17,19,.64);
+  --if-glass-border:rgba(255,255,255,.17);
+  --if-glass-warm:rgba(255,112,62,.25);
+  --if-red:#e33b32;
+  --if-orange:#f28a36;
+  --if-white:#fff7f1;
+}
+html{min-height:100%;background:#08090c!important}
+body{
+  position:relative;
+  isolation:isolate;
+  min-height:100vh;
+  background:transparent!important;
+  color:var(--if-text)!important;
+}
+body:before{
+  content:"";
+  position:fixed;
+  z-index:-1;
+  inset:-28%;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 12% 18%,rgba(255,255,255,.18),transparent 24%),
+    radial-gradient(ellipse at 78% 18%,rgba(236,44,42,.34),transparent 29%),
+    radial-gradient(ellipse at 76% 78%,rgba(255,112,35,.28),transparent 30%),
+    radial-gradient(ellipse at 22% 82%,rgba(180,24,34,.25),transparent 28%),
+    linear-gradient(128deg,#050608 4%,#171014 34%,#40151a 56%,#713019 75%,#111014 100%);
+  background-size:150% 150%;
+  background-position:0% 50%;
+  filter:saturate(1.08);
+  animation:indinext-gradient-drift 28s ease-in-out infinite alternate;
+}
+@keyframes indinext-gradient-drift{
+  0%{background-position:0% 48%;transform:scale(1) rotate(0deg)}
+  50%{background-position:70% 52%;transform:scale(1.035) rotate(1deg)}
+  100%{background-position:100% 48%;transform:scale(1.06) rotate(-1deg)}
+}
+/* Shared readable glass surfaces across every portal page */
+body:not(:has(.login-layout)) .topbar,
+body:not(:has(.login-layout)) .nav,
+body:not(:has(.login-layout)) .card,
+body:not(:has(.login-layout)) .stat-card,
+body:not(:has(.login-layout)) .agent-info-card,
+body:not(:has(.login-layout)) .break-card,
+body:not(:has(.login-layout)) .admin-chart-card,
+body:not(:has(.login-layout)) .admin-module-card,
+body:not(:has(.login-layout)) .cp-section,
+body:not(:has(.login-layout)) .cp-chart-panel,
+body:not(:has(.login-layout)) .cp-kpi,
+body:not(:has(.login-layout)) .section-data,
+body:not(:has(.login-layout)) .section-card,
+body:not(:has(.login-layout)) .cp-detail-card,
+body:not(:has(.login-layout)) .table-wrap,
+body:not(:has(.login-layout)) .cp-table-wrap,
+body:not(:has(.login-layout)) .profile,
+body:not(:has(.login-layout)) .modal,
+body:not(:has(.login-layout)) .modal-content,
+body:not(:has(.login-layout)) .admin-panel,
+body:not(:has(.login-layout)) .panel{
+  color:var(--if-text)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035) 34%,rgba(18,13,17,.68) 100%)!important;
+  border:1px solid var(--if-glass-border)!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.16),0 0 28px rgba(236,61,48,.045)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(155%);
+  backdrop-filter:blur(24px) saturate(155%);
+}
+body:not(:has(.login-layout)) .topbar{
+  background:linear-gradient(100deg,rgba(5,6,8,.84),rgba(69,19,24,.72),rgba(100,42,18,.62))!important;
+  border-color:rgba(255,255,255,.18)!important;
+}
+body:not(:has(.login-layout)) .nav{padding:10px!important;border-radius:18px!important;gap:8px!important}
+body:not(:has(.login-layout)) .nav button,
+body:not(:has(.login-layout)) .nav .nav-link{
+  color:#fff8f3!important;
+  background:rgba(255,255,255,.075)!important;
+  border:1px solid rgba(255,255,255,.17)!important;
+  border-radius:12px!important;
+}
+body:not(:has(.login-layout)) .nav button.active,
+body:not(:has(.login-layout)) .nav button:hover,
+body:not(:has(.login-layout)) .nav .nav-link:hover{
+  color:#fff!important;
+  background:linear-gradient(110deg,#a91f2b,#e34b32 55%,#f28a36)!important;
+  border-color:rgba(255,255,255,.35)!important;
+  box-shadow:0 8px 24px rgba(224,54,42,.22),inset 0 1px rgba(255,255,255,.28)!important;
+}
+body:not(:has(.login-layout)) h1,
+body:not(:has(.login-layout)) h2,
+body:not(:has(.login-layout)) h3,
+body:not(:has(.login-layout)) h4,
+body:not(:has(.login-layout)) .brand,
+body:not(:has(.login-layout)) .head h1,
+body:not(:has(.login-layout)) .label,
+body:not(:has(.login-layout)) label,
+body:not(:has(.login-layout)) .value,
+body:not(:has(.login-layout)) strong{color:#fff8f3!important}
+body:not(:has(.login-layout)) p,
+body:not(:has(.login-layout)) .muted,
+body:not(:has(.login-layout)) .note,
+body:not(:has(.login-layout)) .subtitle,
+body:not(:has(.login-layout)) .footer,
+body:not(:has(.login-layout)) small,
+body:not(:has(.login-layout)) .cp-muted,
+body:not(:has(.login-layout)) .cp-status{color:var(--if-text-soft)!important}
+body:not(:has(.login-layout)) input,
+body:not(:has(.login-layout)) select,
+body:not(:has(.login-layout)) textarea{
+  color:#fff!important;
+  background:rgba(8,9,12,.68)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  border-radius:12px!important;
+  box-shadow:inset 0 1px 8px rgba(0,0,0,.18)!important;
+}
+body:not(:has(.login-layout)) input::placeholder,
+body:not(:has(.login-layout)) textarea::placeholder{color:#c7b9b3!important;opacity:1}
+body:not(:has(.login-layout)) option{background:#171216!important;color:#fff!important}
+body:not(:has(.login-layout)) input:focus,
+body:not(:has(.login-layout)) select:focus,
+body:not(:has(.login-layout)) textarea:focus{
+  outline:none!important;
+  border-color:#ff9b65!important;
+  box-shadow:0 0 0 3px rgba(255,119,66,.2),0 0 22px rgba(227,59,50,.12)!important;
+}
+body:not(:has(.login-layout)) table{color:#fff8f3!important}
+body:not(:has(.login-layout)) th{
+  color:#fff!important;
+  background:linear-gradient(100deg,rgba(125,25,34,.9),rgba(174,69,29,.86))!important;
+}
+body:not(:has(.login-layout)) td{
+  color:#f8efea!important;
+  background:rgba(12,10,13,.22)!important;
+  border-bottom:1px solid rgba(255,255,255,.12)!important;
+}
+body:not(:has(.login-layout)) a{color:#ffbd91}
+body:not(:has(.login-layout)) .primary-btn,
+body:not(:has(.login-layout)) button.primary-btn,
+body:not(:has(.login-layout)) .break-btn,
+body:not(:has(.login-layout)) button[type=submit]{
+  color:#fff!important;
+  background:linear-gradient(110deg,#a91f2b 0%,#e34b32 52%,#f28a36 100%)!important;
+  border:1px solid rgba(255,255,255,.24)!important;
+  box-shadow:0 10px 26px rgba(210,53,42,.24),inset 0 1px rgba(255,255,255,.28)!important;
+}
+body:not(:has(.login-layout)) .secondary-btn,
+body:not(:has(.login-layout)) .logout-btn{
+  color:#fff8f3!important;
+  background:rgba(255,255,255,.09)!important;
+  border:1px solid rgba(255,255,255,.2)!important;
+}
+body:not(:has(.login-layout)) .alert,
+body:not(:has(.login-layout)) .message{
+  color:#fff2e9!important;
+  background:rgba(132,34,32,.34)!important;
+  border:1px solid rgba(255,160,126,.32)!important;
+}
+body:not(:has(.login-layout)) .success,
+body:not(:has(.login-layout)) .status-success{color:#baf4cf!important}
+body:not(:has(.login-layout)) .error,
+body:not(:has(.login-layout)) .status-error{color:#ffc0b6!important}
+/* The legacy admin-mode used a pale canvas; keep the same dark glass contrast here too. */
+body.admin-mode{background:transparent!important;color:#fff8f3!important}
+body.admin-mode .wrap,
+body.admin-mode .head h1,
+body.admin-mode #view-admin h2,
+body.admin-mode #view-admin h3,
+body.admin-mode #view-admin .admin-module-card strong{color:#fff8f3!important}
+body.admin-mode #view-admin .card,
+body.admin-mode #view-admin .admin-chart-card,
+body.admin-mode #view-admin .admin-module-card,
+body.admin-mode #view-admin .table-wrap{
+  color:#fff8f3!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(20,12,16,.72))!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:0 18px 44px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.15)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(150%);
+  backdrop-filter:blur(24px) saturate(150%);
+}
+body.admin-mode #view-admin td,
+body.admin-mode #view-admin th{color:#fff8f3!important;background:rgba(14,10,13,.36)!important}
+body.admin-mode #view-admin input,
+body.admin-mode #view-admin select{color:#fff!important;background:rgba(8,9,12,.72)!important}
+body:has(.login-layout) .login-layout{
+  background:linear-gradient(140deg,rgba(255,255,255,.13),rgba(31,16,20,.72) 42%,rgba(14,13,16,.82))!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  box-shadow:0 36px 110px rgba(0,0,0,.62),inset 0 1px rgba(255,255,255,.2)!important;
+  -webkit-backdrop-filter:blur(30px) saturate(160%);
+  backdrop-filter:blur(30px) saturate(160%);
+}
+body:has(.login-layout) .login-showcase{
+  background:linear-gradient(145deg,rgba(8,8,11,.78),rgba(130,24,34,.55) 58%,rgba(183,77,27,.46))!important;
+}
+body:has(.login-layout) .login-shell{
+  color:#fff8f3!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(19,14,17,.74))!important;
+  -webkit-backdrop-filter:blur(28px) saturate(155%);
+  backdrop-filter:blur(28px) saturate(155%);
+}
+body:has(.login-layout) .login-shell h1,
+body:has(.login-layout) .login-shell label{color:#fff8f3!important}
+body:has(.login-layout) .login-shell .subtitle{color:#f0d8cc!important}
+body:has(.login-layout) .login-shell input{
+  color:#fff!important;
+  background:rgba(7,8,10,.62)!important;
+  border:1px solid rgba(255,255,255,.23)!important;
+}
+body:has(.login-layout) .login-shell input::placeholder{color:#c9b8b0!important}
+body:has(.login-layout) .login-shell button[type=submit]{
+  color:#fff!important;
+  background:linear-gradient(110deg,#a91f2b,#e34b32 54%,#f28a36)!important;
+  border:1px solid rgba(255,255,255,.28)!important;
+}
+body:has(.login-layout) .login-shell .message{color:#ffd2c2!important}
+body:has(.login-layout) .login-shell .message.success{color:#baf4cf!important}
+/* Extra page-specific surfaces */
+.cp-detail-card{background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(18,12,16,.72))!important;border:1px solid rgba(255,255,255,.2)!important;color:#fff8f3!important;backdrop-filter:blur(22px)}
+.cp-detail-card span{color:#f1d2c3!important}
+.cp-detail-table th{background:rgba(130,28,36,.88)!important;color:#fff!important}
+.cp-detail-table td{background:rgba(10,9,12,.3)!important;color:#fff3ec!important}
+@media(hover:hover){
+  body:not(:has(.login-layout)) .card,
+  body:not(:has(.login-layout)) .stat-card,
+  body:not(:has(.login-layout)) .admin-module-card,
+  body:not(:has(.login-layout)) .cp-detail-card{
+    transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease!important;
+  }
+  body:not(:has(.login-layout)) .card:hover,
+  body:not(:has(.login-layout)) .stat-card:hover,
+  body:not(:has(.login-layout)) .admin-module-card:hover,
+  body:not(:has(.login-layout)) .cp-detail-card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(255,153,111,.38)!important;
+    box-shadow:0 22px 54px rgba(0,0,0,.34),0 0 25px rgba(227,59,50,.09),inset 0 1px rgba(255,255,255,.18)!important;
+  }
+}
+@media(max-width:700px){
+  body:before{inset:-12%;animation-duration:34s}
+  body:not(:has(.login-layout)) .card,
+  body:not(:has(.login-layout)) .stat-card,
+  body:not(:has(.login-layout)) .cp-detail-card{border-radius:17px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  body:before{animation:none!important}
+  body:not(:has(.login-layout)) .card,
+  body:not(:has(.login-layout)) .stat-card,
+  body:not(:has(.login-layout)) .admin-module-card,
+  body:not(:has(.login-layout)) .cp-detail-card{transition:none!important}
+}
