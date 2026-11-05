@@ -1,0 +1,38 @@
+/* IndiFrame Admin UI — applied after shared portal-clean.css */
+:root{--if-navy:#18364B;--if-teal:#159B91;--if-violet:#7867D8;--if-amber:#E5A43B}
+body.admin-mode{background:radial-gradient(ellipse at 7% 3%,rgba(21,155,145,.20),transparent 31%),radial-gradient(ellipse at 91% 10%,rgba(120,103,216,.18),transparent 29%),radial-gradient(ellipse at 72% 96%,rgba(229,164,59,.12),transparent 28%),linear-gradient(135deg,#eaf1f5 0%,#edf3f5 48%,#f3f0ea 100%)!important;color:#18364B}
+body.admin-mode .topbar{background:linear-gradient(110deg,rgba(24,54,75,.97),rgba(17,82,91,.94))!important;border-bottom:1px solid rgba(255,255,255,.24);box-shadow:0 10px 30px rgba(18,48,65,.18)!important;backdrop-filter:blur(24px) saturate(150%)}
+body.admin-mode .wrap{background:transparent}
+body.admin-mode .nav{background:linear-gradient(165deg,rgba(24,54,75,.94),rgba(21,71,82,.91))!important;border:1px solid rgba(255,255,255,.2)!important;border-radius:0 24px 24px 0!important;box-shadow:12px 0 36px rgba(20,51,67,.12)!important;backdrop-filter:blur(28px) saturate(160%)!important}
+body.admin-mode .nav button,body.admin-mode .nav .nav-link,body.admin-mode .nav .admin-side-link{color:rgba(244,251,255,.82)!important;border:1px solid transparent!important;border-radius:12px!important;transition:background .2s,border-color .2s,transform .2s}
+body.admin-mode .nav button:hover,body.admin-mode .nav .nav-link:hover,body.admin-mode .nav .admin-side-link:hover{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.12)!important;transform:translateX(2px)}
+body.admin-mode .nav button.active,body.admin-mode .nav .admin-side-link.active{background:linear-gradient(110deg,rgba(21,155,145,.96),rgba(21,155,145,.72))!important;border-color:rgba(255,255,255,.22)!important;color:#fff!important;box-shadow:0 8px 22px rgba(21,155,145,.24),inset 0 1px rgba(255,255,255,.22)}
+body.admin-mode #view-admin .admin-kpi-grid .stat-card,body.admin-mode #view-admin .admin-report-grid>.section.card,body.admin-mode #view-admin .section.card,body.admin-mode #view-admin>.section.card{border:1px solid rgba(255,255,255,.82)!important;border-radius:22px!important;background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(239,247,249,.53))!important;box-shadow:0 16px 38px rgba(24,54,75,.09),inset 0 1px rgba(255,255,255,.96)!important;backdrop-filter:blur(26px) saturate(155%)!important;-webkit-backdrop-filter:blur(26px) saturate(155%)!important}
+body.admin-mode #view-admin .admin-kpi-grid .stat-card:nth-child(4n+1){border-top:3px solid var(--if-navy)!important}
+body.admin-mode #view-admin .admin-kpi-grid .stat-card:nth-child(4n+2){border-top:3px solid var(--if-teal)!important}
+body.admin-mode #view-admin .admin-kpi-grid .stat-card:nth-child(4n+3){border-top:3px solid var(--if-violet)!important}
+body.admin-mode #view-admin .admin-kpi-grid .stat-card:nth-child(4n){border-top:3px solid var(--if-amber)!important}
+body.admin-mode #view-admin #adminHome.admin-home-grid{gap:18px!important}
+body.admin-mode #view-admin #adminHome>.admin-module-card{position:relative;isolation:isolate;overflow:hidden;min-height:184px!important;padding:23px!important;border:1px solid rgba(255,255,255,.88)!important;border-radius:24px!important;background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(236,245,248,.57))!important;color:#18364B!important;box-shadow:0 18px 42px rgba(24,54,75,.10),inset 0 1px rgba(255,255,255,.98)!important;backdrop-filter:blur(28px) saturate(165%)!important;-webkit-backdrop-filter:blur(28px) saturate(165%)!important;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease!important}
+body.admin-mode #view-admin #adminHome>.admin-module-card:before{content:"";position:absolute;z-index:-1;width:190px;height:190px;right:-78px;top:-105px;border-radius:50%;background:radial-gradient(circle,rgba(21,155,145,.19),rgba(120,103,216,.08) 55%,transparent 72%);pointer-events:none}
+body.admin-mode #view-admin #adminHome>.admin-module-card:nth-child(4n+2):before{background:radial-gradient(circle,rgba(120,103,216,.24),rgba(21,155,145,.06) 58%,transparent 72%)}
+body.admin-mode #view-admin #adminHome>.admin-module-card:nth-child(4n+3):before{background:radial-gradient(circle,rgba(229,164,59,.24),rgba(21,155,145,.06) 58%,transparent 72%)}
+body.admin-mode #view-admin #adminHome>.admin-module-card:nth-child(4n):before{background:radial-gradient(circle,rgba(24,54,75,.20),rgba(120,103,216,.06) 58%,transparent 72%)}
+body.admin-mode #view-admin #adminHome>.admin-module-card:hover{transform:translateY(-5px)!important;border-color:rgba(21,155,145,.42)!important;box-shadow:0 25px 52px rgba(24,54,75,.15),inset 0 1px rgba(255,255,255,1)!important}
+body.admin-mode #view-admin .admin-module-card strong{color:#18364B!important;font-size:15px!important;font-weight:800}
+body.admin-mode #view-admin .admin-module-card small{color:#607887!important;font-size:12px!important;line-height:1.55}
+body.admin-mode #view-admin .module-icon{width:46px!important;height:46px!important;border-radius:15px!important;background:linear-gradient(145deg,rgba(21,155,145,.16),rgba(255,255,255,.78))!important;border:1px solid rgba(255,255,255,.9);color:var(--if-teal)!important;box-shadow:inset 0 1px rgba(255,255,255,.95),0 8px 18px rgba(24,54,75,.07)}
+body.admin-mode #view-admin .admin-module-card:nth-child(4n+2) .module-icon{background:linear-gradient(145deg,rgba(120,103,216,.17),rgba(255,255,255,.78))!important;color:var(--if-violet)!important}
+body.admin-mode #view-admin .admin-module-card:nth-child(4n+3) .module-icon{background:linear-gradient(145deg,rgba(229,164,59,.19),rgba(255,255,255,.78))!important;color:#a66c12!important}
+body.admin-mode #view-admin .admin-module-card:nth-child(4n) .module-icon{background:linear-gradient(145deg,rgba(24,54,75,.14),rgba(255,255,255,.78))!important;color:var(--if-navy)!important}
+body.admin-mode #view-admin .module-open{color:var(--if-teal)!important;font-weight:800}
+body.admin-mode #view-admin .admin-detail-bar{border:1px solid rgba(255,255,255,.86)!important;border-radius:18px!important;background:rgba(255,255,255,.62)!important;box-shadow:0 12px 30px rgba(24,54,75,.08),inset 0 1px #fff!important;backdrop-filter:blur(24px)}
+body.admin-mode #view-admin table{border-collapse:separate!important;border-spacing:0!important;overflow:hidden;border-radius:14px}
+body.admin-mode #view-admin th{background:rgba(24,54,75,.94)!important;color:#f4fbff!important}
+body.admin-mode #view-admin td{background:rgba(255,255,255,.46);border-bottom:1px solid rgba(24,54,75,.08)!important}
+body.admin-mode #view-admin tbody tr:hover td{background:rgba(21,155,145,.08)!important}
+body.admin-mode .primary-btn,body.admin-mode button.primary-btn{background:linear-gradient(110deg,var(--if-navy),var(--if-teal))!important;border:1px solid rgba(255,255,255,.6)!important;border-radius:12px!important;box-shadow:0 9px 22px rgba(24,54,75,.16)}
+body.admin-mode .secondary-btn{border:1px solid rgba(120,103,216,.22)!important;border-radius:12px!important;background:rgba(255,255,255,.72)!important;color:#51459a!important;backdrop-filter:blur(14px)}
+body.admin-mode input,body.admin-mode select{border-radius:11px!important;background:rgba(255,255,255,.76)!important;border:1px solid rgba(91,124,145,.2)!important}
+@media(max-width:680px){body.admin-mode .nav{border-radius:0 0 18px 18px!important}}
+@media(prefers-reduced-motion:reduce){body.admin-mode #view-admin #adminHome>.admin-module-card{transition:none!important}}
