@@ -4,7 +4,7 @@ const ORIGIN = "https://nottybuddy.github.io";
 const CORS = {
   "Access-Control-Allow-Origin": ORIGIN, "Vary": "Origin",
   "Access-Control-Allow-Headers": "Authorization, Content-Type",
-  "Access-Control-Allow-Methods": "GET,POST,PUT,OPTIONS",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
 };
 const J = (d, s = 200) => new Response(JSON.stringify(d), { status: s, headers: { "Content-Type": "application/json", ...CORS } });
 class HttpError extends Error { constructor(s, m) { super(m); this.status = s; } }
@@ -55,7 +55,8 @@ export async function handleHelpdesk(req, env) {
     // Admin accounts are monitoring-only. Separate KPI and Call Performance imports are Super Admin-only.
     const superAdminKpiImport = p === "/api/hd/admin/kpis/import" && m === "POST" && u.isSuperAdmin;
     const superAdminCallImport = p === "/api/hd/admin/call-performance/import" && m === "POST" && u.isSuperAdmin;
-    if (admin && ["POST", "PUT", "PATCH", "DELETE"].includes(m) && !superAdminKpiImport && !superAdminCallImport) {
+    const superAdminDataWrite = u.isSuperAdmin && (p === "/api/hd/superadmin/projects" && m === "POST" || p === "/api/hd/superadmin/records" && m === "DELETE" || p === "/api/hd/admin/quiz/questions" && ["POST","PUT"].includes(m));
+    if (admin && ["POST", "PUT", "PATCH", "DELETE"].includes(m) && !superAdminKpiImport && !superAdminCallImport && !superAdminDataWrite) {
       return J({ error: "Admin access is read-only. Operational actions are available to agents only." }, 403);
     }
     if (p === "/api/hd/admin/kpis/import" && !u.isSuperAdmin) {
@@ -65,6 +66,22 @@ export async function handleHelpdesk(req, env) {
       return J({ error: "Only Super Admin can import Call Performance data." }, 403);
     }
 
+    if (p === "/api/hd/superadmin/projects" && m === "POST") { if (!u.isSuperAdmin) bad("Super Admin access required.",403); return J(await projectCreate(req, env, u, true),201); }
+    if (p === "/api/hd/superadmin/records" && m === "DELETE") {
+      if (!u.isSuperAdmin) bad("Super Admin access required.",403);
+      const type=url.searchParams.get("type"),id=Number(url.searchParams.get("id"));
+      if(!Number.isSafeInteger(id)||id<1)bad("Valid record ID required.");
+      let result;
+      if(type==="attendance") result=await env.DB.prepare("DELETE FROM attendance WHERE id=?").bind(id).run();
+      else if(type==="break") result=await env.DB.prepare("DELETE FROM agent_breaks WHERE id=?").bind(id).run();
+      else if(type==="quiz") result=await env.DB.prepare("DELETE FROM quiz_attempts WHERE id=?").bind(id).run();
+      else if(type==="kpi") result=await env.DB.prepare("DELETE FROM kpi_daily WHERE id=?").bind(id).run();
+      else if(type==="project") result=await env.DB.prepare("UPDATE projects SET archived_at=?,updated_at=? WHERE id=? AND archived_at IS NULL").bind(now(),now(),id).run();
+      else bad("Unsupported record type.");
+      if(!result.meta.changes)bad("Record not found.",404);
+      await audit(env,u,"superadmin_record_delete",type+" record "+id);
+      return J({success:true,type,id,deleted:result.meta.changes});
+    }
     if (m === "GET" && p === "/api/hd/projects") return J(await projectList(url, env, u, admin));
     if (m === "POST" && p === "/api/hd/projects") return J(await projectCreate(req, env, u, admin), 201);
     const projectMatch = p.match(/^\/api\/hd\/projects\/(\d+)$/);
