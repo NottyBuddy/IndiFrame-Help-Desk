@@ -7,6 +7,7 @@
   <title>IndiFrame Help Desk — Projects</title>
   <link rel="stylesheet" href="dashboard.css">
   <link rel="stylesheet" href="portal-theme.css?v=motion-system-20261103">
+  <link rel="stylesheet" href="preloader.css?v=20261105">
   <style>
     .project-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,.8fr);gap:18px}
     .project-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
@@ -22,7 +23,8 @@
     @media(max-width:850px){.project-layout{grid-template-columns:1fr}.project-form .two{grid-template-columns:1fr}}
   </style>
 </head>
-<body> <header class="topbar">
+<body>
+<script src="preloader.js?v=20261105"></script> <header class="topbar">
     <div><div class="brand">IndiFrame Help Desk</div><div class="subtitle">Customer Project Management</div></div>
     <div class="topright"><a class="logout-btn" href="dashboard.html" style="text-decoration:none">Back to Dashboard</a><button id="logoutBtn" class="logout-btn" type="button">Logout</button></div>
   </header>
