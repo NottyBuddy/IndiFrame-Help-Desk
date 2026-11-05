@@ -110,3 +110,29 @@ body:after{
  .cp-actions>*{flex:1 1 auto}
 }
 @media(prefers-reduced-motion:reduce){body:before,body:after,.cp-kpi{animation:none!important;transition:none!important}}
+
+
+/* Mobile interaction hardening: keep filters, chart labels and KPI values readable. */
+@media(max-width:560px){
+ .topbar{align-items:center;gap:10px;padding:11px 13px!important}
+ .topright{gap:7px!important;flex-wrap:wrap;justify-content:flex-end}
+ .topright .logout-btn{padding:8px 10px!important;font-size:12px}
+ .wrap .head{align-items:flex-start!important;gap:10px;flex-wrap:wrap}
+ .head .profile{max-width:100%;overflow-wrap:anywhere}
+ .cp-kpi-grid{gap:8px!important}
+ .cp-kpi{min-height:98px!important;padding:12px!important}
+ .cp-kpi span{font-size:9px!important;letter-spacing:.07em!important}
+ .cp-kpi strong{font-size:clamp(20px,6vw,25px)!important}
+ .cp-kpi small{font-size:9px!important}
+ .cp-toolbar{gap:10px!important}
+ .cp-toolbar label{display:grid;width:100%;min-width:0}
+ .cp-toolbar input,.cp-toolbar select{width:100%;min-width:0;min-height:44px}
+ .cp-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+ .cp-actions>*{width:100%;min-height:42px}
+ .cp-chart-panel{padding:14px!important}
+ .cp-bar-row{grid-template-columns:minmax(0,34%) minmax(0,1fr) 38px!important;gap:7px!important}
+ .cp-bar-label{font-size:11px}
+ .cp-bar-value{font-size:11px}
+ .cp-table-wrap{max-width:100%;overscroll-behavior-x:contain}
+}
+@media(prefers-reduced-motion:reduce){.cp-kpi-link:hover{transform:none}}
