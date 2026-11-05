@@ -1,3 +1,11 @@
+function renderAgentProfile(u){
+ const host=$("agentProfileDetails");if(!host||document.body.classList.contains("admin-mode"))return;
+ const name=first(u,["fullName","full_name","name"],"Employee");
+ const employeeId=first(u,["employeeId","employee_id","id"],"—");
+ const role=first(u,["role","userRole"],"Agent");
+ const email=first(u,["email","emailAddress"],"");
+ host.innerHTML='<div class="agent-profile-name">'+esc(name)+'</div><div class="agent-profile-meta"><span>EMPLOYEE ID</span><strong>'+esc(employeeId)+'</strong></div><div class="agent-profile-meta"><span>ROLE</span><strong>'+esc(String(role).toUpperCase())+'</strong></div>'+(email?'<div class="agent-profile-meta"><span>EMAIL</span><strong>'+esc(email)+'</strong></div>':'');
+}
 /* Role-aware dashboard. Admins are monitoring-only; Worker remains the authority. */
 const $ = id => document.getElementById(id);
 const state={user:null,quizAttempts:[],agents:[],kpis:[],reports:{attendance:[],breaks:[],kpi:[],quiz:[],projects:[]},filter:{from:"",to:""}};
@@ -11,7 +19,7 @@ function parseJsonObject(v,f={}){if(v==null||v==="")return f;if(typeof v==="stri
 function normalizeKpiRow(r){if(!r||typeof r!=="object")return{};const m=parseJsonObject(r.metrics_json??r.metricsJson??r.metrics??r.data??{});return{...r,...m,employeeId:r.employeeId??r.employee_id??m.employeeId??m.employee_id,fullName:r.fullName??r.full_name??m.fullName??m.full_name??r.name??m.name};}
 function buildRequest(path,options={}){const token=sessionStorage.getItem("indiframe_token")||"",headers={Accept:"application/json",...(options.headers||{})};if(token&&!headers.Authorization)headers.Authorization="Bearer "+token;if(options.body&&!headers["Content-Type"])headers["Content-Type"]="application/json";return fetch(DASHBOARD_API_BASE+path,{...options,headers});}
 async function request(path,options={}){if(window.IndiFrameAPI&&typeof window.IndiFrameAPI.apiRequest==="function")return window.IndiFrameAPI.apiRequest(path,options);const res=await buildRequest(path,options);let data={};try{data=await res.json();}catch{}if(!res.ok)throw new Error(data.error||data.message||"Request failed ("+res.status+")");return data;}
-function setProfile(u){state.user=u||{};const role=normRole(first(u,["role","userRole"],"agent")),label=role[0].toUpperCase()+role.slice(1);setTextByIdCandidates(["welcomeName","welcome"],String(first(u,["fullName","full_name","name"],"Employee")));setTextByIdCandidates(["userRole","roleBadge"],label);setTextByIdCandidates(["userId","profile"],first(u,["employeeId","employee_id","id"],"N/A"));const b=$("roleBadge");if(b){b.textContent=label;b.classList.toggle("admin",role==="admin");}}
+function setProfile(u){state.user=u||{};renderAgentProfile(state.user);const role=normRole(first(u,["role","userRole"],"agent")),label=role[0].toUpperCase()+role.slice(1);setTextByIdCandidates(["welcomeName","welcome"],String(first(u,["fullName","full_name","name"],"Employee")));setTextByIdCandidates(["userRole","roleBadge"],label);setTextByIdCandidates(["userId","profile"],first(u,["employeeId","employee_id","id"],"N/A"));const b=$("roleBadge");if(b){b.textContent=label;b.classList.toggle("admin",role==="admin");}}
 function setConnectionStatus(m,ok=true){const e=document.body.classList.contains("admin-mode")?($("globalStatus")||$("connectionStatus")):($("connectionStatus")||$("globalStatus"));if(e){e.textContent=m;e.className=ok?"empty":"status error";}}
 function dateISO(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function filterDates(){const mode=$("adminPeriod")?.value||"week",now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());let from,to;
