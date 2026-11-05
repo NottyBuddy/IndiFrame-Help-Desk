@@ -55,7 +55,7 @@ export async function handleHelpdesk(req, env) {
     // Admin accounts are monitoring-only. Separate KPI and Call Performance imports are Super Admin-only.
     const superAdminKpiImport = p === "/api/hd/admin/kpis/import" && m === "POST" && u.isSuperAdmin;
     const superAdminCallImport = p === "/api/hd/admin/call-performance/import" && m === "POST" && u.isSuperAdmin;
-    const superAdminDataWrite = u.isSuperAdmin && (p === "/api/hd/superadmin/projects" && m === "POST" || p === "/api/hd/superadmin/records" && m === "DELETE" || p === "/api/hd/superadmin/call-performance" && m === "DELETE" || (p === "/api/hd/admin/quiz/questions" && m === "POST" || /^\\/api\\/hd\\/admin\\/quiz\\/questions\\/\\d+$/.test(p) && m === "PUT"));
+    const superAdminDataWrite = u.isSuperAdmin && (p === "/api/hd/superadmin/projects" && m === "POST" || p === "/api/hd/superadmin/records" && m === "DELETE" || p === "/api/hd/superadmin/call-performance" && m === "DELETE" || (p === "/api/hd/admin/quiz/questions" && m === "POST" || p.startsWith("/api/hd/admin/quiz/questions/") && p.slice("/api/hd/admin/quiz/questions/".length).length > 0 && [...p.slice("/api/hd/admin/quiz/questions/".length)].every(ch => ch >= "0" && ch <= "9") && m === "PUT"));
     if (admin && ["POST", "PUT", "PATCH", "DELETE"].includes(m) && !superAdminKpiImport && !superAdminCallImport && !superAdminDataWrite) {
       return J({ error: "Admin access is read-only. Operational actions are available to agents only." }, 403);
     }
