@@ -1,4 +1,4 @@
-/* First-visit session preloader. Internal page navigation remains uninterrupted. */
+/* First-visit session preloader for Indinext. Internal page navigation remains uninterrupted. */
 (function(){
   "use strict";
   var KEY="indiframe_preloader_seen_v1";
@@ -11,8 +11,8 @@
   var loader=document.createElement("div");
   loader.id="if-loader";
   loader.setAttribute("role","status");
-  loader.setAttribute("aria-label","IndiFrame loading");
-  loader.innerHTML='<div class="if-loader-stage"><div class="if-loader-word if-loader-word-basic">BASIC</div><div class="if-loader-word if-loader-word-advanced">ADVANCED</div><div class="if-loader-word if-loader-word-motion">MOTION</div><div class="if-loader-orb if-purple"></div><div class="if-loader-caption">INDIFRAME · EXPERIENCE IN MOTION</div><div class="if-loader-progress"></div></div>';
+  loader.setAttribute("aria-label","Indinext loading");
+  loader.innerHTML='<div class="if-loader-stage"><div class="if-loader-glass"></div><div class="if-loader-word if-loader-word-frame">FRAME</div><div class="if-loader-word if-loader-word-glass">GLASS</div><div class="if-loader-word if-loader-word-install">INSTALL</div><div class="if-loader-word if-loader-word-hardware">HARDWARE</div><div class="if-loader-word if-loader-word-fit">FIT</div><div class="if-loader-word if-loader-word-finish">FINAL FINISH</div><div class="if-loader-dot d7"></div><div class="if-loader-dot d6"></div><div class="if-loader-dot d5"></div><div class="if-loader-dot d4"></div><div class="if-loader-dot d3"></div><div class="if-loader-dot d2"></div><div class="if-loader-dot d1"></div><div class="if-loader-orb"></div><div class="if-loader-caption">INDINEXT · EXPERIENCE IN MOTION</div><div class="if-loader-progress"></div></div>';
   (document.body||document.documentElement).appendChild(loader);
   var started=Date.now(), minimum=reduce?450:11000, maxWait=15000, loaded=document.readyState==="complete";
   window.addEventListener("load",function(){loaded=true;finishWhenReady();},{once:true});
