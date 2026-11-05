@@ -109,6 +109,16 @@ export async function handleHelpdesk(req, env) {
     const activityMatch = p.match(/^\/api\/hd\/projects\/(\d+)\/activity$/);
     if (m === "GET" && activityMatch) return J(await projectActivity(Number(activityMatch[1]), env, u, admin));
     if (m === "POST" && activityMatch) return J(await projectAddActivity(req, Number(activityMatch[1]), env, u, admin));
+    if (m === "GET" && p === "/api/hd/admin/kpi/rows") {
+      const from=url.searchParams.get("from"),to=url.searchParams.get("to");
+      if(from&&!isDate(from))bad("Invalid 'from' date.");
+      if(to&&!isDate(to))bad("Invalid 'to' date.");
+      const where=["1=1"],args=[];
+      if(from){where.push("report_date>=?");args.push(from);}
+      if(to){where.push("report_date<=?");args.push(to);}
+      const rows=(await env.DB.prepare("SELECT id,employee_id employeeId,report_date reportDate,disposition,assigned_leads assigned, total_attempts attempts,unique_leads uniqueLeads,connected_calls connected,interested,not_interested notInterested,follow_ups followUps,callbacks,qualified FROM kpi_daily WHERE "+where.join(" AND ")+" ORDER BY report_date DESC,employee_id LIMIT 3000").bind(...args).all()).results;
+      return J({rows,count:rows.length});
+    }
     if (m === "GET" && p === "/api/hd/kpis/summary") return J(await kpiSummary(url, env, u, admin));
     if (m === "GET" && p === "/api/hd/call-performance/summary") return J(await callPerformanceSummary(url, env, u, false));
     if (m === "GET" && p === "/api/hd/call-performance/rows") return J(await callPerformanceRows(url, env, u, false));
