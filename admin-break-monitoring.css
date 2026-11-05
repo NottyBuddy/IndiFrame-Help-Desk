@@ -33,3 +33,12 @@
 .break-acw-state strong{color:#f0c09a;font-size:.9rem}
 @media(max-width:700px){.break-monitoring-heading{align-items:flex-start;flex-direction:column}.break-type-stats{grid-template-columns:1fr}.break-type-card{min-height:auto}.break-section-heading{align-items:flex-start;flex-direction:column}.break-monitor-filters label{flex:1 1 100%;min-width:0}.break-acw-panel{padding:14px}}
 @media(prefers-reduced-motion:no-preference){.break-type-card{transition:transform .2s ease,border-color .2s ease,background .2s ease}.break-type-card:hover{transform:translateY(-2px);border-color:rgba(217,154,104,.28)}}
+
+.break-acw-content{display:grid;gap:14px;min-width:0;flex:1}
+.break-acw-table{overflow:hidden;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(0,0,0,.14)}
+.break-acw-table .table-wrap{overflow-x:auto}
+.break-acw-table table{width:100%;min-width:680px;border-collapse:collapse}
+.break-acw-table th,.break-acw-table td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;white-space:nowrap}
+.break-acw-table th{background:rgba(255,255,255,.035);color:#aeb0b4;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}
+.break-acw-table td{color:#e6e3df;font-size:.8rem}
+.break-status-tag.is-acw{background:rgba(105,145,220,.14);color:#a9c5ff}
