@@ -7,8 +7,8 @@ async function loadAnalytics(){
  status.textContent="Refreshing live metrics…";
  const paths=["/api/admin/agents","/api/hd/kpis/summary","/api/quiz-attempts","/api/hd/attendance/history","/api/hd/admin/breaks/status","/api/hd/projects?limit=100","/api/hd/admin/call-performance/summary"];
  const jobs=await Promise.allSettled(paths.map(p=>request(p))),v=i=>jobs[i].status==="fulfilled"?jobs[i].value:null;
- const agents=v(0)?.agents||[],kpi=v(1)?.totals||{},quiz=v(2)?.attempts||[],attendance=v(3)?.records||[],breaks=v(4)?.breaks||[],projects=v(5)?.projects||[],calls=v(6)?.totals||{};
- const active=agents.filter(a=>Number(a.active)===1),checked=attendance.filter(a=>!a.checkOutAt),activeBreaks=breaks.filter(b=>!b.ended_at);
+ const agents=v(0)?.agents||[],kpi=v(1)?.totals||{},quiz=v(2)?.attempts||[],attendance=v(3)?.records||[],breakData=v(4)||{},breaks=breakData.breaks||[],projects=v(5)?.projects||[],calls=v(6)?.totals||{};
+ const active=agents.filter(a=>Number(a.active)===1),checked=attendance.filter(a=>!a.checkOutAt),activeBreaks=Array.isArray(breakData.activeBreaks)?breakData.activeBreaks:breaks.filter(b=>!b.ended_at);
  const quizScore=quiz.reduce((n,a)=>n+Number(a.score||0),0),quizTotal=quiz.reduce((n,a)=>n+Number(a.totalQuestions||a.total_questions||0),0);
  const avg=quizTotal?(quizScore/quizTotal*100).toFixed(1)+"%":"—";
  const stats=[["Active agents",active.length,"of "+agents.length+" registered"],["Checked in now",checked.length,"from attendance records"],["Active breaks",activeBreaks.length,"currently running"],["KPI attempts",Number(kpi.attempts||0).toLocaleString(),"daily KPI records"],["Quiz attempts",quiz.length.toLocaleString(),"all weeks"],["Quiz average",avg,"score percentage"],["Projects",projects.length.toLocaleString(),"active pipeline records"],["Call records",Number(calls.calls||0).toLocaleString(),"imported call rows"]];
