@@ -2,22 +2,24 @@
 const $ = id => document.getElementById(id);
 const api = window.IndiFrameAPI;
 const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let searchTimer;
+let searchTimer, projectLoadSequence = 0;
 function message(text, error=false){ const el=$("projectMessage"); el.textContent=text; el.className="project-message"+(error?" error":""); }
 function formatDate(v){ if(!v) return "—"; const d=new Date(v); return Number.isNaN(d.getTime())?v:d.toLocaleString(); }
 async function loadProjects(){
+  const requestId = ++projectLoadSequence;
   const q=$("projectSearch").value.trim(), status=$("projectStatus").value;
   const params=new URLSearchParams(); if(q)params.set("q",q); if(status)params.set("status",status);
   $("projectList").textContent="Loading projects…";
   try{
     const data=await api.apiRequest("/api/hd/projects?"+params.toString());
+    if (requestId !== projectLoadSequence) return;
     const rows=Array.isArray(data.projects)?data.projects:[];
     if(!rows.length){ $("projectList").innerHTML='<div class="empty">No project records found. Create a project using the form. No demo records are shown.</div>'; return; }
     $("projectList").innerHTML='<div class="project-table-wrap"><table class="project-table"><thead><tr><th>Project / Customer</th><th>Contact</th><th>Location</th><th>Status</th><th>Assigned to</th><th>Next follow-up</th></tr></thead><tbody>'+
       rows.map(p=>'<tr><td><span class="project-code">'+esc(p.project_code)+'</span><br>'+esc(p.customer_name)+'</td><td>'+esc(p.customer_phone)+'</td><td>'+esc([p.city,p.state,p.pincode].filter(Boolean).join(", ")||"—")+'</td><td><span class="project-status">'+esc(p.status)+'</span></td><td>'+esc(p.assigned_employee_name||p.assigned_employee_id||"Unassigned")+'</td><td>'+esc(formatDate(p.next_follow_up_at))+'</td></tr>').join("")+
       '</tbody></table></div>';
     message(rows.length+" project record(s) loaded from the server.");
-  }catch(e){ $("projectList").textContent="Project service is not available yet. "+e.message; message(e.message,true); }
+  }catch(e){ if(requestId !== projectLoadSequence) return; $("projectList").textContent="Project service is not available yet. "+e.message; message(e.message,true); }
 }
 async function init(){
   if(!api || !api.getToken()){ location.replace("index.html"); return; }
