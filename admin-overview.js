@@ -91,17 +91,17 @@ function renderDirection(rows){
 function renderCustom(){
  const from=$("admCustomFrom").value,to=$("admCustomTo").value;
  if(from&&to&&from>to){set("admCustomStatus","From date cannot be after To date.");return;}
- const rows=filterRows(from,to,selectedAgent),a=aggregate(rows),daily=new Map();
+ const query=norm($("admAgentSearch").value),rows=filterRows(from,to,selectedAgent).filter(r=>!query||norm(r.agent.name).includes(query)),a=aggregate(rows),daily=new Map();
  for(const r of rows){const x=daily.get(r.date)||{calls:0,known:false,rows:0};const n=num(field(r.source,aliases.calls));if(n!==null){x.calls+=n;x.known=true;}x.rows++;daily.set(r.date,x);}
  const days=[...daily.entries()].sort((x,y)=>x[0].localeCompare(y[0]));
  $("admCustomSummary").innerHTML='<div><span>Calls</span><strong>'+(a.known.calls?a.sums.calls.toLocaleString():"Not provided")+'</strong></div><div><span>Connect calls</span><strong>'+(a.known.connected?a.sums.connected.toLocaleString():"Not provided")+'</strong></div><div><span>Connect rate</span><strong>'+(a.rate===null?"Not provided":a.rate.toFixed(1)+"%")+'</strong></div><div><span>Unique agent-date records</span><strong>'+rows.length.toLocaleString()+'</strong></div>';
  $("admCustomTable").innerHTML=days.length?'<div class="adm-table-scroll"><table class="adm-table"><thead><tr><th>Date</th><th>Unique agent-date records</th><th>Total calls</th></tr></thead><tbody>'+days.map(([d,x])=>'<tr><td>'+d+'</td><td>'+x.rows+'</td><td>'+(x.known?x.calls.toLocaleString():"Not provided")+'</td></tr>').join("")+'</tbody></table></div>':'<div class="adm-empty">No published records for this custom range.</div>';
- set("admCustomStatus",rows.length+" unique agent-date records · "+(lastRefresh?"Refreshed "+lastRefresh:""));
+ renderDispositions(rows);renderDirection(rows);set("admCustomStatus",rows.length+" unique agent-date records · "+(lastRefresh?"Refreshed "+lastRefresh:""));
 }
 function bind(){
  $("admCustomApply")?.addEventListener("click",renderCustom);
  $("admCustomReset")?.addEventListener("click",()=>{selectedAgent="";$("admAgentSearch").value="";renderCustom();});
- $("admAgentSearch")?.addEventListener("input",()=>{const q=norm($("admAgentSearch").value);const found=agents.filter(a=>norm(a.fullName||a.full_name).includes(q));selectedAgent=q&&found.length===1?String(found[0].employeeId||found[0].employee_id):"";});
+ $("admAgentSearch")?.addEventListener("input",()=>{selectedAgent="";renderCustom();});
  $("admLiveAgents")?.addEventListener("click",e=>{const row=e.target.closest("[data-agent-key]");if(!row)return;selectedAgent=row.dataset.agentKey;$("admAgentSearch").value=row.dataset.agentName;const now=new Date(),from=new Date(now.getFullYear(),now.getMonth(),1);$("admCustomFrom").value=iso(from);$("admCustomTo").value=today();renderCustom();$("admCustomReport")?.scrollIntoView({behavior:"smooth",block:"start"});});
  $("admLiveAgents")?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){const row=e.target.closest("[data-agent-key]");if(row){e.preventDefault();row.click();}}});
  $("admRefresh")?.addEventListener("click",load);
@@ -126,5 +126,5 @@ async function load(){
   renderCustom();
  }catch(e){set("admDataStatus","Unable to load one or more Admin overview sources: "+e.message);set("admPresent","—");set("admOnBreak","—");}
 }
-document.addEventListener("DOMContentLoaded",()=>{if(!$("adminOverviewNew"))return;bind();load();});
+document.addEventListener("DOMContentLoaded",()=>{if(!$("adminOverviewNew"))return;bind();load();setInterval(load,30000);});
 })();
