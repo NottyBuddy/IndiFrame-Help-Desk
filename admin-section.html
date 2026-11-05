@@ -16,13 +16,13 @@
   <div class="break-monitoring-heading"><div><span class="break-eyebrow">LIVE TEAM OPERATIONS</span><h2>Break &amp; Activity Monitor</h2><p>Monitor Tea, Lunch and Bio sessions separately from ACW work activity.</p></div><span class="break-view-pill">Admin · View only</span></div>
   <div class="break-monitor-filters">
     <label>Break type<select id="breakTypeFilter"><option value="all">All break types</option><option value="tea">Tea</option><option value="lunch">Lunch</option><option value="bio">Bio</option></select></label>
-    <label>Live activity<select id="breakStatusFilter"><option value="all">All statuses</option><option value="Working">Working</option><option value="On Break">On Break</option><option value="Checked Out">Checked Out</option></select></label>
+    <label>Live activity<select id="breakStatusFilter"><option value="all">All statuses</option><option value="Working">Working</option><option value="On Break">On Break</option><option value="In ACW">In ACW</option><option value="Checked Out">Checked Out</option></select></label>
   </div>
   <div class="break-section-heading"><div><h3>Break analytics</h3><p>Real break records only; legacy types remain unchanged in the history table.</p></div></div>
   <div id="breakTypeStats" class="break-type-stats"></div>
   <div class="break-section-heading"><div><h3>Live agent monitoring</h3><p>Current working and break status from available attendance and break records.</p></div><span class="break-live-indicator"><i></i> Live data</span></div>
   <div id="breakLiveTable" class="break-live-table"></div>
-  <section class="break-acw-panel"><div class="break-acw-icon">ACW</div><div id="breakAcwState" class="break-acw-state"></div></section>
+  <section class="break-acw-panel"><div class="break-acw-icon">ACW</div><div class="break-acw-content"><div class="break-acw-heading"><div id="breakAcwState" class="break-acw-state"></div><button id="exportAcw" class="secondary-btn" type="button" hidden>Export ACW CSV</button></div><div id="breakAcwTable" class="break-acw-table"></div></div></section>
 </section>
 <section id="attendanceExcelPanel" class="attendance-excel-panel" hidden>
   <div class="attendance-excel-head"><div><span class="attendance-excel-eyebrow">PUBLISHED WORKBOOK DATA</span><h2>Excel Attendance</h2><p>Present, Half Day, Absent, Leave, Week Off and On-time / Late records.</p></div><span class="attendance-source-pill">Super Admin controlled</span></div>

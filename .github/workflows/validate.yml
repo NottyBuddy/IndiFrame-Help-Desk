@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - feat/indinext-full-upgrade
+      - acw-support-20261106
   pull_request:
     branches:
       - main
@@ -22,7 +23,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Install dependencies
+        run: npm install
       - name: Syntax checks
         run: npm run check
       - name: Importer tests
         run: npm test
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests
+        run: npm run test:browser
