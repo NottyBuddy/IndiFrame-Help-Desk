@@ -1,0 +1,121 @@
+/* INDINEXT credential screens — black/silver glass, restrained copper accent */
+html{min-height:100%;background:#080b10!important}
+body:has(.login-layout),body:has(.panel){
+ min-height:100vh!important;color:#f4f6f9!important;background:transparent!important;
+ position:relative;isolation:isolate;overflow-x:hidden;
+}
+body:has(.login-layout):before,body:has(.panel):before{
+ content:"";position:fixed;inset:-25%;z-index:-2;pointer-events:none;
+ background:
+  radial-gradient(ellipse at 14% 18%,rgba(219,229,240,.13),transparent 28%),
+  radial-gradient(ellipse at 82% 20%,rgba(217,149,96,.075),transparent 26%),
+  radial-gradient(ellipse at 72% 82%,rgba(112,145,181,.13),transparent 31%),
+  linear-gradient(130deg,#05070a 0%,#111720 48%,#1b1b1e 72%,#07090d 100%);
+ background-size:160% 160%;animation:indinext-auth-flow 38s ease-in-out infinite alternate;
+}
+body:has(.login-layout):after,body:has(.panel):after{
+ content:"";position:fixed;inset:-30%;z-index:-1;pointer-events:none;opacity:.38;
+ background:
+  radial-gradient(ellipse at 12% 48%,transparent 0 42%,rgba(224,234,246,.12) 42.2%,transparent 43.1%),
+  radial-gradient(ellipse at 84% 42%,transparent 0 48%,rgba(217,149,96,.09) 48.2%,transparent 49.1%);
+ animation:indinext-auth-ribbon 46s ease-in-out infinite alternate;
+}
+@keyframes indinext-auth-flow{0%{background-position:0 45%;transform:scale(1)}100%{background-position:100% 55%;transform:scale(1.06)}}
+@keyframes indinext-auth-ribbon{0%{transform:translate3d(-2%,1%,0) rotate(-8deg)}100%{transform:translate3d(3%,-2%,0) rotate(-3deg)}}
+.login-layout{
+ width:min(1160px,calc(100% - 44px))!important;min-height:650px;
+ overflow:hidden;border:1px solid rgba(220,230,242,.17)!important;border-radius:28px!important;
+ background:linear-gradient(145deg,rgba(26,31,38,.84),rgba(11,14,19,.9))!important;
+ box-shadow:0 34px 100px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.12)!important;
+ -webkit-backdrop-filter:blur(28px) saturate(145%);backdrop-filter:blur(28px) saturate(145%);
+}
+.login-showcase{
+ position:relative;overflow:hidden;
+ background:
+  radial-gradient(ellipse at 70% 34%,rgba(217,149,96,.12),transparent 42%),
+  linear-gradient(145deg,rgba(12,16,22,.96),rgba(27,34,42,.9) 62%,rgba(16,20,26,.96))!important;
+}
+.login-showcase:after{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.035) 48%,transparent 60%);
+}
+.showcase-brand{color:#f4f6f9!important;letter-spacing:.22em!important}
+.brand-mark{color:#e6b18c!important;border-color:rgba(230,177,140,.65)!important}
+.showcase-eyebrow{color:#d6a987!important;letter-spacing:.13em}
+.showcase-copy h2{color:#f5f7fa!important;letter-spacing:-.045em}
+.showcase-copy h2 em{color:#dca77f!important}
+.showcase-copy p{color:#c1cbd6!important;max-width:440px}
+.glass-slab{
+ border:1px solid rgba(224,233,243,.22)!important;
+ background:linear-gradient(135deg,rgba(231,239,248,.13),rgba(120,139,158,.035) 48%,rgba(217,149,96,.09))!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.18),0 20px 48px rgba(0,0,0,.18)!important;
+ -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+}
+.champagne-filament{background:linear-gradient(90deg,transparent,rgba(218,173,142,.7),transparent)!important}
+.material-caption{color:rgba(220,230,240,.62)!important}
+.login-shell{
+ display:flex;flex-direction:column;justify-content:center;
+ padding:clamp(30px,5vw,68px)!important;
+ background:linear-gradient(150deg,rgba(28,33,40,.93),rgba(13,17,23,.97))!important;
+ color:#f4f6f9!important;
+}
+.login-shell h1{color:#f7f8fa!important;font-size:clamp(30px,4vw,42px)!important;letter-spacing:-.045em}
+.login-shell .subtitle{color:#b5c0cc!important}
+.login-shell label{color:#dbe2e9!important;font-size:12px!important;font-weight:700}
+.login-shell input{
+ width:100%;min-height:50px;padding:0 15px!important;
+ color:#f6f8fa!important;background:rgba(5,9,14,.68)!important;
+ border:1px solid rgba(220,230,242,.18)!important;border-radius:13px!important;
+ box-shadow:inset 0 1px 8px rgba(0,0,0,.2)!important;
+}
+.login-shell input::placeholder{color:#8592a0!important}
+.login-shell input:focus{outline:0;border-color:rgba(217,149,96,.72)!important;box-shadow:0 0 0 3px rgba(217,149,96,.14)!important}
+.login-shell button[type=submit]{
+ min-height:50px;border-radius:13px!important;
+ background:linear-gradient(110deg,#946344,#bd8966)!important;
+ border:1px solid rgba(255,255,255,.18)!important;
+ box-shadow:0 10px 26px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.2)!important;
+}
+.login-shell button[type=submit]:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.login-shell .message{color:#f0b38e!important}
+.login-shell .message.success{color:#a9dfbf!important}
+/* Change-password screen */
+body:has(.panel){display:grid!important;place-items:center!important;padding:24px!important}
+body:has(.panel) .panel{
+ width:min(100%,480px)!important;padding:clamp(28px,5vw,48px)!important;
+ border:1px solid rgba(220,230,242,.18)!important;border-radius:24px!important;
+ background:linear-gradient(145deg,rgba(30,36,44,.88),rgba(13,17,23,.94))!important;
+ box-shadow:0 28px 78px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.11)!important;
+ -webkit-backdrop-filter:blur(26px) saturate(145%);backdrop-filter:blur(26px) saturate(145%);
+}
+body:has(.panel) .panel h2{color:#f5f7fa!important;letter-spacing:-.04em}
+body:has(.panel) .panel .subtitle{color:#b7c2ce!important}
+body:has(.panel) .panel label{display:block;color:#dbe2e9!important}
+body:has(.panel) .panel input{
+ width:100%;min-height:49px;padding:0 14px!important;
+ color:#f5f7fa!important;background:rgba(5,9,14,.68)!important;
+ border:1px solid rgba(220,230,242,.18)!important;border-radius:12px!important;
+}
+body:has(.panel) .panel input::placeholder{color:#8995a2!important}
+body:has(.panel) .panel input:focus{outline:0;border-color:rgba(217,149,96,.72)!important;box-shadow:0 0 0 3px rgba(217,149,96,.14)!important}
+body:has(.panel) .panel button[type=submit]{
+ min-height:49px;border-radius:12px!important;
+ background:linear-gradient(110deg,#946344,#bd8966)!important;
+ border:1px solid rgba(255,255,255,.18)!important;
+}
+body:has(.panel) .panel .status{color:#f0b38e!important}
+body:has(.panel) .panel .status.success{color:#a9dfbf!important}
+@media(max-width:820px){
+ .login-layout{width:min(620px,calc(100% - 28px))!important;min-height:0!important;grid-template-columns:1fr!important;border-radius:22px!important}
+ .login-showcase{min-height:330px!important;padding:26px!important}
+ .showcase-copy{padding-top:110px!important}
+ .login-shell{padding:30px 24px!important}
+}
+@media(max-width:480px){
+ body:has(.panel){padding:14px!important}
+ .login-showcase{min-height:280px!important}
+ .showcase-copy{padding-top:88px!important}
+ .showcase-copy h2{font-size:32px!important}
+ .login-shell{padding:26px 20px!important}
+}
+@media(prefers-reduced-motion:reduce){body:has(.login-layout):before,body:has(.login-layout):after,body:has(.panel):before,body:has(.panel):after{animation:none!important}}
