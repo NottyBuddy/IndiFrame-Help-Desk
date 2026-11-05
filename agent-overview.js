@@ -13,22 +13,29 @@
   $("overviewWeekRange").textContent=weekStart+" – "+localISO(new Date(monday(now).getTime()+6*86400000));
   $("overviewMonthLabel").textContent=now.toLocaleDateString("en-IN",{month:"long",year:"numeric"});
   try{
-   const [attendance,breaks]=await Promise.all([
-    api.apiRequest("/api/hd/attendance/history?from="+today+"&to="+today),
-    api.apiRequest("/api/hd/breaks/status")
-   ]);
-   const record=(attendance.records||[]).find(x=>String(x.workDate||"").slice(0,10)===today);
-   if(!record){$("overviewTodayLogin").textContent="Not checked in";$("overviewTodayWork").textContent="00h 00m";$("overviewLiveStatus").textContent="No live check-in recorded for today.";return;}
-   $("overviewTodayLogin").textContent=clock(record.checkInAt);
-   const end=record.checkOutAt?new Date(record.checkOutAt):now;
-   let gross=Math.max(0,(end-new Date(record.checkInAt))/1000);
-   const history=(breaks.history||[]).filter(b=>String(b.started_at||"").slice(0,10)===today);
-   let breakSeconds=history.reduce((sum,b)=>sum+(Number(b.duration_seconds)||0),0);
-   if(breaks.active&&String(breaks.active.started_at||"").slice(0,10)===today){
-    breakSeconds+=Math.max(0,Math.floor((now-new Date(breaks.active.started_at))/1000));
+   let live;
+   try {
+    const params=new URLSearchParams({date:today,tzOffsetMinutes:String(now.getTimezoneOffset())});
+    live=await api.apiRequest("/api/hd/agent-overview/live?"+params.toString());
+   } catch (endpointError) {
+    // Backward-compatible fallback until the updated Worker is deployed.
+    const [attendance,breaks]=await Promise.all([
+     api.apiRequest("/api/hd/attendance/history?from="+today+"&to="+today),
+     api.apiRequest("/api/hd/breaks/status")
+    ]);
+    const record=(attendance.records||[]).find(x=>String(x.workDate||"").slice(0,10)===today);
+    if(!record){$("overviewTodayLogin").textContent="Not checked in";$("overviewTodayWork").textContent="00h 00m";$("overviewLiveStatus").textContent="No live check-in recorded for today.";return;}
+    const end=record.checkOutAt?new Date(record.checkOutAt):now;
+    const gross=Math.max(0,(end-new Date(record.checkInAt))/1000);
+    const history=(breaks.history||[]).filter(b=>String(b.started_at||"").slice(0,10)===today);
+    let breakSeconds=history.reduce((sum,b)=>sum+(Number(b.duration_seconds)||0),0);
+    if(breaks.active&&String(breaks.active.started_at||"").slice(0,10)===today)breakSeconds+=Math.max(0,Math.floor((now-new Date(breaks.active.started_at))/1000));
+    live={loginTime:record.checkInAt,checkOutTime:record.checkOutAt,active:!record.checkOutAt,netWorkSeconds:Math.max(0,gross-breakSeconds)};
    }
-   $("overviewTodayWork").textContent=duration(gross-breakSeconds);
-   $("overviewLiveStatus").textContent=record.checkOutAt?"Shift completed · Breaks excluded":"Currently working · Live refresh every 30 seconds";
+   if(!live.loginTime){$("overviewTodayLogin").textContent="Not checked in";$("overviewTodayWork").textContent="00h 00m";$("overviewLiveStatus").textContent="No live check-in recorded for today.";return;}
+   $("overviewTodayLogin").textContent=clock(live.loginTime);
+   $("overviewTodayWork").textContent=duration(live.netWorkSeconds);
+   $("overviewLiveStatus").textContent=live.checkOutTime?"Shift completed · Breaks excluded":"Currently working · Live refresh every 30 seconds";
   }catch(e){
    $("overviewTodayLogin").textContent="Unavailable";
    $("overviewTodayWork").textContent="—";
