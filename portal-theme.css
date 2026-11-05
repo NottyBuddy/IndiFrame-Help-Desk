@@ -727,3 +727,68 @@ body:has(.login-layout) .login-shell .message{min-height:22px;margin-top:16px;fo
  body:has(.login-layout)::after,body:has(.login-layout) .glass-reflection,
  body:has(.login-layout) .architecture-glow{animation:none!important}
 }
+
+
+/* INDINEXT LOGIN — abstract aurora / kinetic-light identity. No house, window or door motifs. */
+body:has(.login-layout) .login-showcase{
+ background:radial-gradient(ellipse at 50% 44%,#263f55 0%,#172b3c 42%,#101a28 100%)!important;
+}
+body:has(.login-layout) .login-showcase::before{
+ opacity:.12!important;background-image:radial-gradient(rgba(255,255,255,.7) .65px,transparent .8px)!important;
+ background-size:23px 23px!important;mask-image:radial-gradient(ellipse at 50% 45%,black,transparent 78%)!important;
+}
+body:has(.login-layout) .login-showcase::after{
+ background:linear-gradient(110deg,transparent 35%,rgba(104,221,205,.06) 47%,rgba(232,190,145,.12) 50%,transparent 62%)!important;
+ animation:ixAuroraSweep 15s ease-in-out infinite!important;
+}
+body:has(.login-layout) .abstract-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+body:has(.login-layout) .aurora-orb{
+ position:absolute;border-radius:50%;filter:blur(1px);mix-blend-mode:screen;
+}
+body:has(.login-layout) .orb-one{
+ width:390px;height:390px;left:26%;top:13%;
+ background:radial-gradient(circle at 38% 38%,rgba(90,223,204,.42),rgba(65,139,177,.18) 34%,rgba(75,104,157,.07) 55%,transparent 72%);
+ animation:ixOrbFloat 16s ease-in-out infinite alternate;
+}
+body:has(.login-layout) .orb-two{
+ width:330px;height:330px;right:-5%;top:28%;
+ background:radial-gradient(circle at 40% 42%,rgba(221,166,122,.32),rgba(183,119,117,.11) 40%,transparent 70%);
+ animation:ixOrbFloat 19s ease-in-out infinite alternate-reverse;
+}
+body:has(.login-layout) .orb-three{
+ width:250px;height:250px;left:7%;top:42%;
+ background:radial-gradient(circle,rgba(87,164,190,.2),transparent 70%);
+ animation:ixOrbFloat 13s ease-in-out infinite alternate;
+}
+body:has(.login-layout) .light-ribbon{
+ position:absolute;width:130%;height:170px;left:-15%;border-radius:50%;
+ border-top:1px solid rgba(152,232,222,.38);border-bottom:1px solid rgba(218,178,143,.13);
+ transform:rotate(-19deg);filter:drop-shadow(0 0 12px rgba(95,206,196,.16));
+}
+body:has(.login-layout) .ribbon-one{top:24%;animation:ixRibbonDrift 18s ease-in-out infinite alternate}
+body:has(.login-layout) .ribbon-two{top:38%;left:-22%;height:220px;transform:rotate(-14deg);opacity:.58;animation:ixRibbonDrift 22s ease-in-out infinite alternate-reverse}
+body:has(.login-layout) .ribbon-three{top:54%;left:-8%;height:120px;transform:rotate(-24deg);opacity:.34;animation:ixRibbonDrift 17s ease-in-out infinite alternate}
+body:has(.login-layout) .particle-field{
+ position:absolute;inset:8% 4% 20%;opacity:.65;
+ background-image:radial-gradient(circle,rgba(229,241,230,.85) 0 1px,transparent 1.8px),
+ radial-gradient(circle,rgba(117,224,211,.8) 0 1px,transparent 1.8px),
+ radial-gradient(circle,rgba(231,183,143,.8) 0 1px,transparent 1.8px);
+ background-size:91px 113px,137px 149px,181px 167px;
+ background-position:0 0,39px 27px,71px 83px;
+ animation:ixParticles 28s linear infinite;
+ mask-image:linear-gradient(180deg,transparent,black 18%,black 75%,transparent);
+}
+body:has(.login-layout) .scene-caption{
+ position:absolute;right:35px;bottom:34%;z-index:3;color:rgba(236,229,218,.55);
+ font-size:8px;font-weight:700;letter-spacing:.2em;writing-mode:vertical-rl;
+}
+body:has(.login-layout) .scene-caption span{color:#d7a77f;margin:10px 0}
+@keyframes ixAuroraSweep{0%,10%{transform:translateX(-45%);opacity:0}30%,70%{opacity:1}92%,100%{transform:translateX(45%);opacity:0}}
+@keyframes ixOrbFloat{from{transform:translate3d(-12px,14px,0) scale(.92)}to{transform:translate3d(25px,-22px,0) scale(1.09)}}
+@keyframes ixRibbonDrift{from{translate:-2% 10px;scale:1 .92}to{translate:3% -18px;scale:1 1.08}}
+@keyframes ixParticles{from{background-position:0 -10vh,39px 27px,71px 83px}to{background-position:20px 35vh,-15px 45vh,120px 30vh}}
+@media(prefers-reduced-motion:reduce){
+ body:has(.login-layout) .orb-one,body:has(.login-layout) .orb-two,body:has(.login-layout) .orb-three,
+ body:has(.login-layout) .light-ribbon,body:has(.login-layout) .particle-field,
+ body:has(.login-layout)::after{animation:none!important}
+}
