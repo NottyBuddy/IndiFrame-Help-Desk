@@ -11,7 +11,7 @@
 }
 #if-loader:before,#if-loader:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);pointer-events:none;z-index:-1}
 #if-loader:before{width:42vw;height:42vw;left:-17vw;top:-20vw;background:radial-gradient(circle,rgba(143,99,255,.2),transparent 68%);animation:ifAmbientA 9s ease-in-out infinite alternate}
-#if-loader:after{width:48vw;height:48vw;right:-22vw;bottom:-25vw;background:radial-gradient(circle,rgba(39,220,211,.16),transparent 68%);animation:ifAmbientB 2.8s ease-in-out infinite alternate}
+#if-loader:after{width:48vw;height:48vw;right:-22vw;bottom:-25vw;background:radial-gradient(circle,rgba(39,220,211,.16),transparent 68%);animation:ifAmbientB 11s ease-in-out infinite alternate}
 #if-loader.if-loader-exit{opacity:0;visibility:hidden;pointer-events:none}
 #if-loader .if-loader-stage{position:relative;width:min(92vw,900px);height:min(68vh,470px);min-height:330px;display:grid;place-items:center;isolation:isolate}
 #if-loader .if-loader-glass{
@@ -23,14 +23,14 @@
 }
 #if-loader .if-loader-glass:before{content:"";position:absolute;inset:1px;border-radius:33px;background:linear-gradient(118deg,rgba(255,255,255,.18),transparent 23%,transparent 70%,rgba(94,234,212,.1));pointer-events:none}
 #if-loader .if-loader-glass:after{content:"";position:absolute;left:8%;right:8%;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);filter:blur(1px)}
-#if-loader .if-loader-word{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 7%;font:850 clamp(31px,7.4vw,78px)/1.12 Inter,Arial,sans-serif;letter-spacing:.13em;color:#fbfdff;text-shadow:0 0 20px rgba(255,255,255,.24),0 0 54px rgba(167,139,250,.28);opacity:0;transform:translateY(14px) scale(.94);animation-duration:2.8s;animation-timing-function:ease;animation-fill-mode:both}
+#if-loader .if-loader-word{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 7%;font:850 clamp(31px,7.4vw,78px)/1.12 Inter,Arial,sans-serif;letter-spacing:.13em;color:#fbfdff;text-shadow:0 0 20px rgba(255,255,255,.24),0 0 54px rgba(167,139,250,.28);opacity:0;transform:translateY(14px) scale(.94);animation-duration:11s;animation-timing-function:ease;animation-fill-mode:both}
 #if-loader .if-loader-word-frame{animation-name:ifWordFrame}
 #if-loader .if-loader-word-glass{animation-name:ifWordGlass}
 #if-loader .if-loader-word-install{animation-name:ifWordInstall}
 #if-loader .if-loader-word-hardware{animation-name:ifWordHardware}
 #if-loader .if-loader-word-fit{animation-name:ifWordFit}
 #if-loader .if-loader-word-finish{font-size:clamp(27px,6.4vw,68px);animation-name:ifWordFinish}
-#if-loader .if-loader-orb,#if-loader .if-loader-dot{position:absolute;left:-8%;top:25%;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);animation:ifSnakeJourney 2.8s cubic-bezier(.52,.02,.34,1) both}
+#if-loader .if-loader-orb,#if-loader .if-loader-dot{position:absolute;left:-8%;top:25%;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);animation:ifSnakeJourney 11s cubic-bezier(.52,.02,.34,1) both}
 #if-loader .if-loader-orb{width:23px;height:23px;z-index:5;background:radial-gradient(circle at 34% 28%,#fff 0 16%,#f5f1ff 30%,#a78bfa 72%,#6d45dc 100%);box-shadow:0 0 10px 4px rgba(255,255,255,.9),0 0 28px 12px rgba(167,139,250,.8),0 0 70px 22px rgba(111,76,255,.35)}
 #if-loader .if-loader-orb:after{content:"";position:absolute;inset:-9px;border:1px solid rgba(255,255,255,.42);border-radius:50%;box-shadow:0 0 18px rgba(103,232,249,.35)}
 #if-loader .if-loader-dot{width:13px;height:13px;z-index:3;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.95),rgba(167,139,250,.8) 45%,rgba(103,232,249,.25));border:1px solid rgba(255,255,255,.42);box-shadow:0 0 18px rgba(167,139,250,.55)}
@@ -43,7 +43,7 @@
 #if-loader .if-loader-dot.d7{animation-delay:.70s;opacity:.32;width:7px;height:7px}
 #if-loader .if-loader-caption{position:absolute;bottom:12%;left:0;right:0;text-align:center;font:600 10px/1.5 Inter,Arial,sans-serif;letter-spacing:.34em;color:rgba(232,239,255,.58)}
 #if-loader .if-loader-progress{position:absolute;bottom:7%;left:50%;width:min(250px,48vw);height:3px;overflow:hidden;transform:translateX(-50%);border-radius:99px;background:rgba(255,255,255,.13);box-shadow:0 0 18px rgba(103,232,249,.12)}
-#if-loader .if-loader-progress:after{content:"";display:block;width:100%;height:100%;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#67e8f9,#5eead4,#fff);transform:scaleX(0);transform-origin:left;animation:ifProgress 2.8s linear both;box-shadow:0 0 14px rgba(103,232,249,.8)}
+#if-loader .if-loader-progress:after{content:"";display:block;width:100%;height:100%;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#67e8f9,#5eead4,#fff);transform:scaleX(0);transform-origin:left;animation:ifProgress 11s linear both;box-shadow:0 0 14px rgba(103,232,249,.8)}
 @keyframes ifWordFrame{0%,1%{opacity:0;transform:translateY(14px) scale(.94)}3%,13%{opacity:1;transform:none}16%,100%{opacity:0;transform:translateY(-12px) scale(1.035)}}
 @keyframes ifWordGlass{0%,16%{opacity:0;transform:translateY(14px) scale(.94)}19%,29%{opacity:1;transform:none}32%,100%{opacity:0;transform:translateY(-12px) scale(1.035)}}
 @keyframes ifWordInstall{0%,32%{opacity:0;transform:translateY(14px) scale(.94)}35%,45%{opacity:1;transform:none}48%,100%{opacity:0;transform:translateY(-12px) scale(1.035)}}
@@ -52,16 +52,18 @@
 @keyframes ifWordFinish{0%,80%{opacity:0;transform:translateY(14px) scale(.94)}84%,100%{opacity:1;transform:none}}
 /* Four connected sweeps form a continuous snake: horizontal, vertical, reverse horizontal, vertical. */
 @keyframes ifSnakeJourney{
-  0%{left:-7%;top:24%;opacity:0}
+  0%{left:-7%;top:22%;opacity:0}
   3%{opacity:1}
-  22%{left:107%;top:24%;opacity:1}
-  25%{left:107%;top:24%;opacity:1}
-  47%{left:107%;top:80%;opacity:1}
-  50%{left:107%;top:80%;opacity:1}
-  72%{left:-7%;top:80%;opacity:1}
-  75%{left:-7%;top:80%;opacity:1}
-  96%{left:-7%;top:24%;opacity:1}
-  100%{left:-7%;top:24%;opacity:0}
+  14%{left:24%;top:22%;opacity:1}
+  25%{left:43%;top:51%;opacity:1}
+  36%{left:63%;top:22%;opacity:1}
+  47%{left:83%;top:51%;opacity:1}
+  58%{left:107%;top:22%;opacity:1}
+  69%{left:83%;top:80%;opacity:1}
+  80%{left:58%;top:51%;opacity:1}
+  91%{left:31%;top:80%;opacity:1}
+  98%{left:-7%;top:51%;opacity:1}
+  100%{left:-7%;top:51%;opacity:0}
 }
 @keyframes ifProgress{to{transform:scaleX(1)}}
 @keyframes ifAmbientA{to{transform:translate(22vw,16vh) scale(1.18)}}
