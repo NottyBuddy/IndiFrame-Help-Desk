@@ -648,7 +648,7 @@ async function callPerformanceImport(req, env, u) {
 }
 
 // ---------- Quiz ----------
-const wk = v => { const n = Number(v); if (!Number.isInteger(n) || n < 1 || n > 60) bad("Invalid week number (1-60)."); return n; };
+const wk = v => { const n = Number(v); if (!Number.isInteger(n) || n < 1 || n > 13) bad("Invalid week number (1-13)."); return n; };
 async function quizQuestions(url, env, u) {
   const week = wk(url.searchParams.get("week"));
   const done = await env.DB.prepare("SELECT score,total_questions FROM quiz_attempts WHERE agent_id=? AND week_number=?").bind(u.agentId, week).first();
