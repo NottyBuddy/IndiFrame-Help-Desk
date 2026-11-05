@@ -55,7 +55,7 @@ export async function handleHelpdesk(req, env) {
     // Admin accounts are monitoring-only. Separate KPI and Call Performance imports are Super Admin-only.
     const superAdminKpiImport = p === "/api/hd/admin/kpis/import" && m === "POST" && u.isSuperAdmin;
     const superAdminCallImport = p === "/api/hd/admin/call-performance/import" && m === "POST" && u.isSuperAdmin;
-    const superAdminDataWrite = u.isSuperAdmin && (p === "/api/hd/superadmin/projects" && m === "POST" || p === "/api/hd/superadmin/records" && m === "DELETE" || p === "/api/hd/superadmin/call-performance" && m === "DELETE" || p === "/api/hd/admin/quiz/questions" && ["POST","PUT"].includes(m));
+    const superAdminDataWrite = u.isSuperAdmin && (p === "/api/hd/superadmin/projects" && m === "POST" || p === "/api/hd/superadmin/records" && m === "DELETE" || p === "/api/hd/superadmin/call-performance" && m === "DELETE" || (p === "/api/hd/admin/quiz/questions" && m === "POST" || /^\\/api\\/hd\\/admin\\/quiz\\/questions\\/\\d+$/.test(p) && m === "PUT"));
     if (admin && ["POST", "PUT", "PATCH", "DELETE"].includes(m) && !superAdminKpiImport && !superAdminCallImport && !superAdminDataWrite) {
       return J({ error: "Admin access is read-only. Operational actions are available to agents only." }, 403);
     }
@@ -648,7 +648,7 @@ async function callPerformanceImport(req, env, u) {
 }
 
 // ---------- Quiz ----------
-const wk = v => { const n = Number(v); if (!Number.isInteger(n) || n < 1 || n > 60) bad("Invalid week number (1-60)."); return n; };
+const wk = v => { const n = Number(v); if (!Number.isInteger(n) || n < 1 || n > 13) bad("Invalid week number (1-13)."); return n; };
 async function quizQuestions(url, env, u) {
   const week = wk(url.searchParams.get("week"));
   const done = await env.DB.prepare("SELECT score,total_questions FROM quiz_attempts WHERE agent_id=? AND week_number=?").bind(u.agentId, week).first();
@@ -673,9 +673,14 @@ async function quizSubmit(req, env, u) {
     return { id: q.id, correct: ok, correctIndex: q.correct_index, explanation: q.explanation || "" };
   });
   const answersJson = JSON.stringify(Object.fromEntries(qs.map(q => [String(q.id), ans[String(q.id)]])));
-  const ins = await env.DB.prepare(
-    "INSERT INTO quiz_attempts(agent_id,week_number,score,total_questions,answers_json,completed_at) SELECT ?,?,?,?,?,? WHERE NOT EXISTS (SELECT 1 FROM quiz_attempts WHERE agent_id=? AND week_number=?)"
-  ).bind(u.agentId, week, score, qs.length, answersJson, now(), u.agentId, week).run();
+  let ins;
+  try {
+    ins = await env.DB.prepare(
+      "INSERT INTO quiz_attempts(agent_id,week_number,score,total_questions,answers_json,completed_at) SELECT ?,?,?,?,?,? WHERE NOT EXISTS (SELECT 1 FROM quiz_attempts WHERE agent_id=? AND week_number=?)"
+    ).bind(u.agentId, week, score, qs.length, answersJson, now(), u.agentId, week).run();
+  } catch {
+    bad("You have already submitted this week's quiz.", 409);
+  }
   if (!ins.meta.changes) bad("You have already submitted this week's quiz.", 409);
   return { week, score, total: qs.length, percent: rate(score, qs.length), review };
 }
