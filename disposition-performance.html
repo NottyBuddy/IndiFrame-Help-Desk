@@ -21,7 +21,7 @@
     <div class="dp-hero-mark"><span>DP</span><small>REPORTING</small></div>
   </section>
   <section class="dp-filter-panel">
-    <div class="dp-filter-title"><div><span class="dp-eyebrow">REPORT CONTROLS</span><h2>Choose report range</h2></div><button id="dpRefresh" class="dp-btn dp-btn-muted" type="button">↻ Refresh</button></div>
+    <div class="dp-filter-title"><div><span class="dp-eyebrow">REPORT CONTROLS</span><h2>Choose report range</h2></div><div class="dp-filter-actions"><button id="dpExport" class="dp-btn dp-btn-muted" type="button" hidden>Export CSV</button><button id="dpRefresh" class="dp-btn dp-btn-muted" type="button">↻ Refresh</button></div></div>
     <div class="dp-filters">
       <label>Period<select id="dpPeriod"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="this_week" selected>This Week</option><option value="last_week">Last Week</option><option value="this_month">This Month</option><option value="last_month">Last Month</option><option value="custom">Custom range</option><option value="all">All available dates</option></select></label>
       <div id="dpCustomRange" class="dp-date-range" hidden><label>From<input id="dpFrom" type="date"></label><label>To<input id="dpTo" type="date"></label></div>
