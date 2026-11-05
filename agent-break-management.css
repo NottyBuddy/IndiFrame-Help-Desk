@@ -3,3 +3,5 @@
 .acw-live-card:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,#8eaddf,#d99a68);opacity:.9}
 .acw-live-card .break-time{color:#a9c5ff}
 .acw-live-card .break-state-pill.is-active{border-color:rgba(105,145,220,.35);background:rgba(105,145,220,.12);color:#b9d0ff}
+
+@media(min-width:760px){.break-grid:has(.acw-live-card){grid-template-columns:repeat(2,minmax(0,1fr))}}
