@@ -1,0 +1,54 @@
+/* Indinext Portal UI — one deterministic component skin. Page-specific layout and behaviour remain in their own files. */
+:root{--if-ink:#263941;--if-muted:#718087;--if-line:#e0e8e8;--if-card:#fff;--if-teal:#168f86;--if-teal-dark:#116e69;--if-canvas:#f2f5f5;--if-shadow:0 8px 24px rgba(22,48,56,.055)}
+body:not(:has(.login-layout)){margin:0;background:var(--if-canvas);background-image:linear-gradient(180deg,#f7f9f9 0%,#eef3f3 100%);background-attachment:fixed;color:var(--if-ink);font-family:Inter,"Segoe UI",Arial,sans-serif;line-height:1.5}
+body:not(:has(.login-layout)) .topbar{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 26px;background:#1d303c;color:#fff;border:0;box-shadow:0 3px 14px rgba(15,37,45,.12)}
+body:not(:has(.login-layout)) .brand{font-size:15px;font-weight:750;letter-spacing:.015em;color:#fff}
+body:not(:has(.login-layout)) .topbar .subtitle{margin-top:2px;color:#c0d0d2;font-size:11px}
+body:not(:has(.login-layout)) .topright{display:flex;align-items:center;gap:10px}
+body:not(:has(.login-layout)) .logout-btn,body:not(:has(.login-layout)) .badge{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:7px 13px;border:1px solid rgba(255,255,255,.22);border-radius:8px;background:rgba(255,255,255,.08);color:#fff;text-decoration:none;font:600 12px Inter,"Segoe UI",Arial,sans-serif;cursor:pointer}
+body:not(:has(.login-layout)) .wrap{width:min(100% - 48px,1440px);max-width:1440px;margin:0 auto;padding:28px 0 48px;color:var(--if-ink)}
+body:not(:has(.login-layout)) .head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:4px 0 24px}
+body:not(:has(.login-layout)) h1{margin:0;color:#263b43;font-size:clamp(25px,3vw,34px);font-weight:750;letter-spacing:-.045em}
+body:not(:has(.login-layout)) h2{color:#344a51;font-size:17px;letter-spacing:-.02em}
+body:not(:has(.login-layout)) .muted,body:not(:has(.login-layout)) .profile,body:not(:has(.login-layout)) .note{color:var(--if-muted)}
+body:not(:has(.login-layout)) .profile{font-size:12px}
+body:not(:has(.login-layout)) .card,body:not(:has(.login-layout)) .section.card,body:not(:has(.login-layout)) .break-card,body:not(:has(.login-layout)) .cp-section,body:not(:has(.login-layout)) .panel{min-width:0;border:1px solid var(--if-line);border-radius:13px;background:var(--if-card);box-shadow:var(--if-shadow);backdrop-filter:none;-webkit-backdrop-filter:none}
+body:not(:has(.login-layout)) .nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;padding:8px;border:1px solid var(--if-line);border-radius:12px;background:#fff}
+body:not(:has(.login-layout)) .nav button,body:not(:has(.login-layout)) .nav .nav-link,body:not(:has(.login-layout)) .nav .admin-side-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;width:auto;margin:0;padding:8px 13px;border:1px solid transparent;border-radius:8px;background:transparent;color:#50636a;font:600 12px Inter,"Segoe UI",Arial,sans-serif;text-decoration:none;cursor:pointer}
+body:not(:has(.login-layout)) .nav button.active,body:not(:has(.login-layout)) .nav .admin-side-link.active{background:var(--if-teal);color:#fff;border-color:var(--if-teal)}
+body:not(:has(.login-layout)) button.primary-btn,body:not(:has(.login-layout)) button.break-btn,body:not(:has(.login-layout)) button.sa-btn,body:not(:has(.login-layout)) button#loginButton{border:1px solid var(--if-teal);border-radius:8px;background:var(--if-teal);color:#fff;font-weight:700;cursor:pointer}
+body:not(:has(.login-layout)) button.primary-btn:hover,body:not(:has(.login-layout)) button.break-btn:hover,body:not(:has(.login-layout)) button.sa-btn:hover{background:var(--if-teal-dark)}
+body:not(:has(.login-layout)) button.secondary-btn,body:not(:has(.login-layout)) button.sa-small,body:not(:has(.login-layout)) .export-report{border:1px solid #d7e5e3;border-radius:8px;background:#f4f9f8;color:#287c75;font-weight:650;cursor:pointer}
+body:not(:has(.login-layout)) input,body:not(:has(.login-layout)) select,body:not(:has(.login-layout)) textarea{max-width:100%;border:1px solid #dce5e5;border-radius:8px;background:#fff;color:#2a3e45;font:inherit}
+body:not(:has(.login-layout)) input:focus,body:not(:has(.login-layout)) select:focus,body:not(:has(.login-layout)) textarea:focus{outline:0;border-color:#64aaa2;box-shadow:0 0 0 3px rgba(22,143,134,.11)}
+body:not(:has(.login-layout)) table{width:100%;border-collapse:collapse}
+body:not(:has(.login-layout)) th{background:#f5f8f8;color:#63757b;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.035em}
+body:not(:has(.login-layout)) td,body:not(:has(.login-layout)) th{padding:10px 12px;border-bottom:1px solid #edf1f1;text-align:left}
+body:not(:has(.login-layout)) tbody tr:hover{background:#f7fbfa}
+body:not(:has(.login-layout)) .tablewrap,body:not(:has(.login-layout)) .table-wrap,body:not(:has(.login-layout)) .project-table-wrap,body:not(:has(.login-layout)) .cp-table-wrap,body:not(:has(.login-layout)) .cp-detail-wrap,body:not(:has(.login-layout)) .sa-table-wrap{max-width:100%;overflow:auto;border:1px solid #edf1f1;border-radius:9px}
+body:not(:has(.login-layout)) .empty{color:#819096}
+body:not(:has(.login-layout)) button:focus-visible,body:not(:has(.login-layout)) a:focus-visible,body:not(:has(.login-layout)) input:focus-visible,body:not(:has(.login-layout)) select:focus-visible{outline:3px solid rgba(22,143,134,.28);outline-offset:2px}
+body:not(:has(.login-layout)) .hidden[hidden],body:not(:has(.login-layout)) .hidden{display:none!important}
+/* Admin keeps its working sidebar/navigation geometry; only its visual skin is unified. */
+body.admin-mode:not(:has(.login-layout)){background:#f2f5f5}
+body.admin-mode .topbar{height:62px;min-height:62px;padding:0 26px}
+body.admin-mode .wrap{width:auto;max-width:none;min-height:calc(100vh - 62px);margin:0;padding:0 28px 36px 252px;display:block}
+body.admin-mode .nav{position:fixed;z-index:20;left:0;top:62px;bottom:0;width:224px;min-height:0;margin:0;padding:18px 12px;display:flex;flex-direction:column;align-items:stretch;gap:5px;overflow-y:auto;overflow-x:hidden;border:0;border-radius:0;background:#1d303c;box-shadow:4px 0 18px rgba(20,39,49,.08)}
+body.admin-mode .nav button,body.admin-mode .nav .nav-link,body.admin-mode .nav .admin-side-link{justify-content:flex-start;width:100%;min-height:42px;padding:10px 13px;border:0;border-radius:7px;background:transparent;color:#d5e0e3}
+body.admin-mode .nav button.active,body.admin-mode .nav .admin-side-link.active{background:var(--if-teal);color:#fff}
+body.admin-mode .head{padding:25px 0 16px;margin:0}
+body.admin-mode #view-admin>.grid.admin-kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 18px}
+body.admin-mode #view-admin .admin-kpi-grid .stat-card{min-height:100px;padding:16px;border:1px solid var(--if-line);border-radius:11px;background:#fff;box-shadow:var(--if-shadow)}
+body.admin-mode #view-admin #adminHome.admin-home-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 20px}
+body.admin-mode #view-admin #adminHome>.admin-module-card{min-width:0;min-height:145px;margin:0;padding:18px;display:flex;flex-direction:column;align-items:flex-start;gap:9px;border:1px solid var(--if-line);border-radius:11px;background:#fff;color:var(--if-ink);box-shadow:var(--if-shadow);text-align:left;cursor:pointer}
+body.admin-mode #view-admin #adminHome>.admin-module-card:hover{transform:translateY(-2px);border-color:#b9ded9;box-shadow:0 12px 25px rgba(31,83,79,.09)}
+body.admin-mode #view-admin .admin-module-card strong{color:#31434a;font-size:13px}
+body.admin-mode #view-admin .admin-module-card small{color:#7d898e;font-size:11px}
+body.admin-mode #view-admin .module-icon{display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;border-radius:9px;background:#eaf5f3;color:var(--if-teal)}
+body.admin-mode #view-admin .admin-report-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+body.admin-mode #view-admin .admin-report-grid>.section.card{min-width:0;margin:0;padding:18px;background:#fff;border:1px solid var(--if-line);border-radius:11px;box-shadow:var(--if-shadow)}
+body.admin-mode #view-admin .admin-report-grid>.section.card.is-current{display:block!important;grid-column:1/-1}
+body.admin-mode #view-admin .admin-detail-bar{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:12px 14px;border:1px solid var(--if-line);border-radius:10px;background:#fff}
+@media(max-width:1000px){body.admin-mode .wrap{padding-left:218px;padding-right:18px}body.admin-mode .nav{width:194px}body.admin-mode #view-admin>.grid.admin-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body.admin-mode #view-admin #adminHome.admin-home-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){body:not(:has(.login-layout)) .wrap{width:calc(100% - 28px);padding:18px 0 32px}body:not(:has(.login-layout)) .head{align-items:flex-start;flex-direction:column}body.admin-mode .topbar{height:auto;min-height:60px;padding:10px 14px}body.admin-mode .wrap{width:auto;padding:0 13px 25px;margin:0}body.admin-mode .nav{position:relative;top:auto;left:auto;bottom:auto;width:auto;min-height:0;margin:0 -13px;padding:8px 12px;flex-direction:row;align-items:center;overflow-x:auto;overflow-y:hidden}body.admin-mode .nav button,body.admin-mode .nav .nav-link,body.admin-mode .nav .admin-side-link{width:auto;min-width:max-content;min-height:38px}body.admin-mode #view-admin #adminHome.admin-home-grid{grid-template-columns:1fr}body.admin-mode #view-admin .admin-report-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){body:not(:has(.login-layout)) *,body:not(:has(.login-layout)) *::before,body:not(:has(.login-layout)) *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
