@@ -55,7 +55,7 @@ export async function handleHelpdesk(req, env) {
     // Admin accounts are monitoring-only. Separate KPI and Call Performance imports are Super Admin-only.
     const superAdminKpiImport = p === "/api/hd/admin/kpis/import" && m === "POST" && u.isSuperAdmin;
     const superAdminCallImport = p === "/api/hd/admin/call-performance/import" && m === "POST" && u.isSuperAdmin;
-    const superAdminDataWrite = u.isSuperAdmin && (p === "/api/hd/superadmin/projects" && m === "POST" || p === "/api/hd/superadmin/records" && m === "DELETE" || p === "/api/hd/admin/quiz/questions" && ["POST","PUT"].includes(m));
+    const superAdminDataWrite = u.isSuperAdmin && (p === "/api/hd/superadmin/projects" && m === "POST" || p === "/api/hd/superadmin/records" && m === "DELETE" || p === "/api/hd/superadmin/call-performance" && m === "DELETE" || p === "/api/hd/admin/quiz/questions" && ["POST","PUT"].includes(m));
     if (admin && ["POST", "PUT", "PATCH", "DELETE"].includes(m) && !superAdminKpiImport && !superAdminCallImport && !superAdminDataWrite) {
       return J({ error: "Admin access is read-only. Operational actions are available to agents only." }, 403);
     }
@@ -67,6 +67,16 @@ export async function handleHelpdesk(req, env) {
     }
 
     if (p === "/api/hd/superadmin/projects" && m === "POST") { if (!u.isSuperAdmin) bad("Super Admin access required.",403); return J(await projectCreate(req, env, u, true),201); }
+    if (p === "/api/hd/superadmin/call-performance" && m === "DELETE") {
+      if (!u.isSuperAdmin) bad("Super Admin access required.",403);
+      const before=url.searchParams.get("before");
+      if(!isDate(before))bad("A valid cutoff date is required (YYYY-MM-DD).");
+      await ensureCallPerformanceSections(env);
+      const a=await env.DB.prepare("DELETE FROM call_performance_rows WHERE report_date<?").bind(before).run();
+      const b=await env.DB.prepare("DELETE FROM call_performance_report_rows WHERE report_date IS NOT NULL AND report_date<?").bind(before).run();
+      await audit(env,u,"call_performance_cleanup","Removed "+a.meta.changes+" daily rows and "+b.meta.changes+" report rows before "+before);
+      return J({success:true,before,dailyRowsDeleted:a.meta.changes,reportRowsDeleted:b.meta.changes});
+    }
     if (p === "/api/hd/superadmin/records" && m === "DELETE") {
       if (!u.isSuperAdmin) bad("Super Admin access required.",403);
       const type=url.searchParams.get("type"),id=Number(url.searchParams.get("id"));
