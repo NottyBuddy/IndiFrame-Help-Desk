@@ -380,3 +380,85 @@ body:has(.login-layout){min-height:100vh;margin:0;padding:clamp(12px,3vw,38px)!i
 @media(max-width:900px){.login-layout{grid-template-columns:1fr;max-width:620px}.login-showcase{min-height:510px}.login-layout>.login-shell{padding:34px 30px 38px}.house-art{height:76%}.showcase-copy{bottom:20px}}
 @media(max-width:520px){body:has(.login-layout){padding:0!important}.login-layout{min-height:100vh;border-radius:0;border:0}.login-showcase{min-height:430px}.showcase-brand{top:18px;left:20px}.season-label{top:22px;right:16px;font-size:7px}.house-art{height:73%;bottom:8%}.showcase-copy{left:14px;right:14px;bottom:14px;padding:17px}.showcase-copy h2{font-size:30px}.showcase-copy p{font-size:11px}.login-layout>.login-shell{padding:28px 24px 34px}}
 @media(prefers-reduced-motion:reduce){.house-scene,.scene-sun,.scene-moon,.scene-stars,.scene-rain,.scene-snow,.win,.glass-pane,.door,.door-panel{animation:none!important}.glass-pane{opacity:1!important}}
+
+
+/* INDINEXT 2026 premium portal system — role-aware visual layer. */
+:root{--ix-bg:#0b111b;--ix-panel:#151e2b;--ix-panel-2:#1a2635;--ix-line:rgba(170,190,214,.13);--ix-text:#edf2f8;--ix-muted:#9aa9bb;--ix-cyan:#67c9e8;--ix-orange:#f08a43;--ix-orange-2:#ffad67}
+body:not(:has(.login-layout)){background:radial-gradient(ellipse at 82% -5%,rgba(194,103,52,.14),transparent 35rem),radial-gradient(ellipse at 8% 88%,rgba(57,128,165,.1),transparent 32rem),#0b111b!important;color:var(--ix-text)!important}
+body:not(:has(.login-layout)) .topbar{background:rgba(9,15,24,.96)!important;border-bottom:1px solid var(--ix-line)!important;box-shadow:0 10px 28px rgba(0,0,0,.2)!important}
+body:not(:has(.login-layout)) .brand{color:#fff!important;letter-spacing:.035em}
+body:not(:has(.login-layout)) .subtitle,body:not(:has(.login-layout)) .muted,body:not(:has(.login-layout)) .note,body:not(:has(.login-layout)) .profile{color:var(--ix-muted)!important}
+body:not(:has(.login-layout)) h1,body:not(:has(.login-layout)) h2,body:not(:has(.login-layout)) h3{color:#f2f5f9!important}
+body:not(:has(.login-layout)) .card,body:not(:has(.login-layout)) .section.card,body:not(:has(.login-layout)) .stat-card,body:not(:has(.login-layout)) .break-card,body:not(:has(.login-layout)) .admin-module-card,body:not(:has(.login-layout)) .sa-grid>.card{background:linear-gradient(145deg,rgba(25,36,51,.97),rgba(16,25,38,.98))!important;border:1px solid var(--ix-line)!important;border-radius:14px!important;color:var(--ix-text)!important;box-shadow:0 16px 38px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.025)!important}
+body:not(:has(.login-layout)) .value{color:var(--ix-orange-2)!important;font-weight:750}
+body:not(:has(.login-layout)) .label{color:#a9b6c7!important}
+body:not(:has(.login-layout)) .nav{background:rgba(13,21,32,.96)!important;border:1px solid var(--ix-line)!important}
+body:not(:has(.login-layout)) .nav button,body:not(:has(.login-layout)) .nav .nav-link,body:not(:has(.login-layout)) .admin-side-link{color:#c7d2df!important}
+body:not(:has(.login-layout)) .nav button.active,body:not(:has(.login-layout)) .admin-side-link.active{background:linear-gradient(100deg,#a85d32,#e58a4a)!important;color:#fff!important}
+body:not(:has(.login-layout)) .primary-btn,body:not(:has(.login-layout)) .sa-btn,body:not(:has(.login-layout)) .break-btn{background:linear-gradient(100deg,#b86536,#f08a43)!important;border-color:#dc8144!important;color:#fff!important}
+body:not(:has(.login-layout)) .secondary-btn,body:not(:has(.login-layout)) .sa-small,body:not(:has(.login-layout)) .export-report{background:rgba(240,138,67,.1)!important;border:1px solid rgba(240,138,67,.28)!important;color:#ffb47c!important}
+body:not(:has(.login-layout)) input,body:not(:has(.login-layout)) select,body:not(:has(.login-layout)) textarea{background:#0c1624!important;border:1px solid rgba(166,190,215,.2)!important;color:#edf3fa!important}
+body:not(:has(.login-layout)) input::placeholder,body:not(:has(.login-layout)) textarea::placeholder{color:#8192a7!important}
+body:not(:has(.login-layout)) table{color:#e6edf5!important}body:not(:has(.login-layout)) th{background:#1d2b3d!important;color:#aebdd0!important}body:not(:has(.login-layout)) td,body:not(:has(.login-layout)) th{border-bottom:1px solid rgba(170,190,214,.12)!important}
+body:not(:has(.login-layout)) .tablewrap,body:not(:has(.login-layout)) .project-table-wrap,body:not(:has(.login-layout)) .sa-table-wrap,body:not(:has(.login-layout)) .cp-table-wrap{border:1px solid var(--ix-line)!important;border-radius:10px!important}
+body:not(:has(.login-layout)) .empty{color:#8fa0b4!important}
+body:not(:has(.login-layout)) .alert{background:rgba(240,138,67,.09)!important;border:1px solid rgba(240,138,67,.22)!important;color:#f3c19d!important}
+body:not(:has(.login-layout)) .status,body:not(:has(.login-layout)) .sa-msg,body:not(:has(.login-layout)) .break-message,body:not(:has(.login-layout)) .project-message{color:#aebdd0!important}
+
+/* Agent portal — graphite workspace with compact operational cards. */
+body:not(.admin-mode):has(#view-overview) .topbar{background:#20242b!important}
+body:not(.admin-mode):has(#view-overview) .nav{background:#20242b!important;border-color:#343a43!important}
+body:not(.admin-mode):has(#view-overview) .nav button.active{background:#3d4652!important;color:#fff!important;border-left:3px solid #65c9e8!important}
+body:not(.admin-mode):has(#view-overview) .head h1{color:#f3f5f8!important}
+body:not(.admin-mode):has(#view-overview) .head .muted{color:#aeb8c5!important}
+body:not(.admin-mode):has(#view-overview) .stat-card{min-height:118px!important;padding:17px 18px!important}
+body:not(.admin-mode):has(#view-overview) .stat-card .value{color:#72c8e7!important;font-size:clamp(1.65rem,2.4vw,2.2rem)}
+body:not(.admin-mode):has(#view-overview) .section.card{background:linear-gradient(145deg,#202832,#171e28)!important}
+body:not(.admin-mode):has(#view-overview) .section.card h2{color:#8bd7ef!important}
+body:not(.admin-mode):has(#view-overview) .nav .nav-link:hover{background:#303944!important}
+
+/* Admin portal — navy analytics cockpit, orange KPIs and actual-data charts. */
+body.admin-mode{background:radial-gradient(ellipse at 80% -10%,rgba(235,126,57,.15),transparent 34rem),#091321!important}
+body.admin-mode .topbar{background:#08111f!important}
+body.admin-mode .nav{background:#0e1b2c!important;border-color:rgba(111,153,197,.18)!important}
+body.admin-mode .nav .admin-side-link.active{background:linear-gradient(100deg,#a95b2f,#ef8742)!important;color:#fff!important}
+body.admin-mode .head h1{color:#f4f6fa!important}
+body.admin-mode #view-admin .stat-card{background:linear-gradient(145deg,#17263a,#101d2f)!important;border-color:rgba(240,138,67,.22)!important}
+body.admin-mode #view-admin .stat-card .value{color:#ff9a54!important;font-size:clamp(1.8rem,2.3vw,2.35rem)}
+body.admin-mode #view-admin .stat-card .label{color:#b8c6d7!important}
+body.admin-mode .admin-module-card{cursor:pointer;text-align:left;transition:transform .2s,border-color .2s,box-shadow .2s}
+body.admin-mode .admin-module-card:hover{transform:translateY(-3px);border-color:rgba(240,138,67,.48)!important;box-shadow:0 18px 42px rgba(0,0,0,.3)!important}
+body.admin-mode .module-icon{background:rgba(240,138,67,.13)!important;color:#ff9a54!important}
+body.admin-mode .admin-module-card strong{color:#f2f5f9!important}
+body.admin-mode .admin-module-card small,body.admin-mode .module-open{color:#aab9cb!important}
+.admin-visual-analytics{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;margin:14px 0 18px}
+.admin-chart-card{min-width:0;padding:18px;border:1px solid rgba(240,138,67,.18);border-radius:14px;background:linear-gradient(145deg,#14243a,#101a2a)}
+.admin-chart-card h3{margin:0 0 4px;color:#f2f5f9;font-size:14px}
+.admin-chart-card .chart-caption{margin:0 0 18px;color:#8fa2b8;font-size:11px}
+.admin-bars{height:164px;display:flex;align-items:flex-end;gap:clamp(5px,1vw,13px);padding:12px 4px 0;border-bottom:1px solid rgba(180,199,222,.17);background:repeating-linear-gradient(to top,transparent 0 39px,rgba(180,199,222,.08) 40px)}
+.admin-bar-item{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px}
+.admin-bar-value{color:#ffb27d;font-size:10px;font-weight:700}
+.admin-bar-fill{width:min(100%,34px);min-height:3px;border-radius:5px 5px 0 0;background:linear-gradient(180deg,#ffad68,#c75e2e);box-shadow:0 0 16px rgba(240,138,67,.16)}
+.admin-bar-label{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#9fb0c3;font-size:10px}
+.admin-chart-empty{height:164px;display:grid;place-items:center;color:#8799ad;font-size:12px;text-align:center}
+.admin-chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;color:#aab9cb;font-size:11px}
+.admin-chart-legend span:before{content:"";display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:2px;background:#f08a43}
+@media(max-width:760px){.admin-visual-analytics{grid-template-columns:1fr}.admin-bars{height:140px}}
+
+/* Super Admin — dark control-centre with cyan system headings and orange actions. */
+body:has(.sa-grid) .wrap{max-width:1480px!important}
+body:has(.sa-grid) .head h1,body:has(.sa-grid) h2{color:#75d4ee!important}
+body:has(.sa-grid) .card{background:linear-gradient(145deg,#142335,#0e1928)!important;border-color:rgba(103,201,232,.17)!important}
+body:has(.sa-grid) .sa-grid{gap:16px}
+body:has(.sa-grid) .sa-btn{background:linear-gradient(100deg,#b96536,#f08a43)!important;border:1px solid rgba(255,170,112,.25)!important;color:#fff!important}
+body:has(.sa-grid) .sa-small{background:rgba(240,138,67,.13)!important;color:#ffb47c!important;border:1px solid rgba(240,138,67,.25)!important}
+body:has(.sa-grid) .sa-table th{background:#1b2b3f!important;color:#9ddff0!important}
+body:has(.sa-grid) .sa-table td{color:#dce6f1!important;border-color:rgba(170,190,214,.12)!important}
+body:has(.sa-grid) .sa-msg{color:#a8b9cc!important}
+body:has(.sa-grid) .sa-form label{color:#b8c8d9!important}
+body:has(.sa-grid) input{background:#0b1726!important;color:#eef4fa!important;border-color:rgba(103,201,232,.2)!important}
+
+/* Shared app fragment inherits the same theme when embedded. */
+body:has(#view-overview) .admin-visual-analytics{margin-top:16px}
+@media(max-width:900px){body.admin-mode .wrap{padding:18px 14px 30px!important}body.admin-mode .nav{gap:5px!important}}
+@media(max-width:680px){body:not(.admin-mode):has(#view-overview) .wrap{padding:0 12px 24px!important}body:not(.admin-mode):has(#view-overview) .nav{margin:0 -12px!important}}
