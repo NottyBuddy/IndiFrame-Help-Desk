@@ -67,6 +67,15 @@ export async function handleHelpdesk(req, env) {
     }
 
     if (p === "/api/hd/superadmin/projects" && m === "POST") { if (!u.isSuperAdmin) bad("Super Admin access required.",403); return J(await projectCreate(req, env, u, true),201); }
+    if (p === "/api/hd/superadmin/call-performance" && m === "GET") {
+      if (!u.isSuperAdmin) bad("Super Admin access required.",403);
+      const before=url.searchParams.get("before");
+      if(!isDate(before))bad("A valid cutoff date is required (YYYY-MM-DD).");
+      await ensureCallPerformanceSections(env);
+      const a=await env.DB.prepare("SELECT COUNT(*) n FROM call_performance_rows WHERE report_date<?").bind(before).first();
+      const b=await env.DB.prepare("SELECT COUNT(*) n FROM call_performance_report_rows WHERE report_date IS NOT NULL AND report_date<?").bind(before).first();
+      return J({before,dailyRows:Number(a?.n||0),reportRows:Number(b?.n||0)});
+    }
     if (p === "/api/hd/superadmin/call-performance" && m === "DELETE") {
       if (!u.isSuperAdmin) bad("Super Admin access required.",403);
       const before=url.searchParams.get("before");
