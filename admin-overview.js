@@ -31,7 +31,7 @@ function resolve(row){
   return{key:String(a.employeeId),name:a.fullName||name,id:a.employeeId,matched:true};
  }
  if(sameName.length>1&&id){const a=sameName.find(x=>String(x.employeeId).toLowerCase()===id.toLowerCase());if(a)return{key:String(a.employeeId),name:a.fullName||name,id:a.employeeId,matched:true};}
- if(!name&&id){const a=agents.find(x=>String(x.employeeId).toLowerCase()===id.toLowerCase());if(a)return{key:String(a.employeeId),name:a.fullName,id:a.employeeId,matched:true};}
+ if(id){const a=agents.find(x=>String(x.employeeId).toLowerCase()===id.toLowerCase());if(a&&sameName.length===0)return{key:String(a.employeeId),name:a.fullName||name,id:a.employeeId,matched:true};}
  return{key:"review:"+norm(name)+":"+id,name:name||"Unmatched agent",id,matched:false,reason:sameName.length>1?"Duplicate name; ID required":"No exact agent match"};
 }
 function completeness(r){const s=r.source||{};return Object.values(s).filter(v=>v!==""&&v!==null&&v!==undefined).length+(r.disposition?1:0);}
@@ -64,7 +64,7 @@ function renderAttendanceAndBreaks(){
  const d=today(),todayRows=attendance.filter(x=>dateOf(x.workDate||x.work_date)===d);
  const present=new Set(todayRows.filter(x=>x.checkInAt||x.check_in_at).map(x=>String(x.employeeId||x.employee_id))).size;
  const activeBreaks=breaks.filter(x=>!x.ended_at);
- set("admPresent",String(present));set("admOnBreak",String(activeBreaks.length));
+ set("admPresent",String(present));set("admOnBreak",String(new Set(activeBreaks.map(x=>String(x.employee_id))).size));
  const byId=new Map(todayRows.map(x=>[String(x.employeeId||x.employee_id),x]));
  const breakById=new Map(activeBreaks.map(x=>[String(x.employee_id),x]));
  const team=agents.filter(a=>!["admin","superadmin","super_admin"].includes(String(a.role||"").toLowerCase()));
