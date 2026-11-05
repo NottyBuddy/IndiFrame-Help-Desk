@@ -406,11 +406,10 @@ async function kpiImport(req, env, u) {
 }
 
 // ---------- Break management ----------
-const BREAK_TYPES = new Set(["tea","lunch","bio","personal","other"]);
+const BREAK_TYPES = new Set(["tea","lunch","bio"]);
 async function breakStatus(env,u) {
   const active = await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
-  const recent = (await env.DB.prepare("SELECT id,break_type,started_at,ended_at,duration_seconds FROM agent_breaks WHERE agent_id=? ORDER BY started_at DESC LIMIT 20").bind(u.agentId).all()).results;
-  return { active: active ? { ...active, elapsedSeconds: Math.max(0,Math.floor((Date.now()-Date.parse(active.started_at))/1000)) } : null, history: recent };
+  return { active: active ? { ...active, elapsedSeconds: Math.max(0,Math.floor((Date.now()-Date.parse(active.started_at))/1000)) } : null, serverTime: now() };
 }
 async function breakStart(req,env,u) {
   const b=await req.json().catch(()=>({}));
@@ -471,7 +470,7 @@ async function adminBreakStatus(url, env) {
   const from=url.searchParams.get("from"), to=url.searchParams.get("to");
   if(from&&!isDate(from))bad("Invalid 'from' date.");
   if(to&&!isDate(to))bad("Invalid 'to' date.");
-  const where=["a.active=1"],args=[];
+  const where=["1=1"],args=[];
   if(from){where.push("date(b.started_at)>=?");args.push(from);}
   if(to){where.push("date(b.started_at)<=?");args.push(to);}
   const rows=(await env.DB.prepare("SELECT b.id,b.break_type,b.started_at,b.ended_at,b.duration_minutes,a.employee_id,a.full_name FROM agent_breaks b JOIN agents a ON a.id=b.agent_id WHERE "+where.join(" AND ")+" ORDER BY b.started_at DESC LIMIT 2000").bind(...args).all()).results;
