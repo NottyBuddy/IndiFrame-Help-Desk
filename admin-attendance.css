@@ -1,0 +1,21 @@
+/* Admin Team Attendance — view-only operations workspace */
+.attendance-excel-panel{margin:0 0 18px;padding:22px;border:1px solid rgba(255,255,255,.85);border-radius:22px;background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(228,244,241,.68));box-shadow:0 14px 34px rgba(21,48,68,.08),inset 0 1px rgba(255,255,255,.95)}
+.attendance-excel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:14px}
+.attendance-excel-eyebrow{font-size:10px;font-weight:900;letter-spacing:.18em;color:#159b91}
+.attendance-excel-head h2{margin:6px 0;color:#18364b;font-size:20px}
+.attendance-excel-head p{margin:0;color:#627889;font-size:12px}
+.attendance-source-pill{padding:8px 11px;border-radius:99px;background:rgba(21,155,145,.11);color:#087b73;font-size:10px;font-weight:850;white-space:nowrap}
+.attendance-excel-state{display:grid;gap:5px;padding:14px 16px;border:1px dashed rgba(180,119,69,.4);border-radius:14px;background:rgba(255,249,240,.7)}
+.attendance-excel-state strong{color:#9a633b;font-size:12px}
+.attendance-excel-state span{color:#6d7882;font-size:11px;line-height:1.55}
+.attendance-excel-statuses{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:12px}
+.attendance-excel-statuses span{display:flex;justify-content:space-between;gap:8px;padding:10px 11px;border-radius:11px;background:rgba(255,255,255,.68);color:#607486;font-size:10px;font-weight:700}
+.attendance-excel-statuses b{color:#a6adb5}
+#agentWrap{min-width:190px}
+#sectionMetrics .section-metric:nth-child(4n+1){border-top:3px solid #159b91}
+#sectionMetrics .section-metric:nth-child(4n+2){border-top:3px solid #d69a69}
+#sectionMetrics .section-metric:nth-child(4n+3){border-top:3px solid #5c86a1}
+#sectionMetrics .section-metric:nth-child(4n+4){border-top:3px solid #8c7cc5}
+@media(max-width:900px){.attendance-excel-statuses{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.attendance-excel-head{flex-direction:column}.attendance-excel-statuses{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.attendance-excel-panel *{transition:none!important}}
