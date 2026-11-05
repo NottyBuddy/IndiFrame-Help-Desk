@@ -5,6 +5,7 @@ let stagedCallRows=[],stagedCallSections=[],stagedCallFile="",callDryRun=false;
 const norm=v=>String(v??"").trim().toLowerCase().replace(/[_-]+/g," ").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
 function dateValue(v){if(v instanceof Date&&!isNaN(v))return v.toISOString().slice(0,10);if(typeof v==="number"&&window.XLSX)return window.XLSX.SSF.format("yyyy-mm-dd",v);let s=String(v??"").trim(),m=s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})$/);if(m)return(m[3].length===2?"20"+m[3]:m[3])+"-"+m[2].padStart(2,"0")+"-"+m[1].padStart(2,"0");m=s.match(/^(\d{4}-\d{2}-\d{2})/);return m?m[1]:s;}
 function callMsg(t,error=false){$("callPerformanceStatus").textContent=t;$("callPerformanceStatus").className="sa-msg"+(error?" error":"");}
+function normalizeCallCell(value,key){const k=norm(key);if(value instanceof Date){if(/duration|talk time|handling time/.test(k)){const seconds=value.getUTCHours()*3600+value.getUTCMinutes()*60+value.getUTCSeconds();return seconds;}if(/date/.test(k))return value.toISOString().slice(0,10);return value.toISOString();}if(/attempt rate|connect rate/.test(k)){const n=Number(value);return Number.isFinite(n)?n:null;}return value===undefined?"":value;}
 function parseCallSheet(sheet){
  const rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:"",raw:true});
  const dateNames=["date","report date","call date","activity date","created date","created on","call start date"];
@@ -12,7 +13,7 @@ function parseCallSheet(sheet){
  const hi=rows.findIndex(r=>{const h=r.map(norm);return h.some(x=>dateNames.includes(x))&&h.some(x=>agentNames.includes(x));});
  if(hi<0)throw Error("Date aur Agent columns nahi mile.");
  const headers=rows[hi].map((v,i)=>String(v??"").trim()||("Column "+(i+1))),h=rows[hi].map(norm),di=h.findIndex(x=>dateNames.includes(x)),ai=h.findIndex(x=>agentNames.includes(x));
- const daily=rows.slice(hi+1).map(r=>{const d=dateValue(r[di]),name=String(r[ai]??"").trim();if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!name||/^grand total$/i.test(name))return null;const o={};headers.forEach((k,i)=>{if(norm(k)==="req filed")return;let v=r[i];if(v instanceof Date)v=v.toISOString().slice(0,10);o[k]=v===undefined?"":v;});o.__call_performance_date=d;o.__call_performance_agent=name;return o;}).filter(Boolean);
+ const daily=rows.slice(hi+1).map(r=>{const d=dateValue(r[di]),name=String(r[ai]??"").trim();if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!name||/^grand total$/i.test(name))return null;const o={};headers.forEach((k,i)=>{if(norm(k)==="req filed")return;let v=r[i];v=normalizeCallCell(v,k);o[k]=v;});o.__call_performance_date=d;o.__call_performance_agent=name;return o;}).filter(Boolean);
  const reportRows=[];
  const push=(type,employeeName,reportDate,label,data)=>reportRows.push({type,employeeName:employeeName||"",reportDate:reportDate||"",label:label||"",data});
  // Overall date summary block: Date + Total Calls, without Agent column.
