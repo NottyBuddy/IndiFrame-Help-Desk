@@ -605,3 +605,125 @@ body:has(.login-layout) .scene-ice-haze{
  body:has(.login-layout) .scene-rain-drops,body:has(.login-layout) .scene-icefall,
  body:has(.login-layout) .scene-ice-haze{animation:none!important;opacity:0!important}
 }
+
+
+/* INDINEXT LOGIN — minimal architectural glass composition (house-free). */
+body:has(.login-layout){
+  min-height:100vh!important;padding:0!important;display:grid!important;place-items:center!important;
+  overflow-x:hidden;background:#101722!important;
+}
+body:has(.login-layout)::before,body:has(.login-layout)::after{display:none!important}
+body:has(.login-layout) .login-layout{
+  width:min(1220px,calc(100vw - 64px));min-height:min(720px,calc(100vh - 64px));
+  display:grid;grid-template-columns:minmax(0,1.18fr) minmax(390px,.82fr);
+  overflow:hidden;border:1px solid rgba(255,255,255,.09);border-radius:22px;
+  background:#f7f7f5;box-shadow:0 35px 100px rgba(0,0,0,.42);
+}
+body:has(.login-layout) .login-showcase{
+  position:relative;isolation:isolate;min-width:0;min-height:650px;overflow:hidden;
+  background:radial-gradient(ellipse at 70% 44%,rgba(174,116,77,.19),transparent 33%),
+    radial-gradient(ellipse at 14% 84%,rgba(74,119,143,.18),transparent 38%),
+    linear-gradient(138deg,#101923 0%,#1b2935 54%,#26333b 100%);
+}
+body:has(.login-layout) .login-showcase::before{
+  content:"";position:absolute;inset:0;z-index:-1;opacity:.22;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:58px 58px;mask-image:linear-gradient(135deg,black,transparent 78%);
+}
+body:has(.login-layout) .login-showcase::after{
+  content:"";position:absolute;inset:-40%;z-index:4;pointer-events:none;
+  background:linear-gradient(112deg,transparent 42%,rgba(255,255,255,.055) 48%,rgba(255,226,198,.12) 50%,transparent 56%);
+  transform:translateX(-42%);animation:ixGlassSweep 12s ease-in-out infinite;
+}
+body:has(.login-layout) .showcase-brand{
+  position:absolute;top:34px;left:42px;z-index:8;display:flex;align-items:center;gap:11px;
+  color:#f4f0e9;font-size:13px;font-weight:800;letter-spacing:.25em;
+}
+body:has(.login-layout) .brand-mark{
+  display:grid;place-items:center;width:29px;height:29px;border:1px solid rgba(224,174,130,.75);
+  border-radius:8px;color:#e8b98f;font-family:Georgia,serif;font-size:17px;letter-spacing:0;
+}
+body:has(.login-layout) .architectural-scene{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+body:has(.login-layout) .architecture-glow{
+  position:absolute;width:470px;height:470px;right:-5%;top:12%;border-radius:50%;
+  background:radial-gradient(circle,rgba(193,139,101,.22),rgba(94,142,160,.09) 42%,transparent 70%);
+  filter:blur(12px);animation:ixGlowBreath 9s ease-in-out infinite alternate;
+}
+body:has(.login-layout) .glass-panel{
+  position:absolute;top:17%;height:59%;border:1px solid rgba(220,235,239,.32);
+  background:linear-gradient(135deg,rgba(224,241,242,.13),rgba(125,167,180,.035) 48%,rgba(238,202,169,.12));
+  box-shadow:inset 1px 1px rgba(255,255,255,.2),0 25px 70px rgba(0,0,0,.18);
+  backdrop-filter:blur(2px);transform:skewY(-9deg) rotate(-2deg);
+}
+body:has(.login-layout) .glass-panel-back{width:43%;right:7%;top:22%;opacity:.45;transform:skewY(-9deg) rotate(4deg)}
+body:has(.login-layout) .glass-panel-mid{width:39%;right:22%;top:16%;opacity:.7;transform:skewY(-9deg) rotate(-3deg)}
+body:has(.login-layout) .glass-panel-front{width:34%;right:34%;top:24%;height:51%;border-color:rgba(240,211,184,.48);transform:skewY(-9deg) rotate(-3deg)}
+body:has(.login-layout) .glass-reflection{
+  position:absolute;inset:0;display:block;background:linear-gradient(112deg,transparent 25%,rgba(255,255,255,.24) 42%,transparent 49%);
+  background-size:220% 100%;animation:ixReflection 7s ease-in-out infinite;
+}
+body:has(.login-layout) .metal-line{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(222,170,126,.85),transparent);transform:rotate(-9deg);opacity:.7}
+body:has(.login-layout) .metal-line-one{width:78%;right:-8%;top:29%}
+body:has(.login-layout) .metal-line-two{width:62%;right:4%;top:76%;opacity:.38}
+body:has(.login-layout) .scene-caption{
+  position:absolute;right:35px;bottom:34%;z-index:3;color:rgba(236,229,218,.55);
+  font-size:8px;font-weight:700;letter-spacing:.2em;writing-mode:vertical-rl;
+}
+body:has(.login-layout) .scene-caption span{color:#d7a77f;margin:10px 0}
+body:has(.login-layout) .showcase-copy{
+  position:absolute;left:42px;right:36px;bottom:48px;top:auto;z-index:7;max-width:500px;
+  padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;
+  box-shadow:none!important;backdrop-filter:none!important;color:#f7f3ed;
+}
+body:has(.login-layout) .showcase-eyebrow{margin:0 0 14px;color:#d6ad8d;font-size:9px;font-weight:750;letter-spacing:.2em}
+body:has(.login-layout) .showcase-copy h2{
+  margin:0 0 13px;color:#f7f3ed!important;font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(34px,4vw,52px);font-weight:400;line-height:1.06;letter-spacing:-.045em;
+}
+body:has(.login-layout) .showcase-copy h2 em{color:#d9ae8c;font-weight:400}
+body:has(.login-layout) .showcase-copy p{max-width:390px;margin:0;color:rgba(235,237,236,.68);font-size:12px;line-height:1.75}
+body:has(.login-layout) .login-layout>.login-shell{
+  align-self:center;justify-self:center;width:min(100%,430px);padding:64px 52px 56px;
+  border:0;border-radius:0;background:#f7f7f5;box-shadow:none;
+}
+body:has(.login-layout) .login-shell h1{margin:0 0 8px;color:#202c34;font-size:34px;font-weight:700;letter-spacing:-.055em}
+body:has(.login-layout) .login-shell .subtitle{margin:0 0 38px;color:#8a9293;font-size:13px}
+body:has(.login-layout) .login-shell label{margin-bottom:9px;color:#3e4b50;font-size:11px;font-weight:700;letter-spacing:.035em}
+body:has(.login-layout) .login-shell .field{margin-bottom:22px}
+body:has(.login-layout) .login-shell input{
+  height:51px;padding:0 15px;border:1px solid #e0e3e0;border-radius:7px;background:#fff;
+  color:#26343a;font-size:13px;box-shadow:none;
+}
+body:has(.login-layout) .login-shell input:focus{border-color:#b98460;box-shadow:0 0 0 3px rgba(185,132,96,.12)}
+body:has(.login-layout) .login-shell button[type=submit]{
+  height:51px;margin-top:10px;border:0;border-radius:7px;
+  background:linear-gradient(105deg,#263843,#344b55);color:#fff;font-size:12px;font-weight:750;
+  letter-spacing:.08em;box-shadow:0 10px 22px rgba(35,55,65,.16);
+}
+body:has(.login-layout) .login-shell button[type=submit]:hover{background:linear-gradient(105deg,#344b55,#48616b)}
+body:has(.login-layout) .login-shell .message{min-height:22px;margin-top:16px;font-size:12px}
+@keyframes ixGlassSweep{0%,12%{transform:translateX(-48%);opacity:0}28%,68%{opacity:1}88%,100%{transform:translateX(48%);opacity:0}}
+@keyframes ixReflection{0%,15%{background-position:150% 0;opacity:.3}55%,75%{background-position:-30% 0;opacity:.9}100%{background-position:-30% 0;opacity:.3}}
+@keyframes ixGlowBreath{from{transform:scale(.92);opacity:.65}to{transform:scale(1.08);opacity:1}}
+@media(max-width:900px){
+ body:has(.login-layout) .login-layout{width:min(680px,calc(100vw - 32px));grid-template-columns:1fr;min-height:0}
+ body:has(.login-layout) .login-showcase{min-height:510px}
+ body:has(.login-layout) .login-layout>.login-shell{width:100%;max-width:none;padding:42px 52px 48px}
+ body:has(.login-layout) .showcase-copy{left:32px;bottom:34px}
+ body:has(.login-layout) .showcase-brand{left:32px;top:27px}
+}
+@media(max-width:520px){
+ body:has(.login-layout) .login-layout{width:100vw;min-height:100vh;border:0;border-radius:0}
+ body:has(.login-layout) .login-showcase{min-height:430px}
+ body:has(.login-layout) .showcase-brand{left:22px;top:22px}
+ body:has(.login-layout) .showcase-copy{left:22px;right:20px;bottom:27px}
+ body:has(.login-layout) .showcase-copy h2{font-size:36px}
+ body:has(.login-layout) .showcase-copy p{font-size:11px}
+ body:has(.login-layout) .scene-caption{right:16px;bottom:38%;font-size:7px}
+ body:has(.login-layout) .login-layout>.login-shell{padding:36px 25px 42px}
+}
+@media(prefers-reduced-motion:reduce){
+ body:has(.login-layout)::after,body:has(.login-layout) .glass-reflection,
+ body:has(.login-layout) .architecture-glow{animation:none!important}
+}
