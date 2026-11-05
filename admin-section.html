@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="dashboard.css?v=admin-section-20261105"><link rel="stylesheet" href="portal-clean.css?v=portal-ui-v2-20261105"><link rel="stylesheet" href="admin-section.css?v=admin-section-v5-20261105"><link rel="stylesheet" href="preloader.css?v=indinext-loader-snake-v3-20261105">  <link rel="stylesheet" href="indinext-premium.css?v=indinext-ember-glass-20261105">
   <link rel="stylesheet" href="indinext-operations-refinement.css?v=ops-glass-v1-20261105">
   <link rel="stylesheet" href="admin-attendance.css?v=admin-attendance-v1-20261106">
+  <link rel="stylesheet" href="admin-break-monitoring.css?v=admin-break-monitoring-v1-20261106">
 </head>
 <body><script src="preloader.js?v=indinext-loader-snake-v3-20261105"></script>
 <header class="topbar"><div><div class="brand">Indinext</div><div class="subtitle">Admin Workspace</div></div><div class="topright"><a class="logout-btn" href="dashboard.html">Dashboard</a><button id="logoutBtn" class="logout-btn" type="button">Logout</button></div></header>
@@ -11,6 +12,18 @@
 <section class="section-hero"><div><div class="section-eyebrow">TEAM OPERATIONS / REPORTING</div><h1 id="sectionTitle">Loading section…</h1><p id="sectionDescription">A focused view of the selected admin workspace.</p></div><div id="sectionSummary" class="section-summary"></div></section>
 <section class="section-filters card"><label>Date range<select id="period"><option value="all">All dates</option><option value="today">Today</option><option value="this_week">This week</option><option value="this_month">This month</option><option value="custom">Custom</option></select></label><label id="fromWrap" hidden>From<input id="fromDate" type="date"></label><label id="toWrap" hidden>To<input id="toDate" type="date"></label><label id="agentWrap" hidden>Team member<select id="agent"><option value="">All team members</option></select></label><label id="quizWrap" hidden>Quiz week<input id="quizWeek" type="number" min="1" max="13" value="1"></label><button id="apply" class="primary-btn" type="button">Apply filters</button><button id="export" class="secondary-btn" type="button">Export CSV</button></section>
 <section id="sectionMetrics" class="section-metrics"></section>
+<section id="breakMonitoringPanel" class="break-monitoring-panel" hidden>
+  <div class="break-monitoring-heading"><div><span class="break-eyebrow">LIVE TEAM OPERATIONS</span><h2>Break &amp; Activity Monitor</h2><p>Monitor Tea, Lunch and Bio sessions separately from ACW work activity.</p></div><span class="break-view-pill">Admin · View only</span></div>
+  <div class="break-monitor-filters">
+    <label>Break type<select id="breakTypeFilter"><option value="all">All break types</option><option value="tea">Tea</option><option value="lunch">Lunch</option><option value="bio">Bio</option></select></label>
+    <label>Live activity<select id="breakStatusFilter"><option value="all">All statuses</option><option value="Working">Working</option><option value="On Break">On Break</option><option value="Checked Out">Checked Out</option></select></label>
+  </div>
+  <div class="break-section-heading"><div><h3>Break analytics</h3><p>Real break records only; legacy types remain unchanged in the history table.</p></div></div>
+  <div id="breakTypeStats" class="break-type-stats"></div>
+  <div class="break-section-heading"><div><h3>Live agent monitoring</h3><p>Current working and break status from available attendance and break records.</p></div><span class="break-live-indicator"><i></i> Live data</span></div>
+  <div id="breakLiveTable" class="break-live-table"></div>
+  <section class="break-acw-panel"><div class="break-acw-icon">ACW</div><div id="breakAcwState" class="break-acw-state"></div></section>
+</section>
 <section id="attendanceExcelPanel" class="attendance-excel-panel" hidden>
   <div class="attendance-excel-head"><div><span class="attendance-excel-eyebrow">PUBLISHED WORKBOOK DATA</span><h2>Excel Attendance</h2><p>Present, Half Day, Absent, Leave, Week Off and On-time / Late records.</p></div><span class="attendance-source-pill">Super Admin controlled</span></div>
   <div class="attendance-excel-state"><strong>Excel publishing source not connected yet</strong><span>This Admin view currently receives website Check In / Check Out records only. No Excel attendance status is being inferred or fabricated. Super Admin upload, validation and publish integration is still pending.</span></div>
