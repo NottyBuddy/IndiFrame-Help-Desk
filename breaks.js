@@ -5,6 +5,7 @@ function duration(sec){sec=Math.max(0,Math.floor(sec||0));const h=Math.floor(sec
 function fmt(v){if(!v)return"—";const d=new Date(v);return isNaN(d)?v:d.toLocaleString()}
 function renderOwn(){
  const on=!!activeBreak;$("breakStatus").textContent=on?("Active: "+activeBreak.break_type+" · Started "+fmt(activeBreak.started_at)):"Abhi koi active break nahi hai.";
+ $("breakStatePill").textContent=on?"ON BREAK":"WORKING";$("breakStatePill").classList.toggle("is-active",on);
  $("startBreak").disabled=on;$("breakType").disabled=on;$("endBreak").disabled=!on;
  $("elapsed").textContent=on?duration((Date.now()+serverOffset-new Date(activeBreak.started_at).getTime())/1000):"00:00:00";
 }
@@ -15,6 +16,13 @@ async function load(){
   $("profile").textContent=(u.fullName||u.employeeId)+" · "+u.role;
   const own=await api.apiRequest("/api/hd/breaks/status");
   activeBreak=own.active;serverOffset=Date.now()-Date.parse(own.serverTime||new Date().toISOString());renderOwn();
+  const historyRows=own.history||[],now=new Date(),todayKey=now.toDateString(),weekStart=new Date(now);weekStart.setHours(0,0,0,0);weekStart.setDate(weekStart.getDate()-(weekStart.getDay()+6)%7);
+  const seconds=x=>Number(x.duration_seconds??x.durationSeconds??(x.ended_at?Math.max(0,(Date.parse(x.ended_at)-Date.parse(x.started_at))/1000):activeBreak&&x===activeBreak?(Date.now()+serverOffset-Date.parse(x.started_at))/1000:0))||0;
+  const todayRows=historyRows.filter(x=>new Date(x.started_at).toDateString()===todayKey),weekRows=historyRows.filter(x=>new Date(x.started_at)>=weekStart);
+  $("breakTodayCount").textContent=todayRows.length+(activeBreak&&new Date(activeBreak.started_at).toDateString()===todayKey&&!todayRows.includes(activeBreak)?1:0);
+  $("breakTodayDuration").textContent=duration(todayRows.reduce((a,x)=>a+seconds(x),0)+(activeBreak&&new Date(activeBreak.started_at).toDateString()===todayKey?seconds(activeBreak):0));
+  $("breakWeekDuration").textContent=duration(weekRows.reduce((a,x)=>a+seconds(x),0)+(activeBreak&&new Date(activeBreak.started_at)>=weekStart?seconds(activeBreak):0));
+  $("breakLastTime").textContent=historyRows.length?new Date(historyRows[0].started_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):activeBreak?new Date(activeBreak.started_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"—";
   $("history").innerHTML=(own.history||[]).length?'<div style="overflow:auto"><table class="break-list"><thead><tr><th>Type</th><th>Started</th><th>Ended</th><th>Duration</th></tr></thead><tbody>'+(own.history||[]).map(x=>'<tr><td>'+esc(x.break_type)+'</td><td>'+esc(fmt(x.started_at))+'</td><td>'+esc(fmt(x.ended_at))+'</td><td>'+esc(x.duration_seconds==null?"Active":duration(x.duration_seconds))+'</td></tr>').join("")+'</tbody></table></div>':'<div class="empty">Abhi break history available nahi hai.</div>';
   if(String(u.role).toLowerCase()==="admin"){
    $("teamCard").classList.remove("hidden");const team=await api.apiRequest("/api/hd/admin/breaks/status"),rows=team.activeBreaks||[];
