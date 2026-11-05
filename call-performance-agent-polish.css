@@ -1,0 +1,34 @@
+/* INDINEXT Call Performance — agent-first page polish */
+.cp-page-heading{position:relative;overflow:hidden;padding:25px 27px!important;margin:0 0 22px!important;border:1px solid rgba(220,230,242,.13);border-radius:22px;background:linear-gradient(115deg,rgba(34,44,55,.82),rgba(17,23,31,.76));box-shadow:0 18px 42px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.12);backdrop-filter:blur(24px)}
+.cp-page-heading:after{content:"";position:absolute;width:260px;height:260px;right:-90px;top:-150px;border-radius:50%;background:radial-gradient(circle,rgba(199,145,105,.20),transparent 68%);pointer-events:none}
+.cp-page-heading>div{position:relative;z-index:1}
+.cp-page-eyebrow{display:inline-block;color:#d9a780;font-size:10px;font-weight:800;letter-spacing:.17em;margin-bottom:7px}
+.cp-page-heading h1{margin:0 0 7px!important;font-size:clamp(27px,3.2vw,37px)!important;letter-spacing:-.045em}
+.cp-page-heading .muted{font-size:12px;line-height:1.6}
+.cp-page-heading .profile{padding:9px 13px;border:1px solid rgba(220,230,242,.16);border-radius:99px;background:rgba(255,255,255,.045);font-size:11px}
+.cp-kpi-grid{align-items:stretch}
+.cp-kpi{min-height:128px}
+.cp-kpi span{line-height:1.45;min-height:2.8em}
+.cp-kpi strong{font-variant-numeric:tabular-nums}
+.cp-kpi small{line-height:1.45}
+.cp-kpi-link:focus-visible{outline:2px solid #d9a780;outline-offset:3px}
+.cp-section>h2{display:flex;align-items:center;gap:9px}
+.cp-section>h2:before{content:"";width:4px;height:17px;border-radius:9px;background:linear-gradient(#e0b08b,#8d6d57)}
+#cpInsights .cp-chart-grid{margin-top:18px}
+.cp-chart-panel{min-height:230px}
+.cp-chart{gap:13px}
+.cp-bar-row{min-height:20px}
+.cp-table-wrap{scrollbar-width:thin;scrollbar-color:rgba(192,151,119,.45) rgba(255,255,255,.04)}
+.cp-table tbody tr:hover td{background:rgba(255,255,255,.055)!important}
+.cp-status{font-size:11px;line-height:1.5}
+body.cp-agent-view [data-cp-team-only]{display:none!important}
+body.cp-agent-view .cp-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+@media(max-width:1050px){body.cp-agent-view .cp-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){
+ .cp-page-heading{padding:18px!important;border-radius:17px!important;align-items:flex-start!important}
+ .cp-page-heading .profile{font-size:10px;max-width:100%;overflow-wrap:anywhere}
+ .cp-kpi{min-height:108px!important}
+ body.cp-agent-view .cp-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:380px){.cp-page-heading{gap:12px}.cp-kpi{padding:11px!important}.cp-kpi strong{font-size:21px!important}}
+@media(prefers-reduced-motion:reduce){.cp-page-heading:after{animation:none!important}.cp-kpi{transition:none!important}}
