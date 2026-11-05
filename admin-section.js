@@ -11,13 +11,13 @@ async function loadAdminAttendance(q){
  const agents=agentData.agents||[];attendanceAgents=agents;
  const names=new Map(agents.map(a=>[String(a.employeeId||a.employee_id||"").toLowerCase(),a.fullName||a.full_name||""]));
  const activeAgents=new Map(agents.map(a=>[String(a.employeeId||a.employee_id||"").toLowerCase(),Number(a.active)===1]));
- const breakSeconds=new Map(),now=Date.now();
+ const breakIntervals=new Map(),now=Date.now();
  for(const b of breakData.breaks||[]){
   const id=String(b.employee_id||"").toLowerCase(),date=attendanceDateLocal(b.started_at),type=String(b.break_type||"").toLowerCase();
   if(!id||!date||!["tea","lunch","bio"].includes(type))continue;
   const start=Date.parse(b.started_at),end=b.ended_at?Date.parse(b.ended_at):now;
   if(!Number.isFinite(start)||!Number.isFinite(end))continue;
-  const key=id+"|"+date;breakSeconds.set(key,(breakSeconds.get(key)||0)+Math.max(0,Math.floor((end-start)/1000)));
+  const key=id+"|"+date,items=breakIntervals.get(key)||[];items.push({start,end});breakIntervals.set(key,items);
  }
  const grouped=new Map();
  for(const r of history.records||[]){
@@ -28,7 +28,7 @@ async function loadAdminAttendance(q){
   item.sessions.push({checkIn:r.checkInAt||r.check_in_at,checkOut:r.checkOutAt||r.check_out_at});item.grossSeconds+=gross;grouped.set(key,item);
  }
  return [...grouped.values()].map(item=>{
-  const breaks=breakSeconds.get(item.employeeId.toLowerCase()+"|"+item.workDate)||0,breakHistoryAvailable=activeAgents.get(item.employeeId.toLowerCase())===true,net=breakHistoryAvailable?Math.max(0,item.grossSeconds-breaks):null;
+  const intervals=breakIntervals.get(item.employeeId.toLowerCase()+"|"+item.workDate)||[],breakHistoryAvailable=activeAgents.get(item.employeeId.toLowerCase())===true;let breaks=0;for(const session of item.sessions){const start=Date.parse(session.checkIn),end=session.checkOut?Date.parse(session.checkOut):now;if(!Number.isFinite(start)||!Number.isFinite(end))continue;for(const interval of intervals)breaks+=Math.max(0,Math.floor((Math.min(end,interval.end)-Math.max(start,interval.start))/1000));}const net=breakHistoryAvailable?Math.max(0,item.grossSeconds-breaks):null;
   const sessions=item.sessions.sort((a,b)=>String(a.checkIn||"").localeCompare(String(b.checkIn||"")));
   return {...item,checkInAt:sessions[0]?.checkIn||null,checkOutAt:sessions.some(s=>!s.checkOut)?null:(sessions[sessions.length-1]?.checkOut||null),sessionCount:sessions.length,breakSeconds:breaks,breakHistoryAvailable,netSeconds:net,checkInDisplay:sessions.map(s=>attendanceClock(s.checkIn)).join(" · "),checkOutDisplay:sessions.map(s=>attendanceClock(s.checkOut)).join(" · "),grossDisplay:attendanceDurationLabel(item.grossSeconds),breakDisplay:attendanceDurationLabel(breaks),netDisplay:breakHistoryAvailable?attendanceDurationLabel(net):"Break history unavailable"};
  });
