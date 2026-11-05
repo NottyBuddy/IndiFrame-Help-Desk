@@ -462,3 +462,22 @@ body:has(.sa-grid) input{background:#0b1726!important;color:#eef4fa!important;bo
 body:has(#view-overview) .admin-visual-analytics{margin-top:16px}
 @media(max-width:900px){body.admin-mode .wrap{padding:18px 14px 30px!important}body.admin-mode .nav{gap:5px!important}}
 @media(max-width:680px){body:not(.admin-mode):has(#view-overview) .wrap{padding:0 12px 24px!important}body:not(.admin-mode):has(#view-overview) .nav{margin:0 -12px!important}}
+
+
+/* Agent profile and action centre panels. */
+.agent-overview-panels{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:14px;margin:14px 0 18px}
+.agent-info-card{min-width:0;padding:19px 20px;border:1px solid rgba(150,180,205,.14);border-radius:13px;background:linear-gradient(145deg,#222a34,#171e28);box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.agent-panel-kicker{margin-bottom:8px;color:#e99a62;font-size:9px;font-weight:800;letter-spacing:.19em}
+.agent-info-card h2{margin:0 0 15px;color:#8bd7ef!important;font-size:15px}
+.agent-profile-name{margin-bottom:14px;color:#f3f6fa;font-size:22px;font-weight:700;letter-spacing:-.03em}
+.agent-profile-meta{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid rgba(170,190,214,.11)}
+.agent-profile-meta span{color:#899bad;font-size:9px;font-weight:700;letter-spacing:.1em}
+.agent-profile-meta strong{max-width:65%;overflow-wrap:anywhere;color:#dce6f0;font-size:11px;text-align:right}
+.agent-activity-links{display:grid;gap:8px}
+.agent-activity-links a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 12px;border:1px solid rgba(150,180,205,.12);border-radius:9px;background:rgba(255,255,255,.025);text-decoration:none}
+.agent-activity-links a:hover{border-color:rgba(103,201,232,.4);background:rgba(103,201,232,.06)}
+.agent-activity-links strong{color:#e8eef5;font-size:12px}
+.agent-activity-links span{color:#8fa0b3;font-size:10px;text-align:right}
+@media(max-width:760px){.agent-overview-panels{grid-template-columns:1fr}.agent-activity-links a{align-items:flex-start;flex-direction:column;gap:4px}.agent-activity-links span{text-align:left}}
+/* Keep the login scene motion active while respecting a slower, low-distraction cycle. */
+body:has(.login-layout) .house-scene,body:has(.login-layout) .house-scene:before,body:has(.login-layout) .house-scene:after,body:has(.login-layout) .scene-sun,body:has(.login-layout) .scene-moon,body:has(.login-layout) .scene-stars,body:has(.login-layout) .scene-rain,body:has(.login-layout) .scene-snow,body:has(.login-layout) .win,body:has(.login-layout) .glass-pane,body:has(.login-layout) .door,body:has(.login-layout) .door-panel{animation-play-state:running}
