@@ -792,3 +792,119 @@ body:has(.login-layout) .scene-caption span{color:#d7a77f;margin:10px 0}
  body:has(.login-layout) .light-ribbon,body:has(.login-layout) .particle-field,
  body:has(.login-layout)::after{animation:none!important}
 }
+
+
+/* INDINEXT — unified Liquid Glass workspace for every authenticated page.
+   Presentation-only layer: preserves existing DOM, API calls, permissions and data flows. */
+body:not(:has(.login-layout)){
+  --ix-bg:#09131b;--ix-panel:rgba(20,35,45,.72);--ix-panel-strong:rgba(24,43,54,.88);
+  --ix-line:rgba(190,224,226,.14);--ix-text:#edf5f3;--ix-muted:#9aafb2;
+  --ix-cyan:#75d8d0;--ix-gold:#d8b18b;
+  background:
+    radial-gradient(ellipse at 12% 0%,rgba(52,139,139,.19),transparent 36%),
+    radial-gradient(ellipse at 92% 10%,rgba(185,133,94,.12),transparent 30%),
+    linear-gradient(145deg,#09131b 0%,#101f29 54%,#0a151e 100%)!important;
+  color:var(--ix-text)!important;
+  color-scheme:dark;
+}
+body:not(:has(.login-layout))::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.15;
+  background-image:linear-gradient(rgba(191,226,225,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(191,226,225,.07) 1px,transparent 1px);
+  background-size:54px 54px;mask-image:linear-gradient(180deg,black,transparent 85%);
+}
+body:not(:has(.login-layout)) .topbar,
+body:not(:has(.login-layout)) .wrap,
+body:not(:has(.login-layout)) .panel{position:relative;z-index:1}
+body:not(:has(.login-layout)) .topbar{
+  background:rgba(10,22,30,.72)!important;border-bottom:1px solid var(--ix-line)!important;
+  box-shadow:0 12px 36px rgba(0,0,0,.18)!important;backdrop-filter:blur(22px) saturate(145%);
+}
+body:not(:has(.login-layout)) .brand{color:#f2f7f4!important;letter-spacing:.045em}
+body:not(:has(.login-layout)) .subtitle,
+body:not(:has(.login-layout)) .muted,
+body:not(:has(.login-layout)) .profile,
+body:not(:has(.login-layout)) .footer{color:var(--ix-muted)!important}
+body:not(:has(.login-layout)) .head{color:var(--ix-text)}
+body:not(:has(.login-layout)) h1,
+body:not(:has(.login-layout)) h2,
+body:not(:has(.login-layout)) h3{color:#eff8f5!important;letter-spacing:-.025em}
+body:not(:has(.login-layout)) h1{font-weight:720}
+body:not(:has(.login-layout)) .card,
+body:not(:has(.login-layout)) .section,
+body:not(:has(.login-layout)) .break-card,
+body:not(:has(.login-layout)) .cp-section,
+body:not(:has(.login-layout)) .panel,
+body:not(:has(.login-layout)) .profile-card,
+body:not(:has(.login-layout)) .stat-card,
+body:not(:has(.login-layout)) .kpi-card{
+  color:var(--ix-text)!important;background:linear-gradient(145deg,rgba(30,51,62,.78),rgba(15,29,39,.76))!important;
+  border:1px solid var(--ix-line)!important;border-radius:17px!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.055)!important;
+  backdrop-filter:blur(20px) saturate(135%);
+}
+body:not(:has(.login-layout)) .card:hover,
+body:not(:has(.login-layout)) .break-card:hover{
+  border-color:rgba(117,216,208,.27)!important;box-shadow:0 22px 55px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.08)!important;
+}
+body:not(:has(.login-layout)) .logout-btn,
+body:not(:has(.login-layout)) button,
+body:not(:has(.login-layout)) .primary-btn,
+body:not(:has(.login-layout)) .break-btn,
+body:not(:has(.login-layout)) .sa-btn{
+  border:1px solid rgba(117,216,208,.24)!important;border-radius:10px!important;
+  background:linear-gradient(110deg,#176b70,#248c86)!important;color:#f4fffc!important;
+  box-shadow:0 8px 22px rgba(12,116,111,.2)!important;transition:transform .18s ease,border-color .18s ease,filter .18s ease;
+}
+body:not(:has(.login-layout)) button:hover,
+body:not(:has(.login-layout)) .primary-btn:hover,
+body:not(:has(.login-layout)) .break-btn:hover,
+body:not(:has(.login-layout)) .sa-btn:hover{transform:translateY(-1px);filter:brightness(1.12)}
+body:not(:has(.login-layout)) button:disabled{opacity:.48!important;filter:saturate(.5)}
+body:not(:has(.login-layout)) .secondary-btn,
+body:not(:has(.login-layout)) .sa-small{
+  background:rgba(154,190,192,.1)!important;color:#dcebe8!important;border:1px solid var(--ix-line)!important;
+}
+body:not(:has(.login-layout)) input,
+body:not(:has(.login-layout)) select,
+body:not(:has(.login-layout)) textarea{
+  color:#eaf4f1!important;background:rgba(5,17,25,.48)!important;
+  border:1px solid rgba(173,211,211,.19)!important;border-radius:10px!important;
+  accent-color:#70d1c9;
+}
+body:not(:has(.login-layout)) input::placeholder,
+body:not(:has(.login-layout)) textarea::placeholder{color:#789095!important}
+body:not(:has(.login-layout)) input:focus,
+body:not(:has(.login-layout)) select:focus,
+body:not(:has(.login-layout)) textarea:focus{
+  outline:none!important;border-color:rgba(117,216,208,.7)!important;
+  box-shadow:0 0 0 3px rgba(117,216,208,.12)!important;
+}
+body:not(:has(.login-layout)) option{background:#142630;color:#edf5f3}
+body:not(:has(.login-layout)) table{color:var(--ix-text)!important}
+body:not(:has(.login-layout)) th{
+  color:#9edbd4!important;background:rgba(107,169,166,.09)!important;
+  border-bottom:1px solid var(--ix-line)!important;
+}
+body:not(:has(.login-layout)) td{color:#d9e7e4!important;border-bottom:1px solid rgba(190,224,226,.09)!important}
+body:not(:has(.login-layout)) .empty,
+body:not(:has(.login-layout)) .cp-status,
+body:not(:has(.login-layout)) .project-message,
+body:not(:has(.login-layout)) .break-message,
+body:not(:has(.login-layout)) .sa-msg{color:var(--ix-muted)!important}
+body:not(:has(.login-layout)) a:not(.logout-btn){color:#8de0d6}
+body:not(:has(.login-layout)) .project-code{color:#9ce5dc!important}
+body:not(:has(.login-layout)) .project-status{color:#d5ece7!important;background:rgba(111,192,183,.14)!important;border:1px solid var(--ix-line)}
+body:not(:has(.login-layout)) .break-time{color:#9ce5dc!important}
+body:not(:has(.login-layout)) .profile{border-color:var(--ix-line)!important}
+body:not(:has(.login-layout)) .chart-container,
+body:not(:has(.login-layout)) canvas{max-width:100%}
+body:not(:has(.login-layout)) .hidden[hidden]{display:none!important}
+body:not(:has(.login-layout)) ::selection{background:rgba(117,216,208,.3);color:#fff}
+@media(max-width:700px){
+ body:not(:has(.login-layout)) .topbar{gap:12px;padding:14px 16px!important}
+ body:not(:has(.login-layout)) .wrap{padding-left:14px!important;padding-right:14px!important}
+ body:not(:has(.login-layout)) .card,body:not(:has(.login-layout)) .section{border-radius:14px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body:not(:has(.login-layout)) *,body:not(:has(.login-layout)) *::before,body:not(:has(.login-layout)) *::after{scroll-behavior:auto!important;transition:none!important}
+}
