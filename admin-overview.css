@@ -1,0 +1,55 @@
+/* INDINEXT Admin Overview — fixed-period cards and custom report are independent. */
+#adminOverviewNew{display:grid;gap:18px;margin:0 0 22px;color:#f1eee9}
+#adminOverviewNew .adm-hero{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:24px;border:1px solid rgba(255,255,255,.1);border-radius:22px;background:radial-gradient(circle at 88% 10%,rgba(28,171,157,.16),transparent 35%),linear-gradient(130deg,#202832,#171b22);box-shadow:0 18px 42px rgba(0,0,0,.2)}
+#adminOverviewNew .adm-eyebrow{color:#dba06f;font-size:10px;font-weight:850;letter-spacing:.16em}
+#adminOverviewNew h2,#adminOverviewNew h3{margin:5px 0;color:#f5f1eb}
+#adminOverviewNew .adm-hero p{margin:5px 0 0;color:#9da8b5;font-size:12px}
+#adminOverviewNew .adm-refresh{border:1px solid rgba(223,149,91,.35);border-radius:11px;background:rgba(223,149,91,.12);color:#f1b27d;padding:10px 14px;font-weight:750}
+#adminOverviewNew .adm-fixed-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#adminOverviewNew .adm-period-card,#adminOverviewNew .adm-panel{min-width:0;padding:18px;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:linear-gradient(145deg,#252b34,#1b2028);box-shadow:0 12px 30px rgba(0,0,0,.15)}
+#adminOverviewNew .adm-period-card h3{font-size:14px;margin:0 0 14px}
+#adminOverviewNew .adm-period-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#adminOverviewNew .adm-period-metrics div{padding:11px 9px;border-radius:12px;background:rgba(255,255,255,.035);min-width:0}
+#adminOverviewNew .adm-period-metrics span,#adminOverviewNew .adm-mini-stat span{display:block;color:#aab4c0;font-size:10px;line-height:1.4}
+#adminOverviewNew .adm-period-metrics strong{display:block;color:#efb17b;font-size:clamp(18px,2vw,25px);margin-top:7px;overflow-wrap:anywhere}
+#adminOverviewNew .adm-quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#adminOverviewNew .adm-mini-stat{padding:17px;border:1px solid rgba(255,255,255,.09);border-radius:16px;background:linear-gradient(145deg,#242a33,#1a1f26)}
+#adminOverviewNew .adm-mini-stat strong{display:block;margin-top:7px;color:#f0b17c;font-size:25px}
+#adminOverviewNew .adm-split-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+#adminOverviewNew .adm-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
+#adminOverviewNew .adm-panel-head p{margin:4px 0 0;color:#9ca7b4;font-size:11px}
+#adminOverviewNew .adm-bar-row{display:grid;grid-template-columns:minmax(90px,1fr) minmax(70px,2fr) 42px;gap:9px;align-items:center;margin:11px 0;font-size:11px}
+#adminOverviewNew .adm-bar-row>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#c8cbd0}
+#adminOverviewNew .adm-bar-row strong{text-align:right;color:#f0b17c}
+#adminOverviewNew .adm-bar-track{height:8px;border-radius:99px;background:#11161c;overflow:hidden}
+#adminOverviewNew .adm-bar-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#159b91,#e6a16c)}
+#adminOverviewNew .adm-direction-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#adminOverviewNew .adm-direction-item{padding:12px;border-radius:12px;background:rgba(255,255,255,.035)}
+#adminOverviewNew .adm-direction-item span{display:block;color:#aab4c0;font-size:10px}
+#adminOverviewNew .adm-direction-item strong{display:block;color:#f1eee9;font-size:17px;margin-top:5px;overflow-wrap:anywhere}
+#adminOverviewNew .adm-table-scroll{overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:13px}
+#adminOverviewNew .adm-table{width:100%;min-width:650px;border-collapse:collapse}
+#adminOverviewNew .adm-table th{padding:12px;text-align:left;background:#303640;color:#e9b17e;font-size:10px;letter-spacing:.05em}
+#adminOverviewNew .adm-table td{padding:12px;border-bottom:1px solid rgba(255,255,255,.07);color:#e8e3dc;font-size:12px}
+#adminOverviewNew .adm-agent-row{cursor:pointer;outline:none}
+#adminOverviewNew .adm-agent-row:hover,#adminOverviewNew .adm-agent-row:focus{background:rgba(223,149,91,.09)}
+#adminOverviewNew .adm-agent-row td:first-child strong{color:#f2bd8e}
+#adminOverviewNew .adm-status{display:inline-flex;padding:5px 8px;border-radius:99px;font-size:10px;font-weight:800}
+#adminOverviewNew .adm-status.working{background:rgba(54,180,126,.14);color:#79d9aa}
+#adminOverviewNew .adm-status.break{background:rgba(231,164,94,.15);color:#f0b27a}
+#adminOverviewNew .adm-status.out{background:rgba(148,158,174,.14);color:#b5bfca}
+#adminOverviewNew .adm-custom-controls{display:flex;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+#adminOverviewNew .adm-custom-controls label{display:grid;gap:6px;color:#b7c0ca;font-size:10px;font-weight:750}
+#adminOverviewNew .adm-custom-controls input{min-height:40px;padding:8px 10px;border:1px solid rgba(255,255,255,.13);border-radius:10px;background:#11161c;color:#f1eee9}
+#adminOverviewNew .adm-custom-controls button{min-height:40px;padding:9px 13px;border:1px solid rgba(223,149,91,.35);border-radius:10px;background:rgba(223,149,91,.13);color:#efb17b;font-weight:750}
+#adminOverviewNew .adm-custom-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:14px}
+#adminOverviewNew .adm-custom-summary div{padding:12px;border-radius:12px;background:rgba(255,255,255,.04)}
+#adminOverviewNew .adm-custom-summary span{display:block;color:#aab4c0;font-size:10px}
+#adminOverviewNew .adm-custom-summary strong{display:block;color:#f0b17c;font-size:17px;margin-top:5px}
+#adminOverviewNew .adm-empty{padding:22px;text-align:center;color:#99a4b1;border:1px dashed rgba(255,255,255,.12);border-radius:12px;font-size:12px}
+#adminOverviewNew .adm-footnote{color:#8f9aa8;font-size:10px;line-height:1.5;margin:0}
+#adminOverviewNew .adm-source{font-size:10px;color:#9ca7b4}
+#view-admin>.section.card:first-child,#view-admin>#admin-summary,#view-admin>#adminVisualAnalytics,#view-admin>.admin-report-grid{display:none!important}
+@media(max-width:980px){#adminOverviewNew .adm-fixed-grid{grid-template-columns:1fr}#adminOverviewNew .adm-split-grid{grid-template-columns:1fr}}
+@media(max-width:680px){#adminOverviewNew .adm-hero{align-items:flex-start;flex-direction:column;padding:19px}#adminOverviewNew .adm-quick-grid{grid-template-columns:1fr 1fr}#adminOverviewNew .adm-period-metrics{grid-template-columns:1fr}#adminOverviewNew .adm-custom-summary{grid-template-columns:repeat(2,minmax(0,1fr))}#adminOverviewNew .adm-period-metrics div{display:flex;justify-content:space-between;align-items:center}#adminOverviewNew .adm-period-metrics strong{margin:0;font-size:20px}}
+@media(prefers-reduced-motion:reduce){#adminOverviewNew *{scroll-behavior:auto!important}}
