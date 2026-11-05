@@ -1,0 +1,50 @@
+/* IndiFrame BASIC → ADVANCED → MOTION initial-load preloader */
+#if-loader{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;overflow:hidden;background:#050505;color:#fff;opacity:1;visibility:visible;transition:opacity .65s ease,visibility .65s ease}
+#if-loader.if-loader-exit{opacity:0;visibility:hidden;pointer-events:none}
+#if-loader .if-loader-stage{position:relative;width:min(100vw,900px);height:190px;display:grid;place-items:center}
+#if-loader .if-loader-word{position:absolute;inset:0;display:grid;place-items:center;font:800 clamp(34px,7vw,76px)/1 Arial,sans-serif;letter-spacing:.16em;color:#f7f7ff;text-shadow:0 0 18px rgba(255,255,255,.22);opacity:0;transform:scale(.94);animation:ifWordSequence 11s ease both}
+#if-loader .if-loader-word-basic{animation-delay:0s}
+#if-loader .if-loader-word-advanced{animation-delay:0s}
+#if-loader .if-loader-word-motion{animation-delay:0s}
+#if-loader .if-loader-orb{position:absolute;left:0;top:50%;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 0 9px 4px rgba(255,255,255,.95),0 0 25px 10px rgba(255,255,255,.42);transform:translate(-50%,-50%);animation:ifOrbJourney 11s cubic-bezier(.45,.05,.35,1) both}
+#if-loader .if-loader-orb:before{content:"";position:absolute;right:8px;top:50%;width:190px;height:7px;transform:translateY(-50%);border-radius:100%;filter:blur(7px);background:linear-gradient(90deg,transparent,var(--if-trail,#9d55ff));opacity:.95}
+#if-loader .if-loader-orb:after{content:"";position:absolute;right:8px;top:50%;width:140px;height:2px;transform:translateY(-50%);background:linear-gradient(90deg,transparent,var(--if-trail,#9d55ff));box-shadow:0 0 12px var(--if-trail,#9d55ff)}
+#if-loader .if-loader-orb.if-green{--if-trail:#39ff9a}
+#if-loader .if-loader-orb.if-purple{--if-trail:#a855f7}
+#if-loader .if-loader-caption{position:absolute;bottom:17px;left:0;right:0;text-align:center;font:500 10px/1.4 Arial,sans-serif;letter-spacing:.34em;color:rgba(255,255,255,.4)}
+#if-loader .if-loader-progress{position:absolute;bottom:0;left:50%;width:min(180px,42vw);height:2px;overflow:hidden;transform:translateX(-50%);background:rgba(255,255,255,.12)}
+#if-loader .if-loader-progress:after{content:"";display:block;width:100%;height:100%;background:linear-gradient(90deg,#a855f7,#39ff9a,#fff);transform:scaleX(0);transform-origin:left;animation:ifProgress 11s linear both}
+@keyframes ifWordSequence{
+  0%,4%{opacity:0;transform:scale(.94)}
+  9%,22%{opacity:1;transform:scale(1)}
+  27%,100%{opacity:0;transform:scale(1.035)}
+}
+#if-loader .if-loader-word-advanced{animation-name:ifWordAdvanced}
+@keyframes ifWordAdvanced{
+  0%,48%{opacity:0;transform:scale(.94)}
+  54%,70%{opacity:1;transform:scale(1)}
+  75%,100%{opacity:0;transform:scale(1.035)}
+}
+#if-loader .if-loader-word-motion{animation-name:ifWordMotion}
+@keyframes ifWordMotion{
+  0%,75%{opacity:0;transform:scale(.94)}
+  82%,100%{opacity:1;transform:scale(1)}
+}
+@keyframes ifOrbJourney{
+  0%{left:-5%;top:50%;opacity:0;--if-trail:#a855f7}
+  4%{opacity:1}
+  24%{left:105%;top:50%;opacity:1;--if-trail:#a855f7}
+  30%,48%{left:-5%;top:50%;opacity:0;--if-trail:#39ff9a}
+  53%{opacity:1}
+  72%{left:105%;top:50%;opacity:1;--if-trail:#39ff9a}
+  77%{left:52%;top:50%;opacity:1;--if-trail:#39ff9a}
+  91%{left:52%;top:-18%;opacity:1}
+  96%,100%{left:52%;top:-18%;opacity:0}
+}
+@keyframes ifProgress{to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){
+ #if-loader .if-loader-word,#if-loader .if-loader-orb,#if-loader .if-loader-progress:after{animation:none!important}
+ #if-loader .if-loader-word-basic{opacity:1}
+ #if-loader .if-loader-orb{display:none}
+}
+@media(max-width:520px){#if-loader .if-loader-stage{height:150px}#if-loader .if-loader-orb:before{width:125px}}
