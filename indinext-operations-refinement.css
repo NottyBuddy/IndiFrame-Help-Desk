@@ -1,0 +1,99 @@
+/* INDINEXT operations pages — shared restrained animated liquid-glass refinement.
+   Visual layer only; no application logic, API calls, form names or data bindings changed. */
+:root{--ops-edge:rgba(221,231,243,.15);--ops-text:#f2f5f9;--ops-muted:#aab5c3;--ops-orange:#d99560}
+body:not(:has(.login-layout)){
+ color:var(--ops-text)!important;background:transparent!important;overflow-x:hidden;
+}
+body:not(:has(.login-layout)):before{
+ content:"";position:fixed;inset:-24%;z-index:-2;pointer-events:none;
+ background:
+  radial-gradient(ellipse at 16% 20%,rgba(203,216,233,.13),transparent 28%),
+  radial-gradient(ellipse at 82% 24%,rgba(217,149,96,.07),transparent 25%),
+  radial-gradient(ellipse at 72% 78%,rgba(112,145,181,.12),transparent 30%),
+  linear-gradient(130deg,#05070a 0%,#111720 48%,#17191d 72%,#07090d 100%);
+ background-size:160% 160%;animation:indinext-ops-flow 38s ease-in-out infinite alternate;
+}
+body:not(:has(.login-layout)):after{
+ content:"";position:fixed;inset:-30%;z-index:-1;pointer-events:none;opacity:.38;
+ background:
+  radial-gradient(ellipse at 12% 48%,transparent 0 42%,rgba(224,234,246,.12) 42.2%,transparent 43.1%),
+  radial-gradient(ellipse at 84% 42%,transparent 0 48%,rgba(217,149,96,.09) 48.2%,transparent 49.1%);
+ animation:indinext-ops-ribbon 46s ease-in-out infinite alternate;
+}
+@keyframes indinext-ops-flow{0%{background-position:0 45%;transform:scale(1)}100%{background-position:100% 55%;transform:scale(1.06)}}
+@keyframes indinext-ops-ribbon{0%{transform:translate3d(-2%,1%,0) rotate(-8deg)}100%{transform:translate3d(3%,-2%,0) rotate(-3deg)}}
+body:not(:has(.login-layout)) .topbar{
+ background:rgba(8,11,16,.78)!important;border-bottom:1px solid rgba(221,231,243,.13)!important;
+ -webkit-backdrop-filter:blur(24px) saturate(145%);backdrop-filter:blur(24px) saturate(145%);
+}
+body:not(:has(.login-layout)) .brand{color:#f5f7fb!important;letter-spacing:.13em;text-transform:uppercase}
+body:not(:has(.login-layout)) .subtitle,body:not(:has(.login-layout)) .muted{color:var(--ops-muted)!important}
+body:not(:has(.login-layout)) .head h1,body:not(:has(.login-layout)) h1,
+body:not(:has(.login-layout)) h2,body:not(:has(.login-layout)) h3{color:#f3f6fa}
+body:not(:has(.login-layout)) .card,
+body:not(:has(.login-layout)) .break-card,
+body:not(:has(.login-layout)) .section-data,
+body:not(:has(.login-layout)) .section-filters,
+body:not(:has(.login-layout)) .sa-stat{
+ position:relative;overflow:hidden;border:1px solid var(--ops-edge)!important;border-radius:20px!important;
+ background:linear-gradient(145deg,rgba(35,42,51,.78),rgba(14,18,25,.82))!important;
+ box-shadow:0 18px 44px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.09)!important;
+ -webkit-backdrop-filter:blur(24px) saturate(145%);backdrop-filter:blur(24px) saturate(145%);
+}
+body:not(:has(.login-layout)) .break-card{padding:22px!important}
+body:not(:has(.login-layout)) .break-time{color:#f0c6a4!important;font-size:clamp(28px,4vw,38px)!important}
+body:not(:has(.login-layout)) .break-controls select,
+body:not(:has(.login-layout)) .project-toolbar input,
+body:not(:has(.login-layout)) .project-toolbar select,
+body:not(:has(.login-layout)) .project-form input,
+body:not(:has(.login-layout)) .project-form select,
+body:not(:has(.login-layout)) .project-form textarea,
+body:not(:has(.login-layout)) .section-filters input,
+body:not(:has(.login-layout)) .section-filters select,
+body:not(:has(.login-layout)) .sa-form input,
+body:not(:has(.login-layout)) .sa-form select{
+ color:#eef2f7!important;background:rgba(7,11,16,.72)!important;
+ border:1px solid rgba(221,231,243,.16)!important;border-radius:12px!important;
+}
+body:not(:has(.login-layout)) .project-form label,
+body:not(:has(.login-layout)) .sa-form label,
+body:not(:has(.login-layout)) .section-filters label{color:#c5ced9!important}
+body:not(:has(.login-layout)) .project-code{color:#efbd96!important}
+body:not(:has(.login-layout)) .project-status{background:rgba(255,255,255,.09)!important;color:#e8edf4!important;border:1px solid rgba(255,255,255,.12)}
+body:not(:has(.login-layout)) .break-list,
+body:not(:has(.login-layout)) .project-table,
+body:not(:has(.login-layout)) .sa-table{color:#e8edf4!important}
+body:not(:has(.login-layout)) .break-list th,
+body:not(:has(.login-layout)) .project-table th,
+body:not(:has(.login-layout)) .sa-table th{background:rgba(34,41,50,.96)!important;color:#cbd4df!important}
+body:not(:has(.login-layout)) .break-list td,
+body:not(:has(.login-layout)) .project-table td,
+body:not(:has(.login-layout)) .sa-table td{color:#e4eaf1!important;border-bottom:1px solid rgba(221,231,243,.09)!important}
+body:not(:has(.login-layout)) .sa-stat span,body:not(:has(.login-layout)) .sa-stat small{color:#b4c0cd!important}
+body:not(:has(.login-layout)) .sa-stat strong{color:#f5f7fa!important}
+body:not(:has(.login-layout)) .sa-btn,
+body:not(:has(.login-layout)) .break-btn,
+body:not(:has(.login-layout)) .project-form .primary-btn,
+body:not(:has(.login-layout)) .section-filters .primary-btn{
+ background:linear-gradient(110deg,#9b6543,#c58b61)!important;color:#fff!important;
+ border:1px solid rgba(255,255,255,.14)!important;border-radius:12px!important;
+}
+body:not(:has(.login-layout)) .sa-small,
+body:not(:has(.login-layout)) .secondary-btn{
+ background:rgba(255,255,255,.055)!important;color:#edf1f6!important;
+ border:1px solid rgba(221,231,243,.16)!important;border-radius:12px!important;
+}
+body:not(:has(.login-layout)) .section-hero{border:1px solid rgba(221,231,243,.13)!important;border-radius:22px!important;background:linear-gradient(130deg,rgba(33,40,49,.78),rgba(13,17,24,.82))!important;box-shadow:0 18px 42px rgba(0,0,0,.22)!important}
+body:not(:has(.login-layout)) .section-hero h1{color:#f5f7fa!important}
+body:not(:has(.login-layout)) .section-hero p{color:#aeb9c7!important}
+body:not(:has(.login-layout)) .section-eyebrow{color:#d7a47d!important;letter-spacing:.14em}
+body:not(:has(.login-layout)) .section-metrics>*{border:1px solid var(--ops-edge)!important;border-radius:17px!important;background:linear-gradient(145deg,rgba(35,42,51,.82),rgba(14,18,25,.86))!important;color:#f1f4f8!important}
+body:not(:has(.login-layout)) .section-data-head p,
+body:not(:has(.login-layout)) .section-status{color:#aab5c3!important}
+body:not(:has(.login-layout)) .sa-grid>.card,body:not(:has(.login-layout)) main>.card{background:linear-gradient(145deg,rgba(35,42,51,.80),rgba(14,18,25,.86))!important;border:1px solid var(--ops-edge)!important}
+body:not(:has(.login-layout)) .sa-msg{color:#b7c2ce!important}
+@media(max-width:760px){
+ body:not(:has(.login-layout)) .wrap{padding-left:14px!important;padding-right:14px!important}
+ body:not(:has(.login-layout)) .card,body:not(:has(.login-layout)) .break-card{border-radius:16px!important}
+}
+@media(prefers-reduced-motion:reduce){body:not(:has(.login-layout)):before,body:not(:has(.login-layout)):after{animation:none!important}}
