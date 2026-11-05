@@ -12,7 +12,7 @@ function cors(request) {
     "Access-Control-Allow-Origin": ALLOWED_ORIGINS.has(origin) ? origin : "https://nottybuddy.github.io",
     "Vary": "Origin",
     "Access-Control-Allow-Headers": "Authorization, Content-Type",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   };
 }
 function json(request, data, status = 200) {
