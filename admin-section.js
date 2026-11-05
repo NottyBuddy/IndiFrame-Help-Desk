@@ -129,4 +129,4 @@ function render(){if(section==="breaks"){renderBreakMonitoring();return;}if($("b
   await loadQuizQuestionBank();
  }catch(err){$("sectionStatus").textContent="Question update failed: "+err.message;}
 });
-$("logoutBtn").addEventListener("click",()=>{api.clearToken();location.replace("index.html")});document.addEventListener("DOMContentLoaded",init);
+$("logoutBtn").addEventListener("click",()=>{api.clearToken();location.replace("index.html")});document.addEventListener("DOMContentLoaded",init);if(section==="breaks")setInterval(()=>{if(!document.hidden)load();},30000);
