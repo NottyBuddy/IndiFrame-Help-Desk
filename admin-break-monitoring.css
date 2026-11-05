@@ -1,0 +1,35 @@
+.break-monitoring-panel{display:grid;gap:22px;margin:0 0 22px;padding:clamp(18px,3vw,28px);border:1px solid rgba(255,255,255,.1);border-radius:24px;background:linear-gradient(145deg,rgba(25,28,32,.96),rgba(12,14,17,.94));box-shadow:0 22px 60px rgba(0,0,0,.22);color:#f4f1ec}
+.break-monitoring-panel[hidden]{display:none!important}
+.break-monitoring-heading,.break-section-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.break-eyebrow{display:inline-block;margin-bottom:8px;color:#d99a68;font-size:.7rem;font-weight:800;letter-spacing:.17em}
+.break-monitoring-heading h2,.break-section-heading h3{margin:0;color:#fff;letter-spacing:-.035em}
+.break-monitoring-heading h2{font-size:clamp(1.45rem,3vw,2rem)}
+.break-monitoring-heading p,.break-section-heading p{margin:7px 0 0;color:#a7a9ad;font-size:.88rem;line-height:1.55}
+.break-view-pill,.break-live-indicator{display:inline-flex;align-items:center;gap:8px;flex:none;padding:9px 13px;border:1px solid rgba(217,154,104,.25);border-radius:999px;background:rgba(217,154,104,.08);color:#e8b48d;font-size:.75rem;font-weight:750}
+.break-monitor-filters{display:flex;flex-wrap:wrap;gap:12px;padding:15px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.025)}
+.break-monitor-filters label{display:grid;gap:7px;min-width:180px;color:#b8b9bc;font-size:.76rem;font-weight:700}
+.break-monitor-filters select{min-height:42px;padding:0 36px 0 12px;border:1px solid rgba(255,255,255,.13);border-radius:11px;background:#171a1e;color:#f4f1ec;font:inherit}
+.break-section-heading{margin-top:2px}
+.break-section-heading h3{font-size:1.08rem}
+.break-type-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.break-type-card{display:grid;gap:9px;min-height:112px;padding:18px;border:1px solid rgba(255,255,255,.09);border-radius:17px;background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018))}
+.break-type-card span{color:#d7d2cc;font-size:.82rem;font-weight:750;text-transform:capitalize}
+.break-type-card strong{color:#fff;font-size:1.4rem;letter-spacing:-.035em}
+.break-type-card small{color:#a6a8ab;font-size:.77rem}
+.break-live-indicator{padding:7px 10px;border-color:rgba(95,190,145,.2);background:rgba(75,170,125,.08);color:#9ed9b9}
+.break-live-indicator i{width:7px;height:7px;border-radius:50%;background:#6ec995;box-shadow:0 0 12px rgba(110,201,149,.7)}
+.break-live-table{overflow:hidden;border:1px solid rgba(255,255,255,.09);border-radius:16px;background:rgba(255,255,255,.02)}
+.break-live-table .table-wrap{overflow-x:auto}
+.break-live-table table{width:100%;min-width:680px;border-collapse:collapse}
+.break-live-table th,.break-live-table td{padding:13px 15px;border-bottom:1px solid rgba(255,255,255,.065);text-align:left;white-space:nowrap}
+.break-live-table th{background:rgba(255,255,255,.035);color:#aeb0b4;font-size:.69rem;letter-spacing:.08em;text-transform:uppercase}
+.break-live-table td{color:#e6e3df;font-size:.82rem}
+.break-status-tag{display:inline-flex;padding:6px 9px;border-radius:999px;background:rgba(255,255,255,.07);color:#c9c9c9;font-size:.72rem;font-weight:750}
+.break-status-tag.is-break{background:rgba(224,153,94,.13);color:#efb17e}
+.break-status-tag.is-working{background:rgba(91,181,135,.12);color:#9ad9b6}
+.break-acw-panel{display:flex;align-items:flex-start;gap:14px;padding:18px;border:1px solid rgba(217,154,104,.17);border-radius:16px;background:linear-gradient(110deg,rgba(217,154,104,.075),rgba(255,255,255,.018))}
+.break-acw-icon{display:grid;place-items:center;flex:none;width:48px;height:48px;border:1px solid rgba(217,154,104,.25);border-radius:14px;background:rgba(217,154,104,.1);color:#e8b48d;font-size:.8rem;font-weight:850}
+.break-acw-state{display:grid;gap:6px;color:#aeb0b4;font-size:.83rem;line-height:1.55}
+.break-acw-state strong{color:#f0c09a;font-size:.9rem}
+@media(max-width:700px){.break-monitoring-heading{align-items:flex-start;flex-direction:column}.break-type-stats{grid-template-columns:1fr}.break-type-card{min-height:auto}.break-section-heading{align-items:flex-start;flex-direction:column}.break-monitor-filters label{flex:1 1 100%;min-width:0}.break-acw-panel{padding:14px}}
+@media(prefers-reduced-motion:no-preference){.break-type-card{transition:transform .2s ease,border-color .2s ease,background .2s ease}.break-type-card:hover{transform:translateY(-2px);border-color:rgba(217,154,104,.28)}}
