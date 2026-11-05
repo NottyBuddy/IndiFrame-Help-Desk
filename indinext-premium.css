@@ -518,3 +518,183 @@ body:has(.login-layout) .login-shell .message.success{color:#baf4cf!important}
   body:not(:has(.login-layout)) .admin-module-card,
   body:not(:has(.login-layout)) .cp-detail-card{transition:none!important}
 }
+
+
+/* INDINEXT monochrome ember glass system — final global override */
+:root{
+  color-scheme:dark;
+  --if-bg:#08090b;
+  --if-orange:#ff8a32;
+  --if-orange-soft:#ffb36b;
+  --if-white:#fffaf5;
+  --if-text:#fff8f2;
+  --if-text-secondary:#e4d8cf;
+  --if-text-muted:#c4b5aa;
+  --if-glass:rgba(18,18,20,.72);
+  --if-glass-light:rgba(255,255,255,.075);
+  --if-glass-edge:rgba(255,255,255,.16);
+}
+html{min-height:100%;background:#08090b!important}
+body{
+  min-height:100vh!important;
+  position:relative!important;
+  isolation:isolate;
+  background:transparent!important;
+  color:var(--if-text)!important;
+}
+body:before{
+  content:"";
+  position:fixed;
+  z-index:-1;
+  inset:-24%;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 14% 20%,rgba(255,255,255,.16),transparent 25%),
+    radial-gradient(ellipse at 82% 18%,rgba(255,137,48,.34),transparent 28%),
+    radial-gradient(ellipse at 72% 82%,rgba(255,179,107,.23),transparent 31%),
+    radial-gradient(ellipse at 20% 78%,rgba(255,111,25,.19),transparent 28%),
+    linear-gradient(132deg,#050607 0%,#171513 38%,#392314 68%,#090a0c 100%);
+  background-size:160% 160%;
+  animation:indinext-ember-flow 30s ease-in-out infinite alternate;
+  will-change:background-position,transform;
+}
+@keyframes indinext-ember-flow{
+  0%{background-position:0% 45%;transform:scale(1) rotate(-.5deg)}
+  50%{background-position:58% 55%;transform:scale(1.035) rotate(.5deg)}
+  100%{background-position:100% 45%;transform:scale(1.065) rotate(-.5deg)}
+}
+/* Consistent dark smoked-glass panels on every page */
+body:not(:has(.login-layout)) :is(.topbar,.nav,.card,.stat-card,.agent-info-card,.break-card,
+.admin-chart-card,.admin-module-card,.cp-section,.cp-chart-panel,.cp-kpi,.section-data,
+.section-card,.cp-detail-card,.table-wrap,.cp-table-wrap,.profile,.modal,.modal-content,
+.admin-panel,.panel,.sa-card,.sa-stat,.section-table,.quiz-card,.report-card,.project-card,
+.attendance-card,.history-card,.break-history-card,.form-card,.data-card){
+  color:var(--if-text)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035) 36%,rgba(13,12,11,.78) 100%)!important;
+  border:1px solid var(--if-glass-edge)!important;
+  border-radius:20px!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.14)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(150%);
+  backdrop-filter:blur(24px) saturate(150%);
+}
+body:not(:has(.login-layout)) :is(.topbar,.nav){
+  background:linear-gradient(105deg,rgba(7,8,9,.9),rgba(35,25,17,.82))!important;
+  border-color:rgba(255,255,255,.18)!important;
+}
+body:not(:has(.login-layout)) :is(h1,h2,h3,h4,h5,h6,.brand,.head h1,.label,label,strong,b,.value){
+  color:#fffaf5!important;
+}
+body:not(:has(.login-layout)) :is(p,.muted,.note,.subtitle,.footer,small,.cp-muted,.cp-status,.chart-caption,.section-status,.record-count,.empty,.section-empty){
+  color:#e4d8cf!important;
+}
+body:not(:has(.login-layout)) :is(span,td,th,li,.nav-link,.section-data-head,.sa-stat){
+  text-shadow:none;
+}
+body:not(:has(.login-layout)) :is(a,.text-link){color:#ffc18b!important}
+body:not(:has(.login-layout)) :is(input,select,textarea){
+  color:#fffaf5!important;
+  background:rgba(7,8,9,.78)!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  border-radius:12px!important;
+  caret-color:#ff9a4d;
+}
+body:not(:has(.login-layout)) :is(input,textarea)::placeholder{color:#c8b9af!important;opacity:1}
+body:not(:has(.login-layout)) option{background:#171411!important;color:#fffaf5!important}
+body:not(:has(.login-layout)) :is(input,select,textarea):focus{
+  outline:none!important;border-color:#ff9a4d!important;
+  box-shadow:0 0 0 3px rgba(255,138,50,.2),0 0 20px rgba(255,138,50,.12)!important;
+}
+body:not(:has(.login-layout)) :is(button,.button,.nav-link,.section-action,.sa-small){
+  color:#fffaf5!important;
+  border-radius:12px!important;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,filter .22s ease!important;
+}
+body:not(:has(.login-layout)) :is(.primary-btn,button.primary-btn,.break-btn,button[type=submit],.section-action.primary,.sa-primary){
+  color:#17100b!important;
+  background:linear-gradient(110deg,#ff9e4f 0%,#ffb86f 55%,#fff0dc 100%)!important;
+  border:1px solid rgba(255,255,255,.42)!important;
+  box-shadow:0 10px 26px rgba(255,138,50,.22),inset 0 1px rgba(255,255,255,.5)!important;
+  font-weight:750!important;
+}
+body:not(:has(.login-layout)) :is(.secondary-btn,.logout-btn,.section-action,.sa-small){
+  color:#fff8f2!important;
+  background:rgba(255,255,255,.085)!important;
+  border:1px solid rgba(255,255,255,.2)!important;
+}
+body:not(:has(.login-layout)) :is(button,.button,.nav-link):hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,179,107,.55)!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.28),0 0 18px rgba(255,138,50,.12)!important;
+}
+body:not(:has(.login-layout)) .nav button.active,
+body:not(:has(.login-layout)) .nav button:hover,
+body:not(:has(.login-layout)) .nav .nav-link:hover{
+  color:#17100b!important;
+  background:linear-gradient(110deg,#ff9e4f,#fff0dc)!important;
+}
+body:not(:has(.login-layout)) table{color:#fff8f2!important;border-collapse:separate;border-spacing:0}
+body:not(:has(.login-layout)) th{
+  color:#fffaf5!important;
+  background:linear-gradient(100deg,rgba(255,138,50,.32),rgba(255,255,255,.09))!important;
+}
+body:not(:has(.login-layout)) td{
+  color:#f6eee8!important;
+  background:rgba(8,8,9,.25)!important;
+  border-bottom:1px solid rgba(255,255,255,.11)!important;
+}
+body:not(:has(.login-layout)) tr:hover td{background:rgba(255,255,255,.055)!important}
+body:not(:has(.login-layout)) :is(.alert,.message){
+  color:#fff1e5!important;background:rgba(116,58,18,.32)!important;
+  border:1px solid rgba(255,173,104,.35)!important;
+}
+body:not(:has(.login-layout)) :is(.success,.status-success){color:#baf4cf!important}
+body:not(:has(.login-layout)) :is(.error,.status-error){color:#ffc0b6!important}
+/* Login and password pages share the same smoked-glass material */
+body:has(.login-layout) .login-layout,
+body:has(.login-layout) .login-shell,
+body:not(:has(.login-layout)) .auth-card,
+body:not(:has(.login-layout)) .change-password-card{
+  color:#fffaf5!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(24,20,16,.78) 45%,rgba(9,10,11,.88))!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  box-shadow:0 34px 100px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.18)!important;
+  -webkit-backdrop-filter:blur(28px) saturate(155%);
+  backdrop-filter:blur(28px) saturate(155%);
+}
+body:has(.login-layout) :is(.login-shell h1,.login-shell label,.showcase-copy h2){color:#fffaf5!important}
+body:has(.login-layout) :is(.login-shell p,.login-shell .subtitle,.showcase-copy p){color:#eadbd0!important}
+body:has(.login-layout) .login-showcase{
+  background:linear-gradient(145deg,rgba(8,9,10,.84),rgba(91,48,18,.72),rgba(255,138,50,.28))!important;
+}
+body:has(.login-layout) .login-shell input{
+  color:#fff!important;background:rgba(7,8,9,.72)!important;
+  border:1px solid rgba(255,255,255,.24)!important;
+}
+body:has(.login-layout) .login-shell input::placeholder{color:#c8b9af!important}
+body:has(.login-layout) .login-shell button[type=submit]{
+  color:#17100b!important;background:linear-gradient(110deg,#ff9e4f,#ffbd7d,#fff0dc)!important;
+}
+body.admin-mode{background:transparent!important;color:#fffaf5!important}
+body.admin-mode :is(.wrap,.head h1,#view-admin h2,#view-admin h3,#view-admin strong){color:#fffaf5!important}
+body.admin-mode #view-admin :is(.card,.admin-chart-card,.admin-module-card,.table-wrap){
+  color:#fffaf5!important;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(15,13,11,.8))!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(150%);backdrop-filter:blur(24px) saturate(150%);
+}
+body.admin-mode #view-admin :is(td,th){color:#fffaf5!important;background:rgba(12,10,9,.38)!important}
+body.admin-mode #view-admin :is(input,select){color:#fff!important;background:rgba(8,8,9,.76)!important}
+@media(hover:hover){
+ body:not(:has(.login-layout)) :is(.card,.stat-card,.admin-module-card,.cp-detail-card,.sa-stat){transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease}
+ body:not(:has(.login-layout)) :is(.card,.stat-card,.admin-module-card,.cp-detail-card,.sa-stat):hover{
+  transform:translateY(-3px);border-color:rgba(255,179,107,.42)!important;
+  box-shadow:0 22px 54px rgba(0,0,0,.34),0 0 22px rgba(255,138,50,.1)!important;
+ }
+}
+@media(max-width:700px){
+ body:before{inset:-12%;animation-duration:36s}
+ body:not(:has(.login-layout)) :is(.card,.stat-card,.cp-detail-card){border-radius:17px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body:before{animation:none!important}
+ body:not(:has(.login-layout)) *{scroll-behavior:auto!important;transition:none!important}
+}
