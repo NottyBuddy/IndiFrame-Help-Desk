@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="indinext-premium.css?v=indinext-ember-glass-20261105">
   <link rel="stylesheet" href="dashboard-redesign.css?v=animated-glass-v1-20261105">
   <link rel="stylesheet" href="agent-overview.css?v=agent-overview-v1-20261105">
+  <link rel="stylesheet" href="agent-attendance.css?v=attendance-centre-v1-20261106">
 </head>
 <body>
 <script src="preloader.js?v=indinext-loader-snake-v3-20261105"></script> <header class="topbar">
@@ -120,24 +121,49 @@
       </div>
     </section>
 
-    <section id="view-attendance" class="tab-panel hidden">
-      <div class="section card">
-        <h2>Attendance</h2>
-        <div id="attendancePanel" class="attendance-live-status">Loading attendance status…</div>
+    <section id="view-attendance" class="tab-panel hidden attendance-workspace">
+      <section class="attendance-hero">
+        <div class="attendance-hero-copy">
+          <span class="attendance-eyebrow">MY TIME &amp; ATTENDANCE</span>
+          <h2>Attendance Centre</h2>
+          <p>Daily attendance, shift status and leave calendar — all in one place.</p>
+        </div>
+        <div class="attendance-today-chip"><span>Today</span><strong id="attendanceTodayLabel">—</strong></div>
+      </section>
+
+      <section class="attendance-check-card">
+        <div class="attendance-check-info">
+          <span class="attendance-eyebrow">LIVE ATTENDANCE</span>
+          <h3>Today's Check In / Check Out</h3>
+          <div id="attendancePanel" class="attendance-live-status">Loading attendance status…</div>
+        </div>
         <div class="attendance-actions">
           <button id="checkInBtn" class="primary-btn" type="button">Check In</button>
           <button id="checkOutBtn" class="primary-btn" type="button" disabled>Check Out</button>
           <button id="refreshAttendanceBtn" class="secondary-btn" type="button">Refresh</button>
         </div>
+      </section>
+
+      <section class="attendance-summary-grid" aria-label="Attendance status summary">
+        <article class="attendance-summary-card is-present"><span>Present</span><strong id="attendanceCountPresent">—</strong><small>Selected month</small></article>
+        <article class="attendance-summary-card is-halfday"><span>Half Day</span><strong id="attendanceCountHalfDay">—</strong><small>Selected month</small></article>
+        <article class="attendance-summary-card is-absent"><span>Absent</span><strong id="attendanceCountAbsent">—</strong><small>Selected month</small></article>
+        <article class="attendance-summary-card is-leave"><span>Leave</span><strong id="attendanceCountLeave">—</strong><small>Selected month</small></article>
+        <article class="attendance-summary-card is-weekoff"><span>Week Off</span><strong id="attendanceCountWeekOff">—</strong><small>Selected month</small></article>
+      </section>
+
+      <section class="attendance-ledger-card">
         <div class="attendance-history-head">
-          <div><h3>Monthly Attendance</h3><p>Daily roster, login/logout timing and attendance status</p></div>
+          <div><span class="attendance-eyebrow">DATE-WISE RECORD</span><h3>My Attendance History</h3><p>Daily status and recorded login / logout times</p></div>
           <label for="attendanceMonth">Month <input id="attendanceMonth" type="month"></label>
         </div>
+        <div class="attendance-status-legend">
+          <span class="status-present">Present</span><span class="status-halfday">Half Day</span><span class="status-absent">Absent</span><span class="status-leave">Leave</span><span class="status-weekoff">Week Off</span>
+        </div>
         <div id="attendanceHistory" class="attendance-ledger-wrap">Loading attendance history…</div>
-      </div>
-      <div class="alert">
-        Attendance ka time server par save hota hai. Check-in / check-out ek hi baar active session mein allowed hai.
-      </div>
+        <p class="attendance-source-note">Present / Half Day / Absent / Leave / Week Off records will follow the published attendance sheet. Check In and Check Out are recorded live.</p>
+      </section>
+      <div class="alert">Check-in / check-out server par record hota hai. Excel-based historical status tabhi update hoga jab attendance / leave sheet upload aur publish hogi.</div>
     </section>
 
     <section id="view-admin" class="tab-panel hidden">
