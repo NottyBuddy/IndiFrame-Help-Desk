@@ -490,7 +490,7 @@ async function agentOverviewLive(url, env, u) {
   const end = new Date(startMs + 86400000).toISOString();
   const [attendance, breaks] = await Promise.all([
     env.DB.prepare("SELECT check_in_at,check_out_at FROM attendance WHERE employee_id=? AND work_date=? ORDER BY check_in_at DESC LIMIT 1").bind(u.employeeId, date).first(),
-    env.DB.prepare("SELECT started_at,ended_at,duration_seconds FROM agent_breaks WHERE employee_id=? AND started_at>=? AND started_at<? ORDER BY started_at").bind(u.employeeId, start, end).all()
+    env.DB.prepare("SELECT started_at,ended_at,duration_seconds FROM agent_breaks WHERE employee_id=? AND break_type IN ('tea','lunch','bio') AND started_at>=? AND started_at<? ORDER BY started_at").bind(u.employeeId, start, end).all()
   ]);
   const currentMs = Date.now();
   let breakSeconds = 0;
