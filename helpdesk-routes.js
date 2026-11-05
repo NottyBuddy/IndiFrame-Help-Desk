@@ -67,24 +67,21 @@ export async function handleHelpdesk(req, env) {
     }
 
     if (p === "/api/hd/superadmin/projects" && m === "POST") { if (!u.isSuperAdmin) bad("Super Admin access required.",403); return J(await projectCreate(req, env, u, true),201); }
-    if (p === "/api/hd/superadmin/call-performance" && m === "GET") {
+    if (p === "/api/hd/superadmin/call-performance" && ["GET","DELETE"].includes(m)) {
       if (!u.isSuperAdmin) bad("Super Admin access required.",403);
-      const before=url.searchParams.get("before");
-      if(!isDate(before))bad("A valid cutoff date is required (YYYY-MM-DD).");
+      const from=url.searchParams.get("from"),to=url.searchParams.get("to");
+      if(!isDate(from)||!isDate(to))bad("Valid From and To dates are required (YYYY-MM-DD).");
+      if(from>to)bad("From date cannot be after To date.");
       await ensureCallPerformanceSections(env);
-      const a=await env.DB.prepare("SELECT COUNT(*) n FROM call_performance_rows WHERE report_date<?").bind(before).first();
-      const b=await env.DB.prepare("SELECT COUNT(*) n FROM call_performance_report_rows WHERE report_date IS NOT NULL AND report_date<?").bind(before).first();
-      return J({before,dailyRows:Number(a?.n||0),reportRows:Number(b?.n||0)});
-    }
-    if (p === "/api/hd/superadmin/call-performance" && m === "DELETE") {
-      if (!u.isSuperAdmin) bad("Super Admin access required.",403);
-      const before=url.searchParams.get("before");
-      if(!isDate(before))bad("A valid cutoff date is required (YYYY-MM-DD).");
-      await ensureCallPerformanceSections(env);
-      const a=await env.DB.prepare("DELETE FROM call_performance_rows WHERE report_date<?").bind(before).run();
-      const b=await env.DB.prepare("DELETE FROM call_performance_report_rows WHERE report_date IS NOT NULL AND report_date<?").bind(before).run();
-      await audit(env,u,"call_performance_cleanup","Removed "+a.meta.changes+" daily rows and "+b.meta.changes+" report rows before "+before);
-      return J({success:true,before,dailyRowsDeleted:a.meta.changes,reportRowsDeleted:b.meta.changes});
+      if(m==="GET"){
+        const a=await env.DB.prepare("SELECT COUNT(*) n FROM call_performance_rows WHERE report_date>=? AND report_date<=?").bind(from,to).first();
+        const b=await env.DB.prepare("SELECT COUNT(*) n FROM call_performance_report_rows WHERE report_date IS NOT NULL AND report_date>=? AND report_date<=?").bind(from,to).first();
+        return J({from,to,dailyRows:Number(a?.n||0),reportRows:Number(b?.n||0)});
+      }
+      const a=await env.DB.prepare("DELETE FROM call_performance_rows WHERE report_date>=? AND report_date<=?").bind(from,to).run();
+      const b=await env.DB.prepare("DELETE FROM call_performance_report_rows WHERE report_date IS NOT NULL AND report_date>=? AND report_date<=?").bind(from,to).run();
+      await audit(env,u,"call_performance_cleanup","Removed "+a.meta.changes+" daily rows and "+b.meta.changes+" report rows from "+from+" through "+to);
+      return J({success:true,from,to,dailyRowsDeleted:a.meta.changes,reportRowsDeleted:b.meta.changes});
     }
     if (p === "/api/hd/superadmin/records" && m === "DELETE") {
       if (!u.isSuperAdmin) bad("Super Admin access required.",403);
