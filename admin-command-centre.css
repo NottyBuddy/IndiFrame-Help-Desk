@@ -1,0 +1,47 @@
+/* INDINEXT Admin Command Centre — presentation-only layer. Existing API/actions remain unchanged. */
+body.admin-mode{--adm-accent:#df955b;--adm-muted:#a7b0bc;color:#f2eee8}
+body.admin-mode #view-admin{display:block;min-width:0}
+body.admin-mode #view-admin>.section.card:first-child{padding:22px 24px!important;margin:0 0 18px!important;background:linear-gradient(125deg,rgba(34,38,46,.96),rgba(23,26,33,.94))!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:20px!important}
+body.admin-mode #view-admin>.section.card:first-child h2{font-size:17px;color:#f4eee7!important;margin:0 0 15px}
+body.admin-mode #view-admin .report-filters{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+body.admin-mode #view-admin .report-filters label{display:grid;gap:7px;color:#b6b0a8;font-size:11px;font-weight:750;letter-spacing:.035em}
+body.admin-mode #view-admin .report-filters input,body.admin-mode #view-admin .report-filters select{min-height:42px;padding:9px 12px;border-radius:10px!important;background:#111419!important;border:1px solid rgba(255,255,255,.13)!important;color:#f1ece5!important}
+body.admin-mode #view-admin .report-filters .primary-btn{min-height:42px;padding:10px 18px}
+body.admin-mode #view-admin #adminFilterLabel{margin-top:12px;color:#8f9aa8!important;font-size:11px}
+body.admin-mode #view-admin #admin-summary{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px!important;margin:0 0 18px!important}
+body.admin-mode #view-admin #admin-summary>.stat-card{min-width:0;min-height:122px;padding:18px!important;border:1px solid rgba(255,255,255,.105)!important;border-radius:17px!important;background:linear-gradient(145deg,rgba(38,42,50,.96),rgba(24,27,34,.96))!important;box-shadow:0 14px 34px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.045)!important;position:relative;overflow:hidden}
+body.admin-mode #view-admin #admin-summary>.stat-card:after{content:"";position:absolute;width:92px;height:92px;right:-40px;bottom:-48px;border:1px solid rgba(223,149,91,.2);border-radius:50%;pointer-events:none}
+body.admin-mode #view-admin #admin-summary .label{color:#aeb7c2!important;font-size:11px!important;font-weight:700}
+body.admin-mode #view-admin #admin-summary .value{color:#f0ad77!important;font-size:clamp(23px,2vw,31px)!important;margin:10px 0 0!important;font-variant-numeric:tabular-nums}
+body.admin-mode #view-admin #adminVisualAnalytics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:0 0 20px}
+body.admin-mode #view-admin .admin-chart-card{min-width:0;padding:21px;border-radius:18px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(145deg,rgba(34,38,46,.96),rgba(22,25,31,.96));box-shadow:0 14px 34px rgba(0,0,0,.18)}
+body.admin-mode #view-admin .admin-chart-card h3{margin:0;color:#f2eee8;font-size:15px}
+body.admin-mode #view-admin .admin-chart-card .chart-caption{margin:5px 0 14px;color:#939eac;font-size:11px}
+body.admin-mode #view-admin .admin-chart-empty{min-height:150px;display:grid;place-items:center;border:1px dashed rgba(255,255,255,.12);border-radius:12px;color:#8f9aa8;font-size:12px}
+body.admin-mode #view-admin .admin-chart-legend{margin-top:10px;color:#a9b2bd;font-size:10px}
+body.admin-mode #view-admin #adminHome.admin-home-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px!important;margin:0 0 20px!important}
+body.admin-mode #view-admin .admin-module-card{min-height:160px;padding:20px!important;gap:9px!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:18px!important;background:linear-gradient(145deg,rgba(37,41,49,.96),rgba(24,27,33,.98))!important;box-shadow:0 13px 30px rgba(0,0,0,.18)!important;color:#f1ece5!important;backdrop-filter:blur(18px);transition:transform .2s,border-color .2s,box-shadow .2s}
+body.admin-mode #view-admin .admin-module-card:hover{transform:translateY(-3px);border-color:rgba(223,149,91,.42)!important;box-shadow:0 18px 34px rgba(0,0,0,.25)!important}
+body.admin-mode #view-admin .module-icon{width:42px;height:42px;border-radius:13px;background:rgba(223,149,91,.13)!important;color:#efae78!important}
+body.admin-mode #view-admin .module-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+body.admin-mode #view-admin .admin-module-card strong{color:#f3eee7!important;font-size:14px}
+body.admin-mode #view-admin .admin-module-card small{color:#a4adb8!important;font-size:11px}
+body.admin-mode #view-admin .module-open{color:#e7a36d!important;font-size:11px}
+body.admin-mode #view-admin .admin-detail-bar{background:#20242b;border-color:rgba(255,255,255,.1);color:#eee8e0}
+body.admin-mode #view-admin .admin-detail-bar strong{color:#f1ece5}
+body.admin-mode #view-admin .admin-detail-bar span{color:#9ba5b1}
+body.admin-mode #view-admin .admin-report-grid>.section.card{background:linear-gradient(145deg,#242830,#1a1d24)!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:18px!important}
+body.admin-mode #view-admin .admin-report-grid>.section.card h2{color:#f3eee7!important}
+body.admin-mode #view-admin .admin-report-grid .tablewrap{border:1px solid rgba(255,255,255,.08);border-radius:12px}
+body.admin-mode #view-admin .admin-report-grid table{min-width:560px}
+body.admin-mode #view-admin .admin-report-grid th{background:#2c3038!important;color:#e9ad7b!important}
+body.admin-mode #view-admin .admin-report-grid td{color:#e4ded6!important;border-bottom-color:rgba(255,255,255,.075)!important}
+body.admin-mode #view-admin .admin-report-grid .empty{color:#9da7b3}
+body.admin-mode .nav .admin-side-link.active{background:linear-gradient(100deg,rgba(223,149,91,.2),rgba(255,255,255,.045))!important;color:#fff!important;box-shadow:inset 3px 0 #df955b}
+body.admin-mode .nav .admin-side-link.active .admin-nav-icon{color:#f0ad77}
+body.admin-mode .nav .admin-nav-icon{width:19px;height:19px;display:grid;place-items:center;margin-right:9px;color:#aeb8c4}
+body.admin-mode .nav .admin-nav-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+body.admin-mode #adminProjectCount,body.admin-mode #admin-projects,[data-admin-open="admin-projects"],[data-admin-target="admin-projects"]{display:none!important}
+@media(max-width:1050px){body.admin-mode #view-admin #admin-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}body.admin-mode #view-admin #adminHome.admin-home-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:700px){body.admin-mode #view-admin #adminVisualAnalytics{grid-template-columns:1fr}body.admin-mode #view-admin #adminHome.admin-home-grid{grid-template-columns:1fr!important}body.admin-mode #view-admin .admin-module-card{min-height:132px}body.admin-mode #view-admin>.section.card:first-child{padding:18px!important}}
+@media(prefers-reduced-motion:reduce){body.admin-mode #view-admin .admin-module-card{transition:none!important}}
