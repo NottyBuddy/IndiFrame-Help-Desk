@@ -18,12 +18,9 @@ npm run dev
 npm run deploy
 ```
 
-## Example login
-```bash
-curl -X POST https://your-worker.example.workers.dev/api/login \
-  -H 'Content-Type: application/json' \
-  -d '{"employeeId":"admin","password":"admin123"}'
-```
+## Authentication
+
+Create and manage employee accounts through the authenticated Super Admin workspace. Never use demo credentials or publish real passwords in repository documentation. Production credentials remain in D1 as password hashes.
 
 ## Expected routes
 - `POST /api/login`
@@ -34,8 +31,3 @@ curl -X POST https://your-worker.example.workers.dev/api/login \
 - `GET /api/quiz-attempts`
 - `GET /api/health`
 
-## Default users
-- `admin` / `admin123`
-- `A101` / `Hrhca@123456`
-- `A102` / `Hrhca@123456`
-- `A103` / `Hrhca@123456`
