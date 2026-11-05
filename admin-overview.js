@@ -67,7 +67,7 @@ function renderAttendanceAndBreaks(){
  set("admPresent",String(present));set("admOnBreak",String(activeBreaks.length));
  const byId=new Map(todayRows.map(x=>[String(x.employeeId||x.employee_id),x]));
  const breakById=new Map(activeBreaks.map(x=>[String(x.employee_id),x]));
- const team=agents.filter(a=>String(a.role||"").toLowerCase()!=="admin");
+ const team=agents.filter(a=>!["admin","superadmin","super_admin"].includes(String(a.role||"").toLowerCase()));
  const html=team.map(a=>{
   const id=String(a.employeeId||a.employee_id||""),att=byId.get(id),br=breakById.get(id),active=!!att&&!(att.checkOutAt||att.check_out_at);
   const status=br?"On Break":active?"Working":"Checked Out";
