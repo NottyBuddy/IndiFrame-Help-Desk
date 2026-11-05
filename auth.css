@@ -1,0 +1,11 @@
+/* Consistent credential screen for password updates. */
+body:has(.panel){min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 12% 8%,rgba(100,203,187,.2),transparent 28rem),linear-gradient(135deg,#102b37,#173d48 58%,#1b746e);font-family:Inter,"Segoe UI",Arial,sans-serif}
+body:has(.panel) .panel{width:min(100%,460px);padding:clamp(28px,5vw,48px);border:1px solid rgba(235,249,245,.55);border-radius:20px;background:#f8fbf9;box-shadow:0 28px 75px rgba(3,19,27,.3)}
+body:has(.panel) .panel h2{margin:0 0 8px;color:#203942;font-size:clamp(28px,4vw,36px);letter-spacing:-.045em}
+body:has(.panel) .panel .subtitle{margin:0 0 28px;color:#71838a;font-size:14px}
+body:has(.panel) .panel label{margin:14px 0 8px;color:#43585f;font-size:12px;font-weight:700}
+body:has(.panel) .panel input{height:48px;padding:0 14px;border:1px solid #dce7e6;border-radius:9px;background:#fff;font:inherit}
+body:has(.panel) .panel input:focus{outline:0;border-color:#61aaa2;box-shadow:0 0 0 4px rgba(22,143,134,.11)}
+body:has(.panel) .panel button[type=submit]{width:100%;height:48px;margin-top:20px;border:0;border-radius:9px;background:linear-gradient(100deg,#176e6b,#209f94);color:#fff;font-weight:750;cursor:pointer}
+body:has(.panel) .panel .status{min-height:22px;margin-top:16px;font-size:12px}
+@media(max-width:520px){body:has(.panel){padding:14px}}
