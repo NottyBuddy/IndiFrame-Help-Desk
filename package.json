@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "check": "node --check worker.js && node --check helpdesk-routes.js && node --check dashboard.js && node --check call-performance.js && node --check api.js && node --check breaks.js && node --check projects.js && node --check superadmin.js && node --check admin-section.js && node --check call-performance-import.js && node --check harness.js && node --check tests.js",
+    "check": "node --check worker.js && node --check helpdesk-routes.js && node --check dashboard.js && node --check call-performance.js && node --check api.js && node --check breaks.js && node --check superadmin.js && node --check admin-section.js && node --check call-performance-import.js && node --check harness.js && node --check tests.js",
     "test": "node tests.js",
     "test:browser": "playwright test"
   },
