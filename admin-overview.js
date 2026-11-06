@@ -134,6 +134,6 @@ async function load(){
   renderCustom();
  }catch(e){set("admDataStatus","Unable to load one or more Admin overview sources: "+e.message);set("admPresent","—");set("admOnBreak","—");}
 }
-function initAdminOverview(){if(!$("adminOverviewNew"))return;bind();load();setInterval(load,30000);}
+function initAdminOverview(){const panel=$("view-admin"),root=$("adminOverviewNew");if(!root)return;panel?.classList.remove("hidden");panel?.classList.add("active");root.hidden=false;root.classList.remove("hidden");root.style.display="grid";bind();load();setInterval(load,30000);}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initAdminOverview,{once:true});else initAdminOverview();
 })();
