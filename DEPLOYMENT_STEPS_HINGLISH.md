@@ -29,6 +29,7 @@ Ye branch development ke liye hai: `feat/isolated-call-performance`. Is branch k
    - `005_breaks_superadmin.sql`
    - `006_projects.sql`
    - `007_call_performance.sql`
+   - `008_weekly_source_data.sql`
 4. `005_breaks_superadmin.sql` mein `ALTER TABLE agents ADD COLUMN` hai. Is migration ko dobara run na karein.
 5. `007_call_performance.sql` sirf nayi Call Performance tables aur indexes banata hai. Ye `weekly_kpis`, `kpi_daily`, `kpi_imports` ya existing KPI APIs ko alter nahi karta.
 6. Migration ke baad existing approved Admin account ko Super Admin mark karne ke liye sirf confirmed Employee ID par one-time update run hoga. Is file mein kisi account ko automatic Super Admin nahi banaya gaya.
@@ -74,3 +75,14 @@ Password ya poora password_hash kisi ke saath share na karein.
 - Existing customer/project data import nahi hua; new project tables empty rahengi jab tak verified data import nahi hota.
 
 Live deployment tabhi karein jab backup, hash format aur Super Admin account confirmation complete ho jaaye.
+
+
+## Weekly Data Upload — Super Admin only
+
+- Admin Workspace ke Super Admin view mein `Weekly Data Upload` entry point hai.
+- Attendance aur Disposition ke liye separate dataset selection, workbook preview, validation, import history aur import-level delete controls hain.
+- Source column labels aur displayed cell values JSON rows mein preserve kiye jaate hain; source workbooks ko modify nahi kiya jaata.
+- Exact same workbook fingerprint dobara import nahi hota. Disposition rows ka category sum `Total Calls` se match hona zaroori hai.
+- Upload, list, rows aur delete endpoints server-side `is_super_admin` check enforce karte hain. Admin/Agent roles cannot upload or delete.
+- `008_weekly_source_data.sql` sirf `weekly_source_imports` aur `weekly_source_rows` create karta hai. Existing Attendance, KPI aur Call Performance tables untouched hain.
+- Live deployment se pehle D1 backup lein, migration 008 apply karein, Worker deploy karein, phir Pages branch publish karein. Ye steps abhi perform nahi kiye gaye.
