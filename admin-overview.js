@@ -109,22 +109,31 @@ function bind(){
 async function load(){
  try{
   set("admDataStatus","Loading verified team and call records…");
-  const d=today(),[m,a,c,t,b]=await Promise.all([
+  const d=today(),results=await Promise.allSettled([
    api.apiRequest("/api/me"),
    api.apiRequest("/api/admin/agents"),
    api.apiRequest("/api/hd/admin/call-performance/rows"),
    api.apiRequest("/api/hd/attendance/history?from="+d+"&to="+d),
    api.apiRequest("/api/hd/admin/breaks/status?from="+d+"&to="+d)
   ]);
-  const u=m.user||m;if(String(u.role||"").toLowerCase()!=="admin"&&!u.isSuperAdmin){$("adminOverviewNew").hidden=true;return;}
+  const [mResult,aResult,cResult,tResult,bResult]=results;
+  if(mResult.status!=="fulfilled")throw new Error("Unable to verify Admin session: "+(mResult.reason?.message||"API request failed"));
+  const m=mResult.value,u=m.user||m,role=String(u.role||u.userRole||"").toLowerCase().replace(/[\\s-]+/g,"_");
+  const isAdmin=["admin","superadmin","super_admin"].includes(role)||u.isSuperAdmin===true||u.is_super_admin===true;
+  if(!isAdmin){$("adminOverviewNew").hidden=true;return;}
+  $("adminOverviewNew").hidden=false;
+  const a=aResult.status==="fulfilled"?aResult.value:{},c=cResult.status==="fulfilled"?cResult.value:{},t=tResult.status==="fulfilled"?tResult.value:{},b=bResult.status==="fulfilled"?bResult.value:{};
   agents=(a.agents||[]).map(x=>({fullName:x.fullName||x.full_name||"",employeeId:x.employeeId||x.employee_id||"",role:x.role||""}));
   rawRows=c.rows||[];attendance=t.records||[];breaks=b.breaks||[];
+  const failed=[["Agents",aResult],["Call records",cResult],["Attendance",tResult],["Break status",bResult]].filter(([,r])=>r.status!=="fulfilled").map(([name,r])=>name+": "+(r.reason?.message||"request failed"));
+
   const result=dedupe(rawRows);uniqueRows=result.rows;
   renderFixed();renderAttendanceAndBreaks();renderDispositions(filterRows(...period("today")));renderDirection(filterRows(...period("today")));
-  set("admDataStatus",rawRows.length.toLocaleString()+" source rows · "+uniqueRows.length.toLocaleString()+" unique agent-date records · "+result.duplicateCount.toLocaleString()+" repeated agent-date rows excluded.");
+  set("admDataStatus",rawRows.length.toLocaleString()+" source rows · "+uniqueRows.length.toLocaleString()+" unique agent-date records · "+result.duplicateCount.toLocaleString()+" repeated agent-date rows excluded."+(failed.length?" | Partial data: "+failed.join("; "):""));
   lastRefresh=new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
   renderCustom();
  }catch(e){set("admDataStatus","Unable to load one or more Admin overview sources: "+e.message);set("admPresent","—");set("admOnBreak","—");}
 }
-document.addEventListener("DOMContentLoaded",()=>{if(!$("adminOverviewNew"))return;bind();load();setInterval(load,30000);});
+function initAdminOverview(){if(!$("adminOverviewNew"))return;bind();load();setInterval(load,30000);}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initAdminOverview,{once:true});else initAdminOverview();
 })();
