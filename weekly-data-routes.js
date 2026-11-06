@@ -48,8 +48,8 @@ export async function handleWeeklyData(req,env){
    const result=await env.DB.prepare("INSERT INTO weekly_source_imports(dataset,file_hash,filename,imported_by,imported_at,rows_received,rows_inserted,headers_json) VALUES(?,?,?,?,?,?,?,?)").bind(b.dataset,fileHash,filename,u.employee_id,stamp(),b.rows.length,normalized.length,JSON.stringify(headers)).run();
    const importId=result.meta.last_row_id;
    const stmts=normalized.map(r=>env.DB.prepare("INSERT INTO weekly_source_rows(import_id,row_number,record_date,agent_name,total_calls,source_json) VALUES(?,?,?,?,?,?)").bind(importId,r.rowNumber,r.recordDate,r.agentName,r.totalCalls,r.sourceJson));
-   for(let i=0;i<stmts.length;i+=80)await env.DB.batch(stmts.slice(i,i+80));
-   await audit(env,u,"weekly_data_import",b.dataset+" · "+filename+" · "+normalized.length+" rows · import "+importId);
+   try{for(let i=0;i<stmts.length;i+=80)await env.DB.batch(stmts.slice(i,i+80));}catch(insertError){await env.DB.batch([env.DB.prepare("DELETE FROM weekly_source_rows WHERE import_id=?").bind(importId),env.DB.prepare("DELETE FROM weekly_source_imports WHERE id=?").bind(importId)]);throw insertError;}
+   try{await audit(env,u,"weekly_data_import",b.dataset+" · "+filename+" · "+normalized.length+" rows · import "+importId);}catch(auditError){console.error("weekly data audit log failed",auditError?.message||auditError);}
    return json({success:true,importId,dataset:b.dataset,rowsInserted:normalized.length},201);
   }
   const del=path.match(/^\/api\/hd\/weekly-data\/imports\/(\d+)$/);
