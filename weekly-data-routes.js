@@ -37,10 +37,10 @@ export async function handleWeeklyData(req,env){
    const invalid=[],normalized=[];
    for(let i=0;i<b.rows.length;i++){
     const row=b.rows[i];if(!Array.isArray(row)||row.length!==headers.length){invalid.push({row:i+1,reason:"Column count does not match source headers."});continue;}
-    const date=String(b.meta?.[i]?.date||"");if(!isDate(date)){invalid.push({row:i+1,reason:"Valid date is required."});continue;}if(!String(b.meta?.[i]?.agent||"").trim()){invalid.push({row:i+1,reason:"Agent or employee name is required."});continue;}
+    const date=String(b.meta?.[i]?.date||""),isSummary=b.dataset==="disposition"&&b.meta?.[i]?.isSummary===true;if(!isSummary&&!isDate(date)){invalid.push({row:i+1,reason:"Valid date is required."});continue;}if(!isSummary&&!String(b.meta?.[i]?.agent||"").trim()){invalid.push({row:i+1,reason:"Agent or employee name is required."});continue;}
     const total=b.meta?.[i]?.totalCalls;
     if(b.dataset==="disposition"&&(!Number.isFinite(Number(total))||Number(total)!==Number(b.meta?.[i]?.categorySum))){invalid.push({row:i+1,reason:"Disposition category sum does not match Total Calls."});continue;}
-    normalized.push({rowNumber:i+1,recordDate:date||null,agentName:String(b.meta?.[i]?.agent||""),totalCalls:Number.isFinite(Number(total))?Number(total):null,sourceJson:JSON.stringify(row)});
+    normalized.push({rowNumber:i+1,recordDate:date||null,agentName:String(b.meta?.[i]?.agent||(isSummary?"Grand Total":"")),totalCalls:Number.isFinite(Number(total))?Number(total):null,sourceJson:JSON.stringify(row)});
    }
    if(b.dryRun!==false)return json({receivedRows:b.rows.length,validRows:normalized.length,invalidRows:invalid,duplicateFile:!!existing,headers});
    if(existing)return json({error:"This exact workbook has already been imported.",duplicateFile:true},409);
@@ -48,8 +48,8 @@ export async function handleWeeklyData(req,env){
    const result=await env.DB.prepare("INSERT INTO weekly_source_imports(dataset,file_hash,filename,imported_by,imported_at,rows_received,rows_inserted,headers_json) VALUES(?,?,?,?,?,?,?,?)").bind(b.dataset,fileHash,filename,u.employee_id,stamp(),b.rows.length,normalized.length,JSON.stringify(headers)).run();
    const importId=result.meta.last_row_id;
    const stmts=normalized.map(r=>env.DB.prepare("INSERT INTO weekly_source_rows(import_id,row_number,record_date,agent_name,total_calls,source_json) VALUES(?,?,?,?,?,?)").bind(importId,r.rowNumber,r.recordDate,r.agentName,r.totalCalls,r.sourceJson));
-   for(let i=0;i<stmts.length;i+=80)await env.DB.batch(stmts.slice(i,i+80));
-   await audit(env,u,"weekly_data_import",b.dataset+" · "+filename+" · "+normalized.length+" rows · import "+importId);
+   try{for(let i=0;i<stmts.length;i+=80)await env.DB.batch(stmts.slice(i,i+80));}catch(insertError){await env.DB.batch([env.DB.prepare("DELETE FROM weekly_source_rows WHERE import_id=?").bind(importId),env.DB.prepare("DELETE FROM weekly_source_imports WHERE id=?").bind(importId)]);throw insertError;}
+   try{await audit(env,u,"weekly_data_import",b.dataset+" · "+filename+" · "+normalized.length+" rows · import "+importId);}catch(auditError){console.error("weekly data audit log failed",auditError?.message||auditError);}
    return json({success:true,importId,dataset:b.dataset,rowsInserted:normalized.length},201);
   }
   const del=path.match(/^\/api\/hd\/weekly-data\/imports\/(\d+)$/);
