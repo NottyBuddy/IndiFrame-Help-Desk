@@ -323,7 +323,16 @@ export default {
       return json(request,{error:"Not found"},404);
     } catch(e) {
       const status=Number(e?.status)||500;
-      if(status>=500)console.error("Worker error:",e?.message||e);
+      if(status>=500) {
+        const url=new URL(request.url);
+        console.error("[API_FAILURE]", JSON.stringify({
+          method: request.method,
+          path: url.pathname,
+          status,
+          message: String(e?.message || e || "Unknown error"),
+          stack: e?.stack || null
+        }));
+      }
       return json(request,{error:status===500?"Server error. Please try again.":e.message},status);
     }
   }
