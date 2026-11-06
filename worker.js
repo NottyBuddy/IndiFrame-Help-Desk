@@ -99,28 +99,87 @@ function requireRole(user, role) {
   if (role === "admin" && String(user.role).toLowerCase() !== "admin") throw Object.assign(new Error("Admin access required."), { status: 403 });
 }
 function publicUser(user) {
-  return { id: user.id, employeeId: user.employee_id, fullName: user.full_name, role: user.role, isSuperAdmin: Number(user.is_super_admin) === 1 };
+  return {
+    id: user.id,
+    employeeId: user.employee_id,
+    fullName: user.full_name,
+    role: user.role,
+    isSuperAdmin: Number(user.is_super_admin) === 1
+  };
 }
+
 async function audit(env, actor, action, detail) {
   try {
-    await env.DB.prepare("INSERT INTO audit_log(actor,action,detail,created_at) VALUES(?,?,?,?)")
-      .bind(actor.employee_id, action, detail, now()).run();
-  } catch { /* Audit table is added by migration 004; core actions must still return a clear result. */ }
+    await env.DB.prepare(
+      "INSERT INTO audit_log(actor,action,detail,created_at) VALUES(?,?,?,?)"
+    )
+      .bind(actor.employee_id, action, detail, now())
+      .run();
+  } catch {
+    /* Audit table is added by migration 004; core actions must still return a clear result. */
+  }
 }
+
 async function coreRoute(request, env, url) {
   const path = url.pathname, method = request.method;
-  if (path === "/api/health" && method === "GET") return json(request, { ok: true, name: "indiframe-helpdesk-api", time: now() });
+
+  // ROOT ROUTE — Worker status
+  if (path === "/" && method === "GET") {
+    return json(request, {
+      ok: true,
+      name: "indiframe-helpdesk-api",
+      service: "IndiFrame Help Desk API",
+      message: "Worker is running.",
+      health: "/api/health"
+    });
+  }
+
+  // EXISTING HEALTH ROUTE
+  if (path === "/api/health" && method === "GET") {
+    return json(request, {
+      ok: true,
+      name: "indiframe-helpdesk-api",
+      time: now()
+    });
+  }
 
   if (path === "/api/login" && method === "POST") {
     const b = await body(request);
-    if (!b || !String(b.employeeId || "").trim() || typeof b.password !== "string") return json(request, { error: "Employee ID and password are required." }, 400);
-    const user = await env.DB.prepare("SELECT id,employee_id,full_name,password_hash,role,active,is_super_admin,must_change_password FROM agents WHERE employee_id=? COLLATE NOCASE LIMIT 1").bind(String(b.employeeId).trim()).first();
-    if (!user || Number(user.active) !== 1 || !(await verifyPassword(b.password, user.password_hash))) return json(request, { error: "Invalid Employee ID or password." }, 401);
-    const token = randomToken(), expires = new Date(Date.now() + TOKEN_TTL_MS).toISOString();
-    await env.DB.prepare("INSERT INTO sessions(agent_id,token_hash,expires_at,created_at) VALUES(?,?,?,?)").bind(user.id, await sha256(token), expires, now()).run();
-    return json(request, { token, user: publicUser(user), mustChangePassword: Number(user.must_change_password) === 1, expiresAt: expires });
-  }
 
+    if (!b || !String(b.employeeId || "").trim() || typeof b.password !== "string") {
+      return json(request, {
+        error: "Employee ID and password are required."
+      }, 400);
+    }
+
+    const user = await env.DB.prepare(
+      "SELECT id,employee_id,full_name,password_hash,role,active,is_super_admin,must_change_password FROM agents WHERE employee_id=? COLLATE NOCASE LIMIT 1"
+    )
+      .bind(String(b.employeeId).trim())
+      .first();
+
+    if (!user || Number(user.active) !== 1 || !(await verifyPassword(b.password, user.password_hash))) {
+      return json(request, {
+        error: "Invalid Employee ID or password."
+      }, 401);
+    }
+
+    const token = randomToken();
+    const expires = new Date(Date.now() + TOKEN_TTL_MS).toISOString();
+
+    await env.DB.prepare(
+      "INSERT INTO sessions(agent_id,token_hash,expires_at,created_at) VALUES(?,?,?,?)"
+    )
+      .bind(user.id, await sha256(token), expires, now())
+      .run();
+
+    return json(request, {
+      token,
+      user: publicUser(user),
+      mustChangePassword: Number(user.must_change_password) === 1,
+      expiresAt: expires
+    });
+  }
   const user = await auth(request, env);
   if (user && Number(user.must_change_password) === 1 && path !== "/api/change-password" && path !== "/api/me") {
     return json(request, { error: "First login par password change karna zaroori hai.", mustChangePassword: true }, 403);
