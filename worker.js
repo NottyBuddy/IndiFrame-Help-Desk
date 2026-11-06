@@ -1,4 +1,5 @@
 import { handleHelpdesk } from "./helpdesk-routes.js";
+import { handleWeeklyData } from "./weekly-data-routes.js";
 
 const TOKEN_TTL_MS = 12 * 60 * 60 * 1000;
 const ALLOWED_ORIGINS = new Set([
@@ -211,6 +212,8 @@ export default {
       const url=new URL(request.url);
       const core=await coreRoute(request,env,url);
       if(core)return core;
+      const weekly=await handleWeeklyData(request,env);
+      if(weekly)return weekly;
       const hd=await handleHelpdesk(request,env);
       if(hd)return hd;
       return json(request,{error:"Not found"},404);
