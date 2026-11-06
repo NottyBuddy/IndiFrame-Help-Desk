@@ -77,3 +77,77 @@ body:not(:has(.login-layout)) :is(input,select,textarea){
 body:not(:has(.login-layout)) :is(dialog,.modal,.dropdown-menu,.menu-popover,.popover){
  color:var(--if-text)!important;background:#1b1e27!important;border-color:var(--if-border)!important;
 }
+
+/* Hard override for legacy light-glass rules on the Admin dashboard.
+   Deliberately does not depend on :has() or CSS variable inheritance. */
+html body.admin-mode #view-admin .admin-module-card,
+html body.admin-mode #view-admin .admin-module-card:hover,
+html body.admin-mode #view-admin .admin-module-card:focus,
+html body.admin-mode #view-admin .admin-module-card:active,
+html body.admin-mode #view-admin .section.card,
+html body.admin-mode #view-admin .section.card:hover,
+html body.admin-mode #view-admin #admin-attendance,
+html body.admin-mode #view-admin #admin-breaks,
+html body.admin-mode #view-admin #admin-kpi,
+html body.admin-mode #view-admin #admin-quiz,
+html body.admin-mode #view-admin .adm-panel,
+html body.admin-mode #view-admin .adm-period-card,
+html body.admin-mode #view-admin .adm-mini-stat,
+html body.admin-mode #view-admin .adm-direction-item,
+html body.admin-mode #view-admin .admin-chart-card,
+html body.admin-mode #view-admin .stat-card,
+html body.admin-mode #view-admin .admin-detail-bar {
+  color:#e8eaf0!important;
+  background:#191c24!important;
+  background-image:none!important;
+  border:1px solid #343947!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.32)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+html body.admin-mode #view-admin .admin-module-card:hover,
+html body.admin-mode #view-admin .section.card:hover,
+html body.admin-mode #view-admin #admin-attendance:hover,
+html body.admin-mode #view-admin #admin-breaks:hover,
+html body.admin-mode #view-admin #admin-kpi:hover,
+html body.admin-mode #view-admin #admin-quiz:hover {
+  background:#242936!important;
+  background-image:none!important;
+  border-color:#7655d9!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.4),0 0 0 1px rgba(118,85,217,.12)!important;
+}
+html body.admin-mode #view-admin .admin-module-card *,
+html body.admin-mode #view-admin .section.card h2,
+html body.admin-mode #view-admin .section.card h3,
+html body.admin-mode #view-admin .adm-panel h3,
+html body.admin-mode #view-admin .adm-period-card h3 {
+  color:#e8eaf0!important;
+}
+html body.admin-mode #view-admin .admin-module-card small,
+html body.admin-mode #view-admin .section.card .empty,
+html body.admin-mode #view-admin .section.card .muted {
+  color:#a4a9b6!important;
+}
+html body.admin-mode #view-admin .section.card button,
+html body.admin-mode #view-admin .section.card .secondary-btn,
+html body.admin-mode #view-admin .export-report {
+  color:#e8eaf0!important;
+  background:#242936!important;
+  background-image:none!important;
+  border:1px solid #414757!important;
+}
+html body.admin-mode #view-admin .section.card button:hover,
+html body.admin-mode #view-admin .section.card .secondary-btn:hover,
+html body.admin-mode #view-admin .export-report:hover {
+  color:#fff!important;background:#30294a!important;border-color:#7655d9!important;
+}
+html body.admin-mode #view-admin table,
+html body.admin-mode #view-admin tbody,
+html body.admin-mode #view-admin tr,
+html body.admin-mode #view-admin td {
+  color:#e8eaf0!important;background:#171a21!important;
+}
+html body.admin-mode #view-admin th {
+  color:#f0c29f!important;background:#222631!important;border-color:#343947!important;
+}
+html body.admin-mode #view-admin td {border-color:#343947!important}
