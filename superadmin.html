@@ -10,6 +10,39 @@ body{background:radial-gradient(ellipse at 8% 0%,rgba(21,155,145,.15),transparen
 @media(max-width:850px){.sa-grid{grid-template-columns:1fr}.sa-analytics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:420px){.sa-analytics-grid{grid-template-columns:1fr}.sa-stat strong{font-size:22px}}
 </style>  <link rel="stylesheet" href="indinext-premium.css?v=indinext-ember-glass-20261105">
   <link rel="stylesheet" href="indinext-operations-refinement.css?v=ops-glass-v1-20261105">
+<style id="superadmin-dark-glass-final">
+/* Super Admin: keep every card dark smoked-glass, including hover/focus states. */
+body:not(:has(.login-layout)) :is(main .card,.sa-stat,.sa-edit-dialog){
+ color:#f4f1ed!important;
+ background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.018) 38%,rgba(8,10,13,.88) 100%)!important;
+ border:1px solid rgba(255,255,255,.13)!important;
+ box-shadow:0 18px 46px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.09)!important;
+ -webkit-backdrop-filter:blur(26px) saturate(145%)!important;
+ backdrop-filter:blur(26px) saturate(145%)!important;
+}
+@media(hover:hover){
+ body:not(:has(.login-layout)) :is(main .card,.sa-stat,.sa-edit-dialog):hover{
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.018) 38%,rgba(8,10,13,.88) 100%)!important;
+  border-color:rgba(255,154,91,.28)!important;
+  box-shadow:0 21px 50px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.09)!important;
+  transform:translateY(-2px);
+ }
+}
+body:not(:has(.login-layout)) .sa-edit-dialog{color:#f4f1ed!important}
+body:not(:has(.login-layout)) .sa-edit-dialog label{color:#e8e1da!important}
+body:not(:has(.login-layout)) .sa-edit-dialog input,
+body:not(:has(.login-layout)) .sa-edit-dialog select,
+body:not(:has(.login-layout)) #callPerformanceFile{
+ color:#f4f1ed!important;background:rgba(5,7,10,.78)!important;border-color:rgba(255,255,255,.16)!important;
+}
+body:not(:has(.login-layout)) .sa-small,
+body:not(:has(.login-layout)) .sa-small:hover{
+ color:#f4f1ed!important;background:rgba(255,255,255,.055)!important;border-color:rgba(255,255,255,.15)!important;
+}
+body:not(:has(.login-layout)) .sa-table th{background:rgba(23,28,35,.94)!important}
+body:not(:has(.login-layout)) .sa-table td{background:rgba(5,7,10,.24)!important;border-bottom-color:rgba(255,255,255,.09)!important}
+body:not(:has(.login-layout)) .sa-table tr:hover td{background:rgba(255,255,255,.035)!important}
+</style>
 </head>
 <body>
 <script src="preloader.js?v=indinext-loader-snake-v3-20261105"></script> <header class="topbar"><div><div class="brand">Indinext</div><div class="subtitle">Super Admin Control Center</div></div><div class="topright"><a href="dashboard.html" class="logout-btn" style="text-decoration:none">Dashboard</a><button id="logoutBtn" class="logout-btn">Logout</button></div></header>
