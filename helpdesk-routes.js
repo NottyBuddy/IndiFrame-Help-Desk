@@ -137,7 +137,12 @@ export async function handleHelpdesk(req, env) {
     return J({ error: "Not found" }, 404);
   } catch (e) {
     if (e instanceof HttpError) return J({ error: e.message }, e.status);
-    console.error("helpdesk error", e && e.message);
+    console.error("[HELPDESK_API_FAILURE]", JSON.stringify({
+      method: m,
+      path: p,
+      message: String(e?.message || e || "Unknown error"),
+      stack: e?.stack || null
+    }));
     return J({ error: "Something went wrong. Please try again." }, 500);
   }
 }
