@@ -39,6 +39,8 @@ async function sha256(s) {
 const now = () => new Date().toISOString();
 const isDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s || "") && !isNaN(Date.parse(s));
 const rate = (a, b) => (b > 0 ? Math.round((a / b) * 1000) / 10 : null); // % with 1 decimal, null if /0
+const clean = (v, max = 500) => v == null ? null : String(v).trim().slice(0, max);
+
 const audit = (env, u, action, detail) =>
   env.DB.prepare("INSERT INTO audit_log(actor_id,actor,action,details,detail,created_at) VALUES(?,?,?,?,?,?)")
     .bind(u.agentId, u.employeeId, action, detail, detail, now()).run();
@@ -148,3 +150,518 @@ export async function handleHelpdesk(req, env) {
 }
 
 
+
+// ---------- KPIs ----------
+const SUMS = "COALESCE(SUM(assigned_leads),0) assigned, COALESCE(SUM(total_attempts),0) attempts, COALESCE(SUM(unique_leads),0) uniqueLeads, COALESCE(SUM(connected_calls),0) connected, COALESCE(SUM(interested),0) interested, COALESCE(SUM(not_interested),0) notInterested, COALESCE(SUM(follow_ups),0) followUps, COALESCE(SUM(callbacks),0) callbacks, COALESCE(SUM(qualified),0) qualified, COUNT(*) rows";
+const withRates = r => ({ ...r, connectRate: rate(r.connected, r.attempts), attemptRate: rate(r.uniqueLeads, r.assigned), conversionRate: rate(r.qualified, r.connected) });
+
+async function kpiSummary(url, env, u, admin) {
+  const from = url.searchParams.get("from"), to = url.searchParams.get("to");
+  if (from && !isDate(from)) bad("Invalid 'from' date (use YYYY-MM-DD).");
+  if (to && !isDate(to)) bad("Invalid 'to' date (use YYYY-MM-DD).");
+  const emp = admin ? (url.searchParams.get("employee_id") || null) : u.employeeId; // agents are forced to own data
+  const w = ["1=1"], b = [];
+  if (from) { w.push("report_date >= ?"); b.push(from); }
+  if (to) { w.push("report_date <= ?"); b.push(to); }
+  if (emp) { w.push("employee_id = ?"); b.push(emp); }
+  const W = w.join(" AND ");
+  const all = sql => env.DB.prepare(sql).bind(...b).all().then(r => r.results.map(withRates));
+  const [tot] = await all(`SELECT ${SUMS} FROM kpi_daily WHERE ${W}`);
+  return {
+    meta: { from, to, employeeId: emp, scope: admin && !emp ? "team" : "single", rowsAggregated: tot.rows },
+    totals: tot,
+    daily: await all(`SELECT report_date date, ${SUMS} FROM kpi_daily WHERE ${W} GROUP BY report_date ORDER BY report_date LIMIT 400`),
+    byAgent: await all(`SELECT employee_id employeeId, ${SUMS} FROM kpi_daily WHERE ${W} GROUP BY employee_id ORDER BY employee_id LIMIT 500`),
+    byDisposition: await all(`SELECT disposition, ${SUMS} FROM kpi_daily WHERE ${W} AND disposition <> '' GROUP BY disposition ORDER BY rows DESC LIMIT 100`),
+  };
+}
+
+const NUM = ["assigned_leads", "total_attempts", "unique_leads", "connected_calls", "interested", "not_interested", "follow_ups", "callbacks", "qualified"];
+// No application-level row cap. D1 writes are chunked to keep batches within practical statement limits.
+// Every received row ends up in exactly one bucket: accepted, skippedExisting, or invalid. Nothing is dropped silently.
+async function kpiImport(req, env, u) {
+  const body = await req.json().catch(() => bad("Invalid JSON body."));
+  const rows = body.rows;
+  if (!Array.isArray(rows) || !rows.length) bad("No rows supplied.");
+  // employee_id (as typed in the report) -> canonical agents.employee_id, case-insensitive
+  const agents = new Map();
+  const agentRows = (await env.DB.prepare("SELECT employee_id, full_name FROM agents WHERE active = 1").all()).results;
+  for (const a of agentRows) {
+    agents.set(String(a.employee_id).trim().toLowerCase(), String(a.employee_id));
+    if (a.full_name) agents.set(String(a.full_name).trim().toLowerCase(), String(a.employee_id));
+  }
+  const valid = [], invalid = [], seenAt = new Map();
+  rows.forEach((r, i) => {
+    const n = i + 1;
+    if (!r || typeof r !== "object") return invalid.push({ row: n, reason: "Row is not an object" });
+    const typed = String(r.employee_id ?? "").trim(), d = String(r.report_date ?? "").trim(), disp = String(r.disposition ?? "").trim().slice(0, 60);
+    if (!typed) return invalid.push({ row: n, reason: "Missing employee ID" });
+    const emp = agents.get(typed.toLowerCase());
+    if (!emp) return invalid.push({ row: n, reason: `Unknown Agent/Caller Name or Employee ID "${typed.slice(0, 30)}"` });
+    if (!isDate(d)) return invalid.push({ row: n, reason: "Invalid report date (need YYYY-MM-DD)" });
+    const o = { n, employee_id: emp, report_date: d, disposition: disp };
+    for (const k of NUM) {
+      const v = r[k] === undefined || r[k] === null || r[k] === "" ? 0 : Number(r[k]);
+      if (!Number.isInteger(v) || v < 0 || v > 10000000) return invalid.push({ row: n, reason: `${k} must be a whole number >= 0` });
+      o[k] = v;
+    }
+    const key = `${emp}|${d}|${disp}`;
+    if (seenAt.has(key)) return invalid.push({ row: n, reason: `Duplicate of row ${seenAt.get(key)} in this file (same employee, date, disposition)` });
+    seenAt.set(key, n); o.key = key; valid.push(o);
+  });
+  const existing = new Map();
+  if (valid.length) {
+    const ds = valid.map(v => v.report_date).sort();
+    const ex = await env.DB.prepare(`SELECT employee_id,report_date,disposition,${NUM.join(",")} FROM kpi_daily WHERE report_date BETWEEN ? AND ?`).bind(ds[0], ds[ds.length - 1]).all();
+    ex.results.forEach(r => existing.set(`${r.employee_id}|${r.report_date}|${r.disposition}`, r));
+  }
+  const fresh = [], skipped = [];
+  for (const v of valid) {
+    const ex = existing.get(v.key);
+    if (ex) skipped.push({ row: v.n, reason: "Already in database (not overwritten)", differs: NUM.some(k => ex[k] !== v[k]) });
+    else fresh.push(v);
+  }
+  const summary = {
+    receivedRows: rows.length, accepted: fresh.length, skippedDuplicates: skipped.length,
+    skippedWithDifferentValues: skipped.filter(s => s.differs).length, invalidCount: invalid.length,
+    reconciled: fresh.length + skipped.length + invalid.length === rows.length,
+    invalid: invalid.slice(0, 50), skippedRows: skipped.slice(0, 50),
+  };
+  if (body.dry_run !== false) return { dryRun: true, ...summary };
+
+  if (!fresh.length) bad("Nothing new to import: every valid row already exists or is invalid. Review the check results.", 409);
+  if ((invalid.length || skipped.length) && body.accept_partial !== true)
+    bad(`${invalid.length} invalid and ${skipped.length} already-existing row(s) will NOT be imported. Confirm to import only the ${fresh.length} new valid row(s).`, 409);
+  const hash = await sha256(JSON.stringify(fresh.map(({ n, key, ...r }) => r)));
+  if (await env.DB.prepare("SELECT 1 FROM kpi_imports WHERE file_hash = ?").bind(hash).first()) bad("This exact data was already imported.", 409);
+  const ins = env.DB.prepare(`INSERT INTO kpi_daily(employee_id,kpi_date,report_date,disposition,calls,leads,site_visits,bookings,revenue,${NUM.join(",")},import_id,created_at) VALUES(?,?,?,?,?,?,?,?,?,${NUM.map(() => "?").join(",")},(SELECT id FROM kpi_imports WHERE file_hash = ?),?)`);
+  let imp;
+  try {
+    // Create the import record, then write rows in bounded D1 batches. On any failure,
+    // remove this import's rows and record so a partial import is not presented as complete.
+    await env.DB.prepare("INSERT INTO kpi_imports(file_hash,file_name,filename,imported_by,imported_at,total_rows,successful_rows,failed_rows,rows_accepted,rows_skipped) VALUES(?,?,?,?,?,?,?,?,?,?)")
+      .bind(hash, String(body.filename || "").slice(0, 120) || "kpi-import", String(body.filename || "").slice(0, 120), u.employeeId, now(), fresh.length + skipped.length + invalid.length, fresh.length, skipped.length + invalid.length, fresh.length, skipped.length + invalid.length).run();
+    imp = await env.DB.prepare("SELECT id FROM kpi_imports WHERE file_hash = ?").bind(hash).first();
+    const CHUNK_SIZE = 80;
+    for (let start = 0; start < fresh.length; start += CHUNK_SIZE) {
+      const chunk = fresh.slice(start, start + CHUNK_SIZE);
+      await env.DB.batch(chunk.map(o => ins.bind(o.employee_id, o.report_date, o.report_date, o.disposition, o.total_attempts, o.assigned_leads, 0, 0, 0, ...NUM.map(k => o[k]), hash, now())));
+    }
+  } catch (e) {
+    console.error("kpi import chunk failed", e && e.message);
+    try {
+      if (imp?.id) {
+        await env.DB.prepare("DELETE FROM kpi_daily WHERE import_id = ?").bind(imp.id).run();
+        await env.DB.prepare("DELETE FROM kpi_imports WHERE id = ?").bind(imp.id).run();
+      } else {
+        await env.DB.prepare("DELETE FROM kpi_imports WHERE file_hash = ?").bind(hash).run();
+      }
+    } catch (rollbackError) {
+      console.error("kpi import rollback failed", rollbackError && rollbackError.message);
+      bad("Import failed and rollback needs administrator review. Do not retry until the import log is checked.", 500);
+    }
+    bad("Import failed; saved chunks were rolled back. Check the data and retry.", 409);
+  }
+  const saved = (await env.DB.prepare("SELECT COUNT(*) c FROM kpi_daily WHERE import_id = ?").bind(imp.id).first()).c;
+  if (saved !== fresh.length) throw new Error(`kpi import count mismatch: expected ${fresh.length}, saved ${saved}`);
+  await audit(env, u, "kpi_import", `import ${imp.id}: ${saved} saved, ${skipped.length} existing skipped, ${invalid.length} invalid, file ${String(body.filename || "").slice(0, 60)}`);
+  return { dryRun: false, importId: imp.id, saved, ...summary };
+}
+
+// ---------- Break management ----------
+const BREAK_TYPES = new Set(["tea","lunch","bio"]);
+async function breakStatus(env,u) {
+  const active = await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  return { active: active ? { ...active, elapsedSeconds: Math.max(0,Math.floor((Date.now()-Date.parse(active.started_at))/1000)) } : null, serverTime: now() };
+}
+async function breakStart(req,env,u) {
+  const b=await req.json().catch(()=>({}));
+  const type=String(b.break_type||"").toLowerCase();
+  if(!BREAK_TYPES.has(type)) bad("Select a valid break type.");
+  const activeAcw=await env.DB.prepare("SELECT id FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(activeAcw) bad("End your ACW session before starting a break.",409);
+  const t=now();
+  try {
+    const r=await env.DB.prepare("INSERT INTO agent_breaks(employee_id,agent_id,break_type,started_at,created_at) VALUES(?,?,?,?,?)").bind(u.employeeId,u.agentId,type,t,t).run();
+    return { id:r.meta.last_row_id, breakType:type, startedAt:t };
+  } catch(e) { bad("An active break or ACW session already exists. End it before starting a new activity.",409); }
+}
+async function breakEnd(env,u) {
+  const active=await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(!active) bad("There is no active break to end.",409);
+  const t=now(), seconds=Math.max(0,Math.floor((Date.parse(t)-Date.parse(active.started_at))/1000));
+  await env.DB.prepare("UPDATE agent_breaks SET ended_at=?,duration_seconds=?,duration_minutes=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,Math.floor(seconds/60),active.id).run();
+  return { id:active.id,breakType:active.break_type,startedAt:active.started_at,endedAt:t,durationSeconds:seconds };
+}
+async function acwStatus(env,u) {
+  const active=await env.DB.prepare("SELECT id,started_at FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  return { active:active?{...active,elapsedSeconds:Math.max(0,Math.floor((Date.now()-Date.parse(active.started_at))/1000))}:null,serverTime:now() };
+}
+async function acwStart(env,u) {
+  const attendance=await env.DB.prepare("SELECT id FROM attendance WHERE employee_id=? AND check_out_at IS NULL").bind(u.employeeId).first();
+  if(!attendance) bad("Check in before starting ACW.",409);
+  const activeBreak=await env.DB.prepare("SELECT id FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(activeBreak) bad("End your break before starting ACW.",409);
+  const t=now();
+  try {
+    const r=await env.DB.prepare("INSERT INTO agent_acw_sessions(employee_id,agent_id,started_at,created_at) VALUES(?,?,?,?)").bind(u.employeeId,u.agentId,t,t).run();
+    return {id:r.meta.last_row_id,startedAt:t};
+  } catch(e) { bad("An active break or ACW session already exists.",409); }
+}
+async function acwEnd(env,u) {
+  const active=await env.DB.prepare("SELECT id,started_at FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(!active) bad("There is no active ACW session to end.",409);
+  const t=now(),seconds=Math.max(0,Math.floor((Date.parse(t)-Date.parse(active.started_at))/1000));
+  const result=await env.DB.prepare("UPDATE agent_acw_sessions SET ended_at=?,duration_seconds=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,active.id).run();
+  if(!result.meta.changes) bad("ACW session was already ended.",409);
+  return {id:active.id,startedAt:active.started_at,endedAt:t,durationSeconds:seconds};
+}
+async function adminAcwSessions(url,env) {
+  const from=url.searchParams.get("from"),to=url.searchParams.get("to"),employeeId=url.searchParams.get("employee_id");
+  if(from&&!isDate(from))bad("Invalid 'from' date.");
+  if(to&&!isDate(to))bad("Invalid 'to' date.");
+  if(from&&to&&from>to)bad("From date cannot be after To date.");
+  const where=["1=1"],args=[];
+  if(from){where.push("date(s.started_at)>=?");args.push(from);}
+  if(to){where.push("date(s.started_at)<=?");args.push(to);}
+  if(employeeId){where.push("a.employee_id=? COLLATE NOCASE");args.push(employeeId);}
+  const sessions=(await env.DB.prepare("SELECT s.id,s.employee_id,a.full_name,s.started_at,s.ended_at,s.duration_seconds FROM agent_acw_sessions s JOIN agents a ON a.id=s.agent_id WHERE "+where.join(" AND ")+" ORDER BY s.started_at DESC LIMIT 3000").bind(...args).all()).results;
+  const t=Date.now();
+  return {sessions:sessions.map(x=>({...x,elapsedSeconds:x.ended_at?Number(x.duration_seconds||0):Math.max(0,Math.floor((t-Date.parse(x.started_at))/1000))})),serverTime:now()};
+}
+async function adminBreakStatus(url, env) {
+  const from=url.searchParams.get("from"), to=url.searchParams.get("to");
+  if(from&&!isDate(from))bad("Invalid 'from' date.");
+  if(to&&!isDate(to))bad("Invalid 'to' date.");
+  const where=["1=1"],args=[];
+  if(from){where.push("date(b.started_at)>=?");args.push(from);}
+  if(to){where.push("date(b.started_at)<=?");args.push(to);}
+  const rows=(await env.DB.prepare("SELECT b.id,b.break_type,b.started_at,b.ended_at,b.duration_minutes,a.employee_id,a.full_name FROM agent_breaks b JOIN agents a ON a.id=b.agent_id WHERE "+where.join(" AND ")+" ORDER BY b.started_at DESC LIMIT 2000").bind(...args).all()).results;
+  const t=Date.now();
+  return { breaks:rows.map(r=>({...r,elapsedSeconds:r.ended_at?Math.max(0,Math.floor((Date.parse(r.ended_at)-Date.parse(r.started_at))/1000)):Math.max(0,Math.floor((t-Date.parse(r.started_at))/1000))})), serverTime:now() };
+}
+
+// ---------- Agent Overview live work summary ----------
+async function agentOverviewLive(url, env, u) {
+  const date = url.searchParams.get("date");
+  const offset = Number(url.searchParams.get("tzOffsetMinutes") ?? 0);
+  if (!isDate(date)) bad("Valid local date is required (YYYY-MM-DD).");
+  if (!Number.isInteger(offset) || offset < -840 || offset > 840) bad("Invalid timezone offset.");
+  const [year, month, day] = date.split("-").map(Number);
+  const startMs = Date.UTC(year, month - 1, day) - offset * 60000;
+  const start = new Date(startMs).toISOString();
+  const end = new Date(startMs + 86400000).toISOString();
+  const [attendance, breaks] = await Promise.all([
+    env.DB.prepare("SELECT check_in_at,check_out_at FROM attendance WHERE employee_id=? AND work_date=? ORDER BY check_in_at DESC LIMIT 1").bind(u.employeeId, date).first(),
+    env.DB.prepare("SELECT started_at,ended_at,duration_seconds FROM agent_breaks WHERE employee_id=? AND break_type IN ('tea','lunch','bio') AND started_at>=? AND started_at<? ORDER BY started_at").bind(u.employeeId, start, end).all()
+  ]);
+  const currentMs = Date.now();
+  let breakSeconds = 0;
+  for (const item of (breaks.results || [])) {
+    const begin = Date.parse(item.started_at);
+    const finish = item.ended_at ? Date.parse(item.ended_at) : currentMs;
+    if (Number.isFinite(begin) && Number.isFinite(finish)) breakSeconds += Math.max(0, Math.floor((finish - begin) / 1000));
+  }
+  const checkInMs = attendance?.check_in_at ? Date.parse(attendance.check_in_at) : NaN;
+  const finishMs = attendance?.check_out_at ? Date.parse(attendance.check_out_at) : currentMs;
+  const grossSeconds = Number.isFinite(checkInMs) ? Math.max(0, Math.floor((finishMs - checkInMs) / 1000)) : 0;
+  return {
+    date,
+    loginTime: attendance?.check_in_at || null,
+    checkOutTime: attendance?.check_out_at || null,
+    active: !!attendance && !attendance.check_out_at,
+    breakSeconds,
+    netWorkSeconds: Math.max(0, grossSeconds - breakSeconds),
+    serverTime: now()
+  };
+}
+
+// ---------- Attendance ----------
+async function attStatus(env, u) {
+  const a = await env.DB.prepare("SELECT id,check_in_at FROM attendance WHERE employee_id=? AND check_out_at IS NULL").bind(u.employeeId).first();
+  return { active: !!a, checkInAt: a ? a.check_in_at : null, serverTime: now() };
+}
+async function checkIn(req, env, u) {
+  const b = await req.json().catch(() => ({}));
+  const off = Number(b.tzOffsetMinutes ?? 0);
+  if (!Number.isInteger(off) || off < -840 || off > 840) bad("Invalid timezone offset.");
+  if ((await attStatus(env, u)).active) bad("You are already checked in.", 409);
+  const t = new Date();
+  const workDate = new Date(t.getTime() - off * 60000).toISOString().slice(0, 10); // JS getTimezoneOffset semantics
+  try {
+    await env.DB.prepare("INSERT INTO attendance(employee_id,work_date,check_in_at) VALUES(?,?,?)").bind(u.employeeId, workDate, t.toISOString()).run();
+  } catch (e) { bad("You are already checked in.", 409); } // unique partial index guards races
+  return { checkInAt: t.toISOString(), workDate };
+}
+async function checkOut(env, u) {
+  const a = await env.DB.prepare("SELECT id,check_in_at FROM attendance WHERE employee_id=? AND check_out_at IS NULL").bind(u.employeeId).first();
+  if (!a) bad("No active check-in to check out from.", 409);
+  const activeAcw=await env.DB.prepare("SELECT id FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(activeAcw) bad("End your ACW session before checking out.",409);
+  const t = new Date(), mins = Math.max(0, Math.round((t - new Date(a.check_in_at)) / 60000));
+  await env.DB.prepare("UPDATE attendance SET check_out_at=?, duration_minutes=? WHERE id=? AND check_out_at IS NULL").bind(t.toISOString(), mins, a.id).run();
+  return { checkInAt: a.check_in_at, checkOutAt: t.toISOString(), durationMinutes: mins };
+}
+async function attHistory(url, env, u, admin) {
+  const month=url.searchParams.get("month"), from=url.searchParams.get("from"), to=url.searchParams.get("to");
+  if(month&&!/^\d{4}-(0[1-9]|1[0-2])$/.test(month))bad("Invalid month (use YYYY-MM).");
+  if(from&&!isDate(from))bad("Invalid 'from' date.");
+  if(to&&!isDate(to))bad("Invalid 'to' date.");
+  const emp=admin?(url.searchParams.get("employee_id")||null):u.employeeId;
+  const w=[],b=[];
+  if(month){w.push("work_date LIKE ?");b.push(month+"-%");}
+  if(from){w.push("work_date>=?");b.push(from);}
+  if(to){w.push("work_date<=?");b.push(to);}
+  if(emp){w.push("employee_id=?");b.push(emp);}
+  const W=w.length?w.join(" AND "):"1=1";
+  const rows=(await env.DB.prepare(`SELECT id,employee_id employeeId,work_date workDate,check_in_at checkInAt,check_out_at checkOutAt,duration_minutes durationMinutes FROM attendance WHERE ${W} ORDER BY work_date DESC,check_in_at DESC LIMIT 3000`).bind(...b).all()).results;
+  const sum=(await env.DB.prepare(`SELECT employee_id employeeId,COUNT(DISTINCT work_date) daysPresent,COALESCE(SUM(duration_minutes),0) totalMinutes FROM attendance WHERE ${W} GROUP BY employee_id ORDER BY employee_id LIMIT 500`).bind(...b).all()).results;
+  return {month,from,to,records:rows,summary:sum};
+}
+
+// ---------- Isolated Call Performance ----------
+const cpNormKey = value => String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+function cpPick(row, names) {
+  const wanted = new Set(names.map(cpNormKey));
+  for (const [key, value] of Object.entries(row || {})) {
+    if (key.startsWith("__call_performance_")) continue;
+    if (wanted.has(cpNormKey(key)) && value !== "" && value != null) return value;
+  }
+  return null;
+}
+function cpDate(value) {
+  const s = String(value ?? "").trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return isDate(s) ? s : null;
+  const m = s.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})$/);
+  if (m) {
+    const year = m[3].length === 2 ? "20" + m[3] : m[3];
+    const out = year + "-" + m[2].padStart(2, "0") + "-" + m[1].padStart(2, "0");
+    return isDate(out) ? out : null;
+  }
+  const parsed = new Date(s);
+  if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
+  return null;
+}
+function cpNormalizeRow(input) {
+  const source = Object.fromEntries(Object.entries(input || {}).filter(([key]) => cpNormKey(key) !== "req filed"));
+  const helperDate = source.__call_performance_date;
+  const helperAgent = source.__call_performance_agent;
+  delete source.__call_performance_date;
+  delete source.__call_performance_agent;
+  const agentName = clean(cpPick(source, ["agent name", "employee name", "caller name", "caller full name", "full name", "agent", "caller", "employee"]) || helperAgent, 200);
+  const employeeId = clean(cpPick(source, ["employee id", "agent id", "employee code", "caller id"]) || helperAgent || agentName, 100);
+  const date = cpDate(helperDate || cpPick(source, ["date", "report date", "call date", "activity date", "created date", "created on", "call start date"]));
+  const disposition = clean(cpPick(source, ["disposition", "call disposition", "call status", "status", "call result", "result"]), 160) || "";
+  return { source, employeeId, employeeName: agentName || employeeId || "", date, disposition };
+}
+function cpWhere(url, u, admin) {
+  const where = ["1=1"], args = [];
+  const from = url.searchParams.get("from"), to = url.searchParams.get("to"), employee = url.searchParams.get("employee_id");
+  if (from && !isDate(from)) bad("Invalid 'from' date (use YYYY-MM-DD).");
+  if (to && !isDate(to)) bad("Invalid 'to' date (use YYYY-MM-DD).");
+  if (from) { where.push("report_date >= ?"); args.push(from); }
+  if (to) { where.push("report_date <= ?"); args.push(to); }
+  if (admin) {
+    if (employee) { where.push("employee_id = ?"); args.push(employee); }
+  } else {
+    // Agent access is strictly tied to the authenticated Help Desk employee ID.
+    // Never trust an employee_id supplied by the browser.
+    where.push("employee_id = ?");
+    args.push(u.employeeId);
+  }
+  const disposition = url.searchParams.get("disposition");
+  if (disposition) { where.push("lower(trim(disposition)) = lower(trim(?))"); args.push(disposition.trim()); }
+  return { where: where.join(" AND "), args };
+}
+async function callPerformanceSummary(url, env, u, admin = false) {
+  const { where, args } = cpWhere(url, u, admin);
+  const one = sql => env.DB.prepare(sql).bind(...args).first();
+  const all = sql => env.DB.prepare(sql).bind(...args).all().then(r => r.results);
+  const [totals, byAgent, daily, byDisposition] = await Promise.all([
+    one(`SELECT COUNT(*) calls, COUNT(DISTINCT employee_id) agents, COUNT(DISTINCT report_date) dates, COUNT(DISTINCT disposition) dispositions FROM call_performance_rows WHERE ${where}`),
+    all(`SELECT employee_id employeeId, MAX(employee_name) employeeName, COUNT(*) calls, MIN(report_date) firstDate, MAX(report_date) lastDate FROM call_performance_rows WHERE ${where} GROUP BY employee_id ORDER BY calls DESC, employee_id`),
+    all(`SELECT report_date date, COUNT(*) calls, COUNT(DISTINCT employee_id) agents FROM call_performance_rows WHERE ${where} GROUP BY report_date ORDER BY report_date`),
+    all(`SELECT disposition, COUNT(*) calls FROM call_performance_rows WHERE ${where} GROUP BY disposition ORDER BY calls DESC, disposition`)
+  ]);
+  return { totals: totals || { calls: 0, agents: 0, dates: 0, dispositions: 0 }, byAgent, daily, byDisposition };
+}
+async function callPerformanceRows(url, env, u, admin = false) {
+  const { where, args } = cpWhere(url, u, admin);
+  const rows = (await env.DB.prepare(`SELECT id, employee_id employeeId, employee_name employeeName, report_date reportDate, disposition, source_json, created_at createdAt FROM call_performance_rows WHERE ${where} ORDER BY report_date DESC, employee_name, id`).bind(...args).all()).results;
+  return { rows: rows.map(r => ({ ...r, source: JSON.parse(r.source_json || "{}"), source_json: undefined })) };
+}
+async function callPerformanceSections(url, env, u) {
+  await ensureCallPerformanceSections(env);
+  const from = url.searchParams.get("from"), to = url.searchParams.get("to");
+  if (from && !isDate(from)) bad("Invalid 'from' date (use YYYY-MM-DD).");
+  if (to && !isDate(to)) bad("Invalid 'to' date (use YYYY-MM-DD).");
+  const where = ["1=1"], args = [];
+  if (from) { where.push("(report_date IS NULL OR report_date >= ?)"); args.push(from); }
+  if (to) { where.push("(report_date IS NULL OR report_date <= ?)"); args.push(to); }
+  const employee = url.searchParams.get("employee_id");
+  if (employee) { where.push("employee_id = ?"); args.push(employee); }
+  const disposition = url.searchParams.get("disposition");
+  if (disposition) { where.push("lower(trim(label)) = lower(trim(?))"); args.push(disposition.trim()); }
+  const rows = (await env.DB.prepare(`SELECT report_type reportType, employee_id employeeId, employee_name employeeName, report_date reportDate, label, data_json dataJson FROM call_performance_report_rows WHERE ${where.join(" AND ")} ORDER BY COALESCE(report_date,''), employee_name, label`).bind(...args).all()).results || [];
+  const dispositions=(await env.DB.prepare("SELECT DISTINCT label FROM call_performance_report_rows WHERE report_type=? AND label<>'' ORDER BY label").bind("team_day_disposition").all()).results.map(r=>r.label);
+  return { sections: rows.map(r => ({ ...r, data: JSON.parse(r.dataJson || "{}"), dataJson: undefined })), dispositions };
+}
+async function ensureCallPerformanceSections(env) {
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS call_performance_report_rows (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    import_id INTEGER NOT NULL,
+    report_type TEXT NOT NULL,
+    employee_id TEXT,
+    employee_name TEXT NOT NULL DEFAULT '',
+    report_date TEXT,
+    label TEXT NOT NULL DEFAULT '',
+    row_hash TEXT NOT NULL UNIQUE,
+    data_json TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (import_id) REFERENCES call_performance_imports(id) ON DELETE RESTRICT
+  )`).run();
+  await env.DB.prepare("CREATE INDEX IF NOT EXISTS ix_cp_report_type_date ON call_performance_report_rows(report_type, report_date)").run();
+  await env.DB.prepare("CREATE INDEX IF NOT EXISTS ix_cp_report_agent ON call_performance_report_rows(employee_id, report_type)").run();
+}
+async function callPerformanceImport(req, env, u) {
+  const body = await req.json().catch(() => bad("Invalid JSON body."));
+  if (!Array.isArray(body?.rows) || !body.rows.length) bad("rows must be a non-empty array.");
+  const normalized = body.rows.map((r, i) => ({ rowNumber: i + 1, ...cpNormalizeRow(r) }));
+  const reportRows = Array.isArray(body.report_rows) ? body.report_rows : [];
+  // Resolve name-only workbook rows to the canonical Help Desk employee ID.
+  const agents = (await env.DB.prepare("SELECT employee_id, full_name FROM agents").all()).results || [];
+  const agentByName = new Map(agents.map(a => [String(a.full_name || "").trim().toLowerCase(), a.employee_id]));
+  const resolveAgent = name => { const n=String(name||"").trim().toLowerCase(); if(agentByName.has(n)) return agentByName.get(n); const matches=agents.filter(a=>String(a.full_name||"").toLowerCase().split(/\s+/).includes(n)); return matches.length===1?matches[0].employee_id:null; };
+  for (const row of normalized) {
+    const matchedId = agentByName.get(String(row.employeeName || "").trim().toLowerCase());
+    if (matchedId && (!row.employeeId || String(row.employeeId).trim().toLowerCase() === String(row.employeeName || "").trim().toLowerCase())) {
+      row.employeeId = String(matchedId);
+    }
+  }
+  for (const rr of reportRows) { if (rr.employeeName && !rr.employeeId) rr.employeeId=String(resolveAgent(rr.employeeName)||""); else if (rr.employeeName && rr.employeeId===rr.employeeName) rr.employeeId=String(resolveAgent(rr.employeeName)||""); }
+  const invalidRows = normalized.filter(r => !r.employeeId || !r.date).map(r => ({ row: r.rowNumber, reason: !r.employeeId ? "Agent/Employee is missing." : "Date is missing or invalid." }));
+  const seen = new Set(), candidates = [];
+  for (const row of normalized) {
+    if (!row.employeeId || !row.date) continue;
+    const rowHash = await sha256(JSON.stringify({ employeeId: row.employeeId, date: row.date, source: row.source }));
+    if (seen.has(rowHash)) continue;
+    seen.add(rowHash);
+    candidates.push({ ...row, rowHash });
+  }
+  const reportCandidates = reportRows.filter(r => r && r.type && r.data && (String(r.type).startsWith("team_") || r.employeeId)).map(r => ({...r, employeeId:r.employeeId?String(r.employeeId):null, employeeName:clean(r.employeeName,200)||"", reportDate:r.reportDate&&isDate(r.reportDate)?r.reportDate:null, label:clean(r.label,200)||"", type:clean(r.type,40)}));
+  const fileHash = await sha256(JSON.stringify({rows:body.rows, report_rows:reportRows}));
+  const existingImport = await env.DB.prepare("SELECT id FROM call_performance_imports WHERE file_hash=?").bind(fileHash).first();
+  const existingHashes = new Set();
+  for (let i = 0; i < candidates.length; i += 80) {
+    const chunk = candidates.slice(i, i + 80);
+    if (!chunk.length) continue;
+    const marks = chunk.map(() => "?").join(",");
+    const found = (await env.DB.prepare("SELECT row_hash FROM call_performance_rows WHERE row_hash IN (" + marks + ")").bind(...chunk.map(x => x.rowHash)).all()).results;
+    for (const row of found) existingHashes.add(row.row_hash);
+  }
+  const accepted = candidates.filter(r => !existingHashes.has(r.rowHash)).length;
+  const skippedDuplicates = candidates.length - accepted + (normalized.length - candidates.length - invalidRows.length);
+  const dryRun = body.dry_run === true;
+  if (dryRun) return { dryRun: true, totalRows: body.rows.length, reportRows: reportCandidates.length, accepted: existingImport ? 0 : accepted, skippedDuplicates: existingImport ? body.rows.length - invalidRows.length : skippedDuplicates, invalidCount: invalidRows.length, invalidRows, duplicateFile: !!existingImport };
+  if (existingImport) return { success: true, saved: 0, skippedDuplicates: body.rows.length - invalidRows.length, invalidCount: invalidRows.length, duplicateFile: true, message: "This exact workbook has already been imported." };
+  if (invalidRows.length && body.accept_partial !== true) bad("Some rows are invalid. Validate the workbook or set accept_partial=true.");
+  const t = now();
+  const ins = await env.DB.prepare("INSERT INTO call_performance_imports(file_hash,filename,imported_by,imported_at,rows_received,rows_inserted,rows_skipped) VALUES(?,?,?,?,?,?,?)")
+    .bind(fileHash, clean(body.filename, 255), u.employeeId, t, body.rows.length, 0, 0).run();
+  const importId = ins.meta.last_row_id;
+  let saved = 0;
+  const fresh = candidates.filter(r => !existingHashes.has(r.rowHash));
+  await ensureCallPerformanceSections(env);
+  for (let i = 0; i < fresh.length; i += 100) {
+    const statements = fresh.slice(i, i + 100).map(r => env.DB.prepare(
+      "INSERT OR IGNORE INTO call_performance_rows(import_id,employee_id,employee_name,report_date,disposition,row_hash,source_json,created_at) VALUES(?,?,?,?,?,?,?,?)"
+    ).bind(importId, r.employeeId, r.employeeName, r.date, r.disposition, r.rowHash, JSON.stringify(r.source), t));
+    const results = await env.DB.batch(statements);
+    saved += results.reduce((sum, result) => sum + Number(result?.meta?.changes || 0), 0);
+  }
+  let savedReports=0;
+  for (let i=0;i<reportCandidates.length;i+=100) {
+    const batch=[]; for(const r of reportCandidates.slice(i,i+100)){const payload={type:r.type,employeeId:r.employeeId,employeeName:r.employeeName,reportDate:r.reportDate,label:r.label,data:r.data};const hash=await sha256(JSON.stringify(payload));batch.push(env.DB.prepare("INSERT OR IGNORE INTO call_performance_report_rows(import_id,report_type,employee_id,employee_name,report_date,label,row_hash,data_json,created_at) VALUES(?,?,?,?,?,?,?,?,?)").bind(importId,r.type,r.employeeId,r.employeeName,r.reportDate,r.label,hash,JSON.stringify(r.data),t));}
+    const results=await env.DB.batch(batch); savedReports+=results.reduce((n,x)=>n+Number(x?.meta?.changes||0),0);
+  }
+  const skipped = body.rows.length - saved;
+  await env.DB.prepare("UPDATE call_performance_imports SET rows_inserted=?, rows_skipped=? WHERE id=?").bind(saved, skipped, importId).run();
+  return { success: true, importId, saved, savedReports, skippedDuplicates: skipped - invalidRows.length, invalidCount: invalidRows.length, duplicateFile: false };
+}
+
+// ---------- Quiz ----------
+const wk = v => { const n = Number(v); if (!Number.isInteger(n) || n < 1 || n > 13) bad("Invalid week number (1-13)."); return n; };
+async function quizQuestions(url, env, u) {
+  const week = wk(url.searchParams.get("week"));
+  const done = await env.DB.prepare("SELECT score,total_questions FROM quiz_attempts WHERE agent_id=? AND week_number=?").bind(u.agentId, week).first();
+  const qs = (await env.DB.prepare("SELECT id,question,options_json FROM quiz_questions WHERE week_number=? AND is_active=1 ORDER BY id").bind(week).all()).results;
+  // correct_index and explanation are deliberately NOT selected.
+  return { week, alreadyAttempted: !!done, previous: done || null, questions: qs.map(q => ({ id: q.id, question: q.question, options: JSON.parse(q.options_json) })) };
+}
+async function quizSubmit(req, env, u) {
+  const b = await req.json().catch(() => bad("Invalid JSON body."));
+  const week = wk(b.week), ans = b.answers;
+  if (!ans || typeof ans !== "object" || Array.isArray(ans)) bad("answers must be an object of questionId -> option index.");
+  // ASSUMPTION A6: one attempt per agent per week (enforced atomically at insert below).
+  const qs = (await env.DB.prepare("SELECT id,options_json,correct_index,explanation FROM quiz_questions WHERE week_number=? AND is_active=1").bind(week).all()).results;
+  if (!qs.length) bad("No active questions for this week.", 404);
+  const keys = Object.keys(ans);
+  if (keys.length !== qs.length || !qs.every(q => keys.includes(String(q.id)))) bad("Answer every question for this week, and only those questions.");
+  let score = 0;
+  const review = qs.map(q => {
+    const idx = ans[String(q.id)], n = JSON.parse(q.options_json).length;
+    if (!Number.isInteger(idx) || idx < 0 || idx >= n) bad(`Invalid option for question ${q.id}.`);
+    const ok = idx === q.correct_index; if (ok) score++;
+    return { id: q.id, correct: ok, correctIndex: q.correct_index, explanation: q.explanation || "" };
+  });
+  const answersJson = JSON.stringify(Object.fromEntries(qs.map(q => [String(q.id), ans[String(q.id)]])));
+  let ins;
+  try {
+    ins = await env.DB.prepare(
+      "INSERT INTO quiz_attempts(agent_id,week_number,score,total_questions,answers_json,completed_at) SELECT ?,?,?,?,?,? WHERE NOT EXISTS (SELECT 1 FROM quiz_attempts WHERE agent_id=? AND week_number=?)"
+    ).bind(u.agentId, week, score, qs.length, answersJson, now(), u.agentId, week).run();
+  } catch {
+    bad("You have already submitted this week's quiz.", 409);
+  }
+  if (!ins.meta.changes) bad("You have already submitted this week's quiz.", 409);
+  return { week, score, total: qs.length, percent: rate(score, qs.length), review };
+}
+async function adminQList(url, env) {
+  const week = wk(url.searchParams.get("week"));
+  const r = (await env.DB.prepare("SELECT id,week_number,question,options_json,correct_index,explanation,is_active FROM quiz_questions WHERE week_number=? ORDER BY id LIMIT 200").bind(week).all()).results;
+  return { week, questions: r.map(q => ({ ...q, options: JSON.parse(q.options_json), options_json: undefined })) };
+}
+async function adminQSave(req, env, u, id) {
+  const b = await req.json().catch(() => bad("Invalid JSON body."));
+  if (id && Object.keys(b).length === 1 && "is_active" in b) { // simple activate/deactivate
+    await env.DB.prepare("UPDATE quiz_questions SET is_active=?, updated_at=? WHERE id=?").bind(b.is_active ? 1 : 0, now(), id).run();
+    await audit(env, u, "quiz_toggle", `question ${id} active=${b.is_active ? 1 : 0}`);
+    return { id, is_active: b.is_active ? 1 : 0 };
+  }
+  const week = wk(b.week_number), q = String(b.question || "").trim();
+  const opts = Array.isArray(b.options) ? b.options.map(o => String(o).trim()).filter(Boolean) : [];
+  if (q.length < 3 || q.length > 500) bad("Question must be 3-500 characters.");
+  if (opts.length < 2 || opts.length > 6 || opts.some(o => o.length > 200)) bad("Provide 2-6 options (max 200 chars each).");
+  if (!Number.isInteger(b.correct_index) || b.correct_index < 0 || b.correct_index >= opts.length) bad("correct_index must point to one of the options.");
+  const isNew = !id, ex = String(b.explanation || "").slice(0, 500), act = b.is_active === 0 || b.is_active === false ? 0 : 1, t = now();
+  if (id) {
+    const r = await env.DB.prepare("UPDATE quiz_questions SET week_number=?,question=?,options_json=?,correct_index=?,explanation=?,is_active=?,updated_at=? WHERE id=?").bind(week, q, JSON.stringify(opts), b.correct_index, ex, act, t, id).run();
+    if (!r.meta.changes) bad("Question not found.", 404);
+  } else {
+    const r = await env.DB.prepare("INSERT INTO quiz_questions(week_number,question,options_json,correct_index,explanation,is_active,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)").bind(week, q, JSON.stringify(opts), b.correct_index, ex, act, t, t).run();
+    id = r.meta.last_row_id;
+  }
+  await audit(env, u, isNew ? "quiz_create" : "quiz_save", `question ${id}, week ${week}`);
+  return { id };
+}
+async function adminQResults(url, env) {
+  const week=wk(url.searchParams.get("week")),from=url.searchParams.get("from"),to=url.searchParams.get("to");
+  if(from&&!isDate(from))bad("Invalid 'from' date.");
+  if(to&&!isDate(to))bad("Invalid 'to' date.");
+  const where=["qa.week_number=?"],args=[week];
+  if(from){where.push("date(qa.completed_at)>=?");args.push(from);}
+  if(to){where.push("date(qa.completed_at)<=?");args.push(to);}
+  const r=(await env.DB.prepare("SELECT qa.id,a.employee_id employeeId,qa.week_number weekNumber,qa.score,qa.total_questions total,qa.completed_at completedAt FROM quiz_attempts qa JOIN agents a ON a.id=qa.agent_id WHERE "+where.join(" AND ")+" ORDER BY qa.score DESC LIMIT 2000").bind(...args).all()).results;
+  const s=r.reduce((a,x)=>a+x.score,0),t=r.reduce((a,x)=>a+x.total,0);
+  return {week,from,to,attempts:r,team:{attempts:r.length,averagePercent:rate(s,t)}};
+}
