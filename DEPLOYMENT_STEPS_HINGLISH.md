@@ -10,8 +10,6 @@ Ye branch development ke liye hai: `feat/isolated-call-performance`. Is branch k
 - Agent ke liye personal KPI aur quiz history APIs.
 - Attendance check-in/check-out aur history.
 - Break start/end, break duration aur Admin ka active-break monitor.
-- Project create/list/update/activity APIs.
-- Project database: `projects`, `project_products`, `project_activity`.
 - Separate Call Performance import, date-wise, agent-wise aur disposition-wise report APIs/UI.
 - Call Performance ke liye `call_performance_imports` aur `call_performance_rows` tables; existing KPI tables aur APIs untouched.
 - Super Admin account-management APIs aur UI.
@@ -27,7 +25,6 @@ Ye branch development ke liye hai: `feat/isolated-call-performance`. Is branch k
    - `003_kpi_daily.sql`
    - `004_audit_log.sql`
    - `005_breaks_superadmin.sql`
-   - `006_projects.sql`
    - `007_call_performance.sql`
    - `008_weekly_source_data.sql`
 4. `005_breaks_superadmin.sql` mein `ALTER TABLE agents ADD COLUMN` hai. Is migration ko dobara run na karein.
@@ -72,7 +69,6 @@ Password ya poora password_hash kisi ke saath share na karein.
 - Migrations abhi live D1 par execute nahi ki gayi hain.
 - Worker abhi Cloudflare par deploy nahi kiya gaya hai.
 - GitHub Pages production branch abhi change nahi hui.
-- Existing customer/project data import nahi hua; new project tables empty rahengi jab tak verified data import nahi hota.
 
 Live deployment tabhi karein jab backup, hash format aur Super Admin account confirmation complete ho jaaye.
 
