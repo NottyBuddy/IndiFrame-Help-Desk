@@ -24,8 +24,8 @@ export async function handleWeeklyData(req,env){
    const from=url.searchParams.get("from"),to=url.searchParams.get("to");const where=["i.dataset=?"],args=[dataset];
    if(from){if(!isDate(from))return json({error:"Invalid from date."},400);where.push("r.record_date>=?");args.push(from);}
    if(to){if(!isDate(to))return json({error:"Invalid to date."},400);where.push("r.record_date<=?");args.push(to);}
-   const rows=(await env.DB.prepare("SELECT r.id,r.import_id,r.row_number,r.record_date,r.agent_name,r.total_calls,r.source_json,i.filename FROM weekly_source_rows r JOIN weekly_source_imports i ON i.id=r.import_id WHERE "+where.join(" AND ")+" ORDER BY r.record_date DESC,r.id DESC LIMIT 5000").bind(...args).all()).results;
-   return json({rows:rows.map(r=>({...r,source:JSON.parse(r.source_json)})),count:rows.length});
+   const rows=(await env.DB.prepare("SELECT r.id,r.import_id,r.row_number,r.record_date,r.agent_name,r.total_calls,r.source_json,i.filename,i.headers_json FROM weekly_source_rows r JOIN weekly_source_imports i ON i.id=r.import_id WHERE "+where.join(" AND ")+" ORDER BY r.record_date DESC,r.id DESC LIMIT 5000").bind(...args).all()).results;
+   return json({rows:rows.map(r=>({...r,source:JSON.parse(r.source_json),headers:JSON.parse(r.headers_json)})),count:rows.length});
   }
   if(path==="/api/hd/weekly-data/import"&&method==="POST"){
    const b=await req.json().catch(()=>null);if(!b||!["attendance","disposition"].includes(b.dataset)||!Array.isArray(b.headers)||!Array.isArray(b.rows)||!b.rows.length)return json({error:"Dataset, headers and rows are required."},400);
