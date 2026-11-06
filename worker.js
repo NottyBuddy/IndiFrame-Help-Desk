@@ -252,10 +252,25 @@ async function coreRoute(request, env, url) {
     if(!target)return json(request,{error:"Employee record nahi mila."},404);
     if(Number(target.is_super_admin)===1)return json(request,{error:"Super Admin account protected hai; is account ko edit, deactivate ya archive nahi kar sakte."},403);
     if(method==="DELETE"){
-      await env.DB.prepare("UPDATE agents SET active=0 WHERE id=?").bind(id).run();
-      await env.DB.prepare("DELETE FROM sessions WHERE agent_id=?").bind(id).run();
-      await audit(env,user,"account_archived","Account archived (soft delete): "+target.employee_id);
-      return json(request,{success:true,archived:true,message:"Account archived. Historical records preserved."});
+      // Permanent account removal. Keep unrelated employee-ID based KPI/attendance
+      // history intact; remove account-bound sessions and FK-restricted break/ACW rows.
+      const statements=[
+        env.DB.prepare("DELETE FROM sessions WHERE agent_id=?").bind(id)
+      ];
+      const optionalAcw=await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='agent_acw_sessions'").first();
+      if(optionalAcw){
+        statements.push(env.DB.prepare("DELETE FROM agent_acw_sessions WHERE agent_id=?").bind(id));
+      }
+      const optionalBreaks=await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='agent_breaks'").first();
+      if(optionalBreaks){
+        statements.push(env.DB.prepare("DELETE FROM agent_breaks WHERE agent_id=?").bind(id));
+      }
+      statements.push(env.DB.prepare("DELETE FROM agents WHERE id=? AND is_super_admin=0").bind(id));
+      const results=await env.DB.batch(statements);
+      const removed=Number(results[results.length-1]?.meta?.changes||0);
+      if(!removed)return json(request,{error:"Account delete nahi hua. Record protected ho sakta hai ya dependent data constraint block kar raha hai."},409);
+      await audit(env,user,"account_permanently_deleted","Permanently deleted account: "+target.employee_id);
+      return json(request,{success:true,deleted:true,message:"Account permanently deleted."});
     }
     const sets=[],args=[],changes=[];
     if("employeeId" in (b||{})){
