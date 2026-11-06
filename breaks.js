@@ -19,10 +19,10 @@ async function load(){
  try{
   const me=await api.apiRequest("/api/me"),u=me.user||me;
   if(String(u.role||"").toLowerCase()==="admin"||u.isSuperAdmin){location.replace("dashboard.html?view=admin");return;}
-  $("profile").textContent=(u.fullName||u.employeeId)+" · "+u.role;
+  document.body.classList.add("agent-mode");$("profile").textContent=(u.fullName||u.employeeId)+" · "+u.role;
   const [breakData,acwData]=await Promise.all([api.apiRequest("/api/hd/breaks/status"),api.apiRequest("/api/hd/acw/status")]);
   activeBreak=breakData.active;activeAcw=acwData.active;
-  serverOffset=Date.now()-Date.parse(breakData.serverTime||acwData.serverTime||new Date().toISOString());
+  serverOffset=Date.parse(breakData.serverTime||acwData.serverTime||new Date().toISOString())-Date.now();
   renderOwn();
  }catch(e){if(/session|login|unauthor/i.test(e.message)){api.clearToken();location.replace("index.html");return;}message(e.message,true);}
 }
