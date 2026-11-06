@@ -151,3 +151,60 @@ html body.admin-mode #view-admin th {
   color:#f0c29f!important;background:#222631!important;border-color:#343947!important;
 }
 html body.admin-mode #view-admin td {border-color:#343947!important}
+
+/* Admin glass override v3: these selectors intentionally outrank admin-glass.css. */
+html body.admin-mode #view-admin #adminHome>.admin-module-card,
+html body.admin-mode #view-admin #adminHome>.admin-module-card:hover,
+html body.admin-mode #view-admin #adminHome>.admin-module-card:focus,
+html body.admin-mode #view-admin #adminHome>.admin-module-card:active,
+html body.admin-mode #view-admin #admin-team,
+html body.admin-mode #view-admin #admin-attendance,
+html body.admin-mode #view-admin #admin-breaks,
+html body.admin-mode #view-admin #admin-kpi,
+html body.admin-mode #view-admin #admin-quiz,
+html body.admin-mode #view-admin .admin-report-grid>.section.card,
+html body.admin-mode #view-admin .section.card,
+html body.admin-mode #view-admin .admin-kpi-grid>.stat-card {
+  color:#e8eaf0!important;
+  background:#171a22!important;
+  background-image:none!important;
+  border:1px solid #343947!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.38)!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+}
+html body.admin-mode #view-admin #adminHome>.admin-module-card:hover,
+html body.admin-mode #view-admin #admin-team:hover,
+html body.admin-mode #view-admin #admin-attendance:hover,
+html body.admin-mode #view-admin #admin-breaks:hover,
+html body.admin-mode #view-admin #admin-kpi:hover,
+html body.admin-mode #view-admin #admin-quiz:hover,
+html body.admin-mode #view-admin .section.card:hover {
+  background:#222735!important;
+  background-image:none!important;
+  border-color:#7867d8!important;
+}
+html body.admin-mode #view-admin #adminHome>.admin-module-card::before,
+html body.admin-mode #view-admin #adminHome>.admin-module-card::after,
+html body.admin-mode #view-admin .section.card::before,
+html body.admin-mode #view-admin .section.card::after {
+  background:transparent!important;
+  background-image:none!important;
+  opacity:0!important;
+  box-shadow:none!important;
+}
+html body.admin-mode #view-admin #adminHome>.admin-module-card *,
+html body.admin-mode #view-admin .section.card h2,
+html body.admin-mode #view-admin .section.card h3,
+html body.admin-mode #view-admin .section.card .empty,
+html body.admin-mode #view-admin .section.card p {color:#e8eaf0!important}
+html body.admin-mode #view-admin .section.card .muted,
+html body.admin-mode #view-admin .section.card small {color:#a4a9b6!important}
+html body.admin-mode #view-admin .section.card .export-report,
+html body.admin-mode #view-admin .section.card button {
+ color:#e8eaf0!important;background:#242936!important;background-image:none!important;border:1px solid #414757!important;
+}
+html body.admin-mode #view-admin .section.card .export-report:hover,
+html body.admin-mode #view-admin .section.card button:hover {
+ color:#fff!important;background:#30294a!important;border-color:#7867d8!important;
+}
