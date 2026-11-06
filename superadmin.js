@@ -53,7 +53,7 @@ $("accountEditForm").addEventListener("submit",async e=>{
  btn.disabled=true;try{await request("/api/superadmin/agents/"+id,{method:"PUT",body:JSON.stringify(body)});$("accountEditDialog").close();msg("Account profile updated.");await load()}catch(err){msg(err.message,true)}finally{btn.disabled=false}
 });
 $("cancelAccountEdit").onclick=()=>$("accountEditDialog").close();
-\n$("refreshBtn").onclick=load;
+$("refreshBtn").onclick=load;
 $("analyticsRefresh")?.addEventListener("click",loadAnalytics);
 $("logoutBtn").onclick=()=>{api.clearToken();location.replace("index.html")};
 document.addEventListener("DOMContentLoaded",load);
