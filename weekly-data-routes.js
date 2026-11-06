@@ -37,9 +37,9 @@ export async function handleWeeklyData(req,env){
    const invalid=[],normalized=[];
    for(let i=0;i<b.rows.length;i++){
     const row=b.rows[i];if(!Array.isArray(row)||row.length!==headers.length){invalid.push({row:i+1,reason:"Column count does not match source headers."});continue;}
-    const date=String(b.meta?.[i]?.date||"");if(date&&!isDate(date)){invalid.push({row:i+1,reason:"Invalid date value."});continue;}
+    const date=String(b.meta?.[i]?.date||"");if(!isDate(date)){invalid.push({row:i+1,reason:"Valid date is required."});continue;}if(!String(b.meta?.[i]?.agent||"").trim()){invalid.push({row:i+1,reason:"Agent or employee name is required."});continue;}
     const total=b.meta?.[i]?.totalCalls;
-    if(b.dataset==="disposition"&&Number.isFinite(Number(total))&&Number(total)!==Number(b.meta?.[i]?.categorySum)){invalid.push({row:i+1,reason:"Disposition category sum does not match Total Calls."});continue;}
+    if(b.dataset==="disposition"&&(!Number.isFinite(Number(total))||Number(total)!==Number(b.meta?.[i]?.categorySum))){invalid.push({row:i+1,reason:"Disposition category sum does not match Total Calls."});continue;}
     normalized.push({rowNumber:i+1,recordDate:date||null,agentName:String(b.meta?.[i]?.agent||""),totalCalls:Number.isFinite(Number(total))?Number(total):null,sourceJson:JSON.stringify(row)});
    }
    if(b.dryRun!==false)return json({receivedRows:b.rows.length,validRows:normalized.length,invalidRows:invalid,duplicateFile:!!existing,headers});
