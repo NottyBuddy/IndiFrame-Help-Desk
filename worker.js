@@ -244,10 +244,10 @@ async function coreRoute(request, env, url) {
       return json(request,{success:true,id:r.meta.last_row_id,employeeId,role},201);
     }catch(e){return json(request,{error:"Account create nahi ho paya. Employee ID duplicate ho sakti hai."},409);}
   }
-  const accountMatch=path.match(/^\\/api\\/superadmin\\/agents\\/(\\d+)$/);
-  if(accountMatch && ["PUT","DELETE"].includes(method)){
+  const accountParts=path.split("/"), accountId=accountParts.length===5&&accountParts[1]==="api"&&accountParts[2]==="superadmin"&&accountParts[3]==="agents"?Number(accountParts[4]):0;
+  if(Number.isSafeInteger(accountId)&&accountId>0 && ["PUT","DELETE"].includes(method)){
     requireRole(user,"super_admin");
-    const id=Number(accountMatch[1]), b=method==="PUT"?await body(request):{};
+    const id=accountId, b=method==="PUT"?await body(request):{};
     const target=await env.DB.prepare("SELECT id,employee_id,full_name,role,is_super_admin,active FROM agents WHERE id=?").bind(id).first();
     if(!target)return json(request,{error:"Employee record nahi mila."},404);
     if(Number(target.is_super_admin)===1)return json(request,{error:"Super Admin account protected hai; is account ko edit, deactivate ya archive nahi kar sakte."},403);
