@@ -82,3 +82,13 @@
  #if-loader .if-loader-orb{width:18px;height:18px}
  #if-loader .if-loader-dot{width:10px;height:10px}
 }
+
+
+/* Subtle pointer-linked parallax for the loader trail (workspace pages only). */
+#if-loader .if-loader-orb,#if-loader .if-loader-dot{
+ translate:var(--if-cursor-x,0px) var(--if-cursor-y,0px);
+ transition:translate .14s ease-out;
+}
+@media(prefers-reduced-motion:reduce){
+ #if-loader .if-loader-orb,#if-loader .if-loader-dot{translate:0 0;transition:none}
+}
