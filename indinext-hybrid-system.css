@@ -126,3 +126,51 @@ body:has(.login-layout){background:var(--if-page)!important}
 body:has(.if-auth-topbar) .panel{backdrop-filter:blur(12px) saturate(120%)!important;-webkit-backdrop-filter:blur(12px) saturate(120%)!important}
 @media(max-width:820px){.login-layout{width:min(620px,calc(100% - 28px))!important}}
 @media(prefers-reduced-motion:reduce){.login-layout,.login-shell button[type=submit]{transition:none!important}}
+
+
+/* Super Admin hybrid surface normalization: neutral, readable surfaces over legacy glass layers. */
+body.superadmin-mode{background:var(--if-page)!important;color:var(--if-ink)!important}
+body.superadmin-mode main .card,
+body.superadmin-mode .sa-stat,
+body.superadmin-mode .sa-edit-dialog{
+ color:var(--if-ink)!important;background:var(--if-surface)!important;
+ border:1px solid var(--if-line)!important;border-radius:var(--if-radius)!important;
+ box-shadow:var(--if-shadow)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body.superadmin-mode .sa-stat{background:var(--if-surface-soft)!important}
+body.superadmin-mode .sa-stat span,
+body.superadmin-mode .sa-stat small,
+body.superadmin-mode .muted,
+body.superadmin-mode .sa-msg{color:var(--if-muted)!important}
+body.superadmin-mode .sa-stat strong,
+body.superadmin-mode main h1,
+body.superadmin-mode main h2,
+body.superadmin-mode main h3{color:var(--if-ink)!important}
+body.superadmin-mode .sa-form label,
+body.superadmin-mode main>section>label{color:var(--if-ink)!important}
+body.superadmin-mode .sa-form input,
+body.superadmin-mode .sa-form select,
+body.superadmin-mode #callPerformanceFile,
+body.superadmin-mode #attendanceWorkbookFile,
+body.superadmin-mode .sa-edit-dialog input,
+body.superadmin-mode .sa-edit-dialog select{
+ color:var(--if-ink)!important;background:#fff!important;border:1px solid #cbd7da!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body.superadmin-mode .sa-btn{background:var(--if-teal)!important;border:1px solid var(--if-teal)!important;box-shadow:0 4px 12px rgba(22,143,134,.16)!important}
+body.superadmin-mode .sa-small{color:var(--if-ink)!important;background:var(--if-surface-soft)!important;border:1px solid var(--if-line)!important}
+body.superadmin-mode .sa-table th{background:#edf3f2!important;color:#52636d!important}
+body.superadmin-mode .sa-table td{background:#fff!important;color:var(--if-ink)!important;border-bottom:1px solid #e7edef!important}
+body.superadmin-mode .sa-table tr:hover td{background:#f8fbfa!important}
+body.superadmin-mode .sa-edit-dialog::backdrop{background:rgba(23,35,45,.42)}
+@media(hover:hover){
+ body.superadmin-mode main .card:hover{transform:translateY(-1px);border-color:#cbd7da!important;box-shadow:0 12px 30px rgba(23,35,45,.09)!important}
+}
+@media(max-width:720px){
+ body.superadmin-mode .wrap{width:min(100% - 28px,1480px);padding-top:18px}
+ body.superadmin-mode .sa-analytics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body.superadmin-mode .sa-grid{grid-template-columns:minmax(0,1fr)}
+ body.superadmin-mode .sa-actions{align-items:stretch}
+ body.superadmin-mode .sa-actions button{flex:1 1 145px}
+}
+@media(max-width:420px){body.superadmin-mode .sa-analytics-grid{grid-template-columns:minmax(0,1fr)}}
