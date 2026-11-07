@@ -373,23 +373,35 @@ body.password-workspace #status{min-height:22px;margin-top:12px}
  .if-hamburger-menu{top:66px!important;right:12px!important}
 }
 
-/* Final navigation geometry: replace all legacy sidebar layouts with one top-bar menu. */
-body.admin-mode .wrap:has(.if-hamburger-menu){
- display:block!important;grid-template-columns:minmax(0,1fr)!important;column-gap:0!important;
- row-gap:0!important;width:min(1480px,100% - 40px)!important;max-width:1480px!important;
- min-height:0!important;margin:0 auto!important;padding:26px 0 48px!important;
+/* FINAL WORKSPACE GEOMETRY — one top-bar menu, no legacy sidebar/grid reservation. */
+body:has(.if-hamburger-menu) .wrap{
+ display:block!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto!important;
+ column-gap:0!important;row-gap:0!important;width:min(1480px,calc(100% - 40px))!important;
+ max-width:1480px!important;min-height:0!important;margin:0 auto!important;padding:26px 0 48px!important;
 }
-body.admin-mode .if-hamburger-menu,
-body.agent-workspace .if-hamburger-menu{
+body:has(.if-hamburger-menu) .if-hamburger-menu{
  position:fixed!important;top:76px!important;right:clamp(12px,3vw,34px)!important;
  left:auto!important;bottom:auto!important;width:min(340px,calc(100vw - 24px))!important;
  min-width:0!important;height:auto!important;min-height:0!important;max-height:calc(100vh - 92px)!important;
- margin:0!important;display:none!important;flex-direction:column!important;align-items:stretch!important;
- overflow:auto!important;z-index:1000!important;
+ margin:0!important;padding:12px!important;display:none!important;flex-direction:column!important;
+ align-items:stretch!important;overflow:auto!important;z-index:1000!important;
 }
-body.admin-mode .if-hamburger-menu.is-open,
-body.agent-workspace .if-hamburger-menu.is-open{display:flex!important}
+body:has(.if-hamburger-menu) .if-hamburger-menu.is-open{display:flex!important}
+body:has(.if-hamburger-menu) .if-menu-toggle{position:relative;z-index:1001}
+body.superadmin-mode{background:var(--if-page)!important;color:var(--if-ink)!important}
+body.superadmin-mode main .card,
+body.superadmin-mode .sa-stat,
+body.superadmin-mode .sa-edit-dialog{
+ color:var(--if-ink)!important;background:var(--if-surface)!important;
+ border:1px solid var(--if-line)!important;border-radius:var(--if-radius)!important;
+ box-shadow:var(--if-shadow)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body.superadmin-mode .sa-stat{background:var(--if-surface-soft)!important}
+body.superadmin-mode .sa-stat span,body.superadmin-mode .sa-stat small,
+body.superadmin-mode .muted,body.superadmin-mode .sa-msg{color:var(--if-muted)!important}
+body.superadmin-mode .sa-stat strong,body.superadmin-mode main h1,
+body.superadmin-mode main h2,body.superadmin-mode main h3{color:var(--if-ink)!important}
 @media(max-width:640px){
- body.admin-mode .wrap:has(.if-hamburger-menu){width:calc(100% - 24px)!important;padding:16px 0 32px!important}
- body.admin-mode .if-hamburger-menu,body.agent-workspace .if-hamburger-menu{top:66px!important;right:12px!important}
+ body:has(.if-hamburger-menu) .wrap{width:calc(100% - 24px)!important;padding:16px 0 32px!important}
+ body:has(.if-hamburger-menu) .if-hamburger-menu{top:66px!important;right:12px!important}
 }
