@@ -24,8 +24,11 @@ export async function handleWeeklyData(req,env){
    if(to){where.push("r.record_date<=?");args.push(to);}
    const ownId=String(u.employee_id||"").trim().toLowerCase(),ownName=String(u.full_name||"").trim().toLowerCase();
    if(!isAdmin){
-    where.push("(lower(trim(coalesce(r.agent_name,''))) IN (?,?) OR EXISTS (SELECT 1 FROM json_each(i.headers_json) h JOIN json_each(r.source_json) v ON v.key=h.key WHERE lower(trim(CAST(h.value AS TEXT))) IN ('employee id','employee code','agent id','agent code') AND lower(trim(CAST(v.value AS TEXT)))=? ) OR EXISTS (SELECT 1 FROM json_each(i.headers_json) h JOIN json_each(r.source_json) v ON v.key=h.key WHERE lower(trim(CAST(h.value AS TEXT))) IN ('employee name','agent name','employee','agent') AND lower(trim(CAST(v.value AS TEXT)))=?))");
-    args.push(ownId,ownName,ownId,ownName);
+    // Agent Name is the primary match. If the workbook also supplies an Employee/Agent ID,
+    // require that secondary identifier to match the signed-in agent. This prevents two
+    // agents with the same name from seeing each other's ID-tagged rows.
+    where.push("((lower(trim(coalesce(r.agent_name,'')))=? OR EXISTS (SELECT 1 FROM json_each(i.headers_json) h JOIN json_each(r.source_json) v ON v.key=h.key WHERE lower(trim(CAST(h.value AS TEXT))) IN ('employee name','agent name','employee','agent') AND lower(trim(CAST(v.value AS TEXT)))=?)) AND (NOT EXISTS (SELECT 1 FROM json_each(i.headers_json) h JOIN json_each(r.source_json) v ON v.key=h.key WHERE lower(trim(CAST(h.value AS TEXT))) IN ('employee id','employee code','agent id','agent code') AND trim(CAST(v.value AS TEXT))<>'' ) OR (?<>'' AND EXISTS (SELECT 1 FROM json_each(i.headers_json) h JOIN json_each(r.source_json) v ON v.key=h.key WHERE lower(trim(CAST(h.value AS TEXT))) IN ('employee id','employee code','agent id','agent code') AND lower(trim(CAST(v.value AS TEXT)))=?))))");
+    args.push(ownName,ownName,ownId,ownId);
    }
    const found=(await env.DB.prepare("SELECT r.id,r.record_date,r.agent_name,r.source_json,i.filename,i.headers_json,i.imported_at FROM weekly_source_rows r JOIN weekly_source_imports i ON i.id=r.import_id WHERE "+where.join(" AND ")+" ORDER BY r.record_date DESC,r.id DESC LIMIT 5000").bind(...args).all()).results||[];
    const pick=(headers,source,patterns)=>{const index=headers.findIndex(h=>patterns.some(p=>p.test(String(h||"").trim().toLowerCase())));return index>=0?String(source[index]??"").trim():"";};
