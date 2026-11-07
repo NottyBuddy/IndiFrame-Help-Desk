@@ -246,3 +246,82 @@ body.admin-workspace .break-live-indicator{color:#26734a!important}
  body.admin-workspace .break-live-table table,
  body.admin-workspace .break-acw-table table{min-width:620px}
 }
+
+
+/* Agent workspace — consistent hybrid cards, copper identity and readable data surfaces. */
+body.agent-workspace.agent-mode .overview-heading,
+body.agent-workspace.agent-mode .overview-block,
+body.agent-workspace.agent-mode .overview-panel,
+body.agent-workspace.agent-mode #view-kpis>.section.card,
+body.agent-workspace.agent-mode #view-quiz>.section.card,
+body.agent-workspace.agent-mode .attendance-ledger-card,
+body.agent-workspace.agent-mode .attendance-check-card,
+body.agent-workspace.agent-mode .attendance-hero{
+ color:var(--if-ink)!important;
+}
+body.agent-workspace.agent-mode .overview-metric-card,
+body.agent-workspace.agent-mode .attendance-summary-card{
+ background:var(--if-surface-soft)!important;border:1px solid var(--if-line)!important;
+ box-shadow:none!important;color:var(--if-ink)!important;
+}
+body.agent-workspace.agent-mode .overview-eyebrow,
+body.agent-workspace.agent-mode .attendance-eyebrow{color:var(--if-copper)!important}
+body.agent-workspace.agent-mode .overview-metric-card strong,
+body.agent-workspace.agent-mode .attendance-summary-card strong{color:var(--if-ink)!important}
+body.agent-workspace.agent-mode .overview-period-chip,
+body.agent-workspace.agent-mode .overview-period-label{border-color:var(--if-line)!important}
+body.agent-workspace.agent-mode .overview-live-status,
+body.agent-workspace.agent-mode .overview-data-note,
+body.agent-workspace.agent-mode .attendance-source-note{color:var(--if-muted)!important}
+body.agent-workspace.agent-mode .attendance-ledger-wrap,
+body.agent-workspace.agent-mode #myKpiDaily,
+body.agent-workspace.agent-mode #myKpiAgent,
+body.agent-workspace.agent-mode #myKpiDisposition,
+body.agent-workspace.agent-mode #myKpiDayDisposition,
+body.agent-workspace.agent-mode #quizPlayer,
+body.agent-workspace.agent-mode #quizTable{
+ color:var(--if-ink)!important;
+}
+body.cp-workspace .cp-page-heading,
+body.cp-workspace .cp-section,
+body.cp-workspace .cp-chart-panel,
+body.cp-workspace .cp-kpi,
+body.cp-workspace .cp-card{
+ color:var(--if-ink)!important;background:var(--if-surface)!important;
+ border:1px solid var(--if-line)!important;border-radius:var(--if-radius)!important;
+ box-shadow:var(--if-shadow)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body.cp-workspace .cp-page-eyebrow{color:var(--if-copper)!important}
+body.cp-workspace .cp-muted,
+body.cp-workspace .cp-section p,
+body.cp-workspace .cp-card small{color:var(--if-muted)!important}
+body.cp-workspace .cp-card strong,
+body.cp-workspace .cp-section h2,
+body.cp-workspace .cp-chart-panel h3{color:var(--if-ink)!important}
+body.cp-workspace .cp-table{background:#fff!important}
+body.cp-workspace .cp-table th{background:#f2f6f5!important;color:#52636d!important}
+body.cp-workspace .cp-table td{background:#fff!important;color:var(--if-ink)!important}
+body.cp-workspace .cp-toolbar label{color:var(--if-ink)!important}
+body.cp-workspace .cp-toolbar input,
+body.cp-workspace .cp-toolbar select{background:#fff!important;color:var(--if-ink)!important;border:1px solid #cbd7da!important}
+body.break-workspace .break-hero,
+body.break-workspace .break-card{
+ color:var(--if-ink)!important;background:var(--if-surface)!important;
+ border:1px solid var(--if-line)!important;border-radius:var(--if-radius)!important;
+ box-shadow:var(--if-shadow)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body.break-workspace .break-eyebrow{color:var(--if-copper)!important}
+body.break-workspace .break-card h2,
+body.break-workspace .break-card h3,
+body.break-workspace .break-status-copy,
+body.break-workspace .break-footnote{color:var(--if-ink)!important}
+body.break-workspace .break-time{color:var(--if-copper)!important}
+body.break-workspace .break-controls select{background:#fff!important;color:var(--if-ink)!important;border:1px solid #cbd7da!important}
+body.break-workspace .break-list{background:#fff!important}
+body.break-workspace .break-list th{background:#f2f6f5!important;color:#52636d!important}
+body.break-workspace .break-list td{background:#fff!important;color:var(--if-ink)!important}
+@media(max-width:640px){
+ body.cp-workspace .cp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body.cp-workspace .cp-chart-grid{grid-template-columns:minmax(0,1fr)}
+ body.break-workspace .break-controls>*{flex:1 1 140px}
+}
