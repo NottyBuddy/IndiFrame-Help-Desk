@@ -111,32 +111,12 @@ body:not(:has(.login-layout)) .tab-panel table{font-size:12px}
 body:not(:has(.login-layout)) .tab-panel :is(.empty,.status){color:var(--dash-muted)!important}
 @media(max-width:1050px){
   body:not(:has(.login-layout)) .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  body:not(:has(.login-layout)) .wrap{padding-left:22px!important;padding-right:22px!important}
 }
 @media(max-width:760px){
-  body:not(:has(.login-layout)) .nav{
-    top:auto;right:0;bottom:0;width:100%;height:auto;max-height:116px;
-    padding:8px 10px calc(8px + env(safe-area-inset-bottom))!important;
-    flex-direction:row!important;align-items:center;gap:7px!important;
-    overflow-x:auto;overflow-y:hidden;border-radius:18px 18px 0 0!important;
-    border-right:0!important;border-top:1px solid rgba(255,255,255,.14)!important;
-  }
-  body:not(:has(.login-layout)) .nav:before{display:none}
-  body:not(:has(.login-layout)) .nav button,
-  body:not(:has(.login-layout)) .nav .nav-link{
-    flex:0 0 auto;width:auto;min-width:max-content;min-height:42px;
-    padding:9px 12px!important;font-size:11px;
-  }
-  body:not(:has(.login-layout)) .nav button:before,
-  body:not(:has(.login-layout)) .nav .nav-link:before{display:none}
-  body:not(:has(.login-layout)) .topbar{left:0;min-height:66px;padding:10px 15px!important}
-  body:not(:has(.login-layout)) .topbar .brand{font-size:14px!important}
-  body:not(:has(.login-layout)) .topbar .subtitle{font-size:10px!important}
-  body:not(:has(.login-layout)) .wrap{margin:0!important;padding:82px 14px 140px!important}
-  body:not(:has(.login-layout)) .head{padding:17px!important;align-items:flex-start;flex-direction:column}
-  body:not(:has(.login-layout)) .head h1{font-size:25px!important}
-  body:not(:has(.login-layout)) .profile{width:100%}
-  body:not(:has(.login-layout)) .agent-overview-panels{grid-template-columns:1fr}
+ body:not(:has(.login-layout)) .head{padding:17px!important;align-items:flex-start;flex-direction:column}
+ body:not(:has(.login-layout)) .head h1{font-size:25px!important}
+ body:not(:has(.login-layout)) .profile{width:100%}
+ body:not(:has(.login-layout)) .agent-overview-panels{grid-template-columns:1fr}
 }
 @media(max-width:480px){
   body:not(:has(.login-layout)) .grid{grid-template-columns:1fr 1fr;gap:10px!important}
