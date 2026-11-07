@@ -566,3 +566,102 @@ body.superadmin-mode{--if-page:#f5f6f8;--if-ink:#20252b;--if-muted:#707983;--if-
 @media(max-width:760px){
  body.agent-workspace .wrap,body.admin-workspace .wrap,body.superadmin-mode .wrap{width:calc(100% - 24px)!important;padding-top:12px!important}
 }
+
+
+/* Final workspace normalization: neutralize legacy glass/dark visual layers.
+   Keep legacy stylesheets loaded where they still provide page-specific layout
+   and component behavior; replace only their conflicting presentation. */
+body.agent-workspace,body.admin-workspace,body.superadmin-mode{
+ background:#f5f6f8!important;color:#20252b!important;
+}
+body.agent-workspace .if-left-sidebar,body.admin-workspace .if-left-sidebar,body.superadmin-mode .if-left-sidebar,
+body.agent-workspace .nav,body.admin-workspace .nav,body.superadmin-mode .nav{
+ background:#fff!important;color:#39424b!important;
+ border:1px solid #e3e7eb!important;border-radius:12px!important;
+ box-shadow:0 2px 10px rgba(24,35,45,.045)!important;
+ -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+body.agent-workspace .if-left-sidebar .nav-link,body.admin-workspace .if-left-sidebar .nav-link,body.superadmin-mode .if-left-sidebar .nav-link,
+body.agent-workspace .nav button,body.agent-workspace .nav .nav-link,
+body.admin-workspace .nav button,body.admin-workspace .nav .nav-link,
+body.superadmin-mode .nav button,body.superadmin-mode .nav .nav-link{
+ color:#46515c!important;background:#fff!important;border:1px solid #e7eaee!important;
+ border-radius:8px!important;box-shadow:none!important;text-shadow:none!important;
+}
+body.agent-workspace .nav button:hover,body.agent-workspace .nav .nav-link:hover,
+body.admin-workspace .nav button:hover,body.admin-workspace .nav .nav-link:hover,
+body.superadmin-mode .nav button:hover,body.superadmin-mode .nav .nav-link:hover{
+ color:#20252b!important;background:#f4f6f8!important;border-color:#d9e0e5!important;
+ transform:none!important;box-shadow:none!important;
+}
+body.agent-workspace .nav button.active,body.agent-workspace .nav .nav-link.active,
+body.agent-workspace .nav button[aria-current="page"],
+body.admin-workspace .nav button.active,body.admin-workspace .nav .nav-link.active,
+body.admin-workspace .nav button[aria-current="page"],
+body.superadmin-mode .nav button.active,body.superadmin-mode .nav .nav-link.active,
+body.superadmin-mode .nav button[aria-current="page"]{
+ color:#fff!important;background:#168f86!important;border-color:#168f86!important;
+ box-shadow:none!important;
+}
+body.agent-workspace.agent-mode .nav button.active,body.agent-workspace.agent-mode .nav .nav-link.active{
+ background:#b87345!important;border-color:#b87345!important;color:#fff!important;
+}
+body.agent-workspace main .card,body.agent-workspace main .section.card,
+body.agent-workspace main .panel,body.agent-workspace main .stat-card,
+body.agent-workspace main .metric-card,body.agent-workspace main .kpi-card,
+body.agent-workspace main .break-card,body.agent-workspace main .cp-card,
+body.agent-workspace main .cp-kpi,body.agent-workspace main .cp-chart-panel,
+body.admin-workspace main .card,body.admin-workspace main .section.card,
+body.admin-workspace main .panel,body.admin-workspace main .stat-card,
+body.admin-workspace main .metric-card,body.admin-workspace main .section-data,
+body.admin-workspace main .section-filters,body.admin-workspace main .section-hero,
+body.admin-workspace main .admin-chart-card,body.admin-workspace main .admin-module-card,
+body.superadmin-mode main .card,body.superadmin-mode main .section.card,
+body.superadmin-mode main .panel,body.superadmin-mode main .stat-card,
+body.superadmin-mode main .metric-card,body.superadmin-mode main .sa-stat,
+body.superadmin-mode main .sa-edit-dialog{
+ color:#20252b!important;background:#fff!important;background-image:none!important;
+ border:1px solid #e2e6ea!important;border-radius:12px!important;
+ box-shadow:0 2px 10px rgba(24,35,45,.045)!important;
+ -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+body.agent-workspace main .card:before,body.agent-workspace main .card:after,
+body.admin-workspace main .card:before,body.admin-workspace main .card:after,
+body.superadmin-mode main .card:before,body.superadmin-mode main .card:after,
+body.agent-workspace main .panel:before,body.admin-workspace main .panel:before,
+body.superadmin-mode main .panel:before{
+ background:none!important;background-image:none!important;box-shadow:none!important;opacity:0!important;
+}
+body.agent-workspace main .muted,body.admin-workspace main .muted,body.superadmin-mode main .muted,
+body.agent-workspace main p,body.admin-workspace main p,body.superadmin-mode main p,
+body.agent-workspace main small,body.admin-workspace main small,body.superadmin-mode main small{
+ color:#707983!important;text-shadow:none!important;
+}
+body.agent-workspace main h1,body.agent-workspace main h2,body.agent-workspace main h3,
+body.admin-workspace main h1,body.admin-workspace main h2,body.admin-workspace main h3,
+body.superadmin-mode main h1,body.superadmin-mode main h2,body.superadmin-mode main h3{
+ color:#20252b!important;text-shadow:none!important;
+}
+body.agent-workspace main input,body.agent-workspace main select,body.agent-workspace main textarea,
+body.admin-workspace main input,body.admin-workspace main select,body.admin-workspace main textarea,
+body.superadmin-mode main input,body.superadmin-mode main select,body.superadmin-mode main textarea{
+ color:#20252b!important;background:#fff!important;background-image:none!important;
+ border:1px solid #dfe4e8!important;box-shadow:none!important;
+}
+body.agent-workspace main table,body.admin-workspace main table,body.superadmin-mode main table{
+ background:#fff!important;box-shadow:none!important;
+}
+body.agent-workspace main th,body.admin-workspace main th,body.superadmin-mode main th{
+ color:#46515c!important;background:#f5f7f8!important;background-image:none!important;
+}
+body.agent-workspace main td,body.admin-workspace main td,body.superadmin-mode main td{
+ color:#39424b!important;background:#fff!important;background-image:none!important;
+}
+body.agent-workspace main tr:hover td,body.admin-workspace main tr:hover td,body.superadmin-mode main tr:hover td{background:#f8fafb!important}
+body.agent-workspace .topbar,body.admin-workspace .topbar,body.superadmin-mode .topbar{
+ background:#fff!important;background-image:none!important;color:#20252b!important;
+ border-bottom:1px solid #e5e8eb!important;box-shadow:0 1px 3px rgba(20,30,40,.035)!important;
+}
+body.agent-workspace .topbar .brand,body.agent-workspace .topbar .subtitle,
+body.admin-workspace .topbar .brand,body.admin-workspace .topbar .subtitle,
+body.superadmin-mode .topbar .brand,body.superadmin-mode .topbar .subtitle{color:#20252b!important}
