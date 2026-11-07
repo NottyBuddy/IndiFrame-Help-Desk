@@ -105,19 +105,17 @@
   };
   if(nav){
     nav.id="if-dashboard-navigation";
-    nav.classList.add("if-hamburger-menu");
+    nav.classList.add("if-left-sidebar");
     nav.querySelectorAll("button:not(.if-sidebar-toggle),a").forEach(el=>{
       const label=(el.textContent||"").trim();
       if(label){el.setAttribute("aria-label",label);el.setAttribute("title",label);}
     });
     nav.querySelector(".if-sidebar-toggle")?.remove();
-    addMenuButton(nav);
   }else{
     const bar=document.querySelector(".if-workspace-nav");
     if(bar){
       bar.id="if-workspace-navigation";
-      bar.classList.add("if-hamburger-menu");
-      addMenuButton(bar);
+      bar.classList.add("if-left-sidebar");
     }
   }
   const brand=document.querySelector(".topbar .brand");
