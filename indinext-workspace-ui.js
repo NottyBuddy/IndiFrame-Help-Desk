@@ -72,34 +72,53 @@
     header.insertAdjacentElement("afterend",bar);
     applyRoleNavigation(bar);
   }
-  if(nav){
+  const topbar=document.querySelector(".topbar");
+  const addMenuButton=(menu)=>{
+    if(!topbar)return;
+    const right=topbar.querySelector(".topright")||topbar;
     const toggle=document.createElement("button");
     toggle.type="button";
-    toggle.className="if-sidebar-toggle";
-    toggle.setAttribute("aria-controls","if-dashboard-navigation");
-    toggle.setAttribute("aria-expanded","true");
-    toggle.textContent="☰  Collapse navigation";
-    nav.id="if-dashboard-navigation";
-    const decorate=()=>{
-      nav.querySelectorAll("button:not(.if-sidebar-toggle),a").forEach(el=>{
-        const label=(el.textContent||"").trim();
-        if(label){el.setAttribute("aria-label",label);el.setAttribute("title",label);}
-      });
+    toggle.className="if-menu-toggle";
+    toggle.setAttribute("aria-label","Open navigation menu");
+    toggle.setAttribute("aria-controls",menu.id);
+    toggle.setAttribute("aria-expanded","false");
+    toggle.innerHTML='<span aria-hidden="true">☰</span><span class="if-menu-toggle-label">Menu</span>';
+    right.insertBefore(toggle,right.firstChild);
+    const close=()=>{
+      menu.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded","false");
+      toggle.setAttribute("aria-label","Open navigation menu");
     };
-    nav.insertBefore(toggle,nav.firstChild);
-    const observer=new MutationObserver(()=>{
-      if(!toggle.isConnected)nav.insertBefore(toggle,nav.firstChild);
-      decorate();
+    const open=()=>{
+      menu.classList.add("is-open");
+      toggle.setAttribute("aria-expanded","true");
+      toggle.setAttribute("aria-label","Close navigation menu");
+    };
+    toggle.addEventListener("click",()=>menu.classList.contains("is-open")?close():open());
+    menu.addEventListener("click",event=>{
+      if(event.target.closest("a,button")&&!event.target.closest(".if-menu-toggle"))close();
     });
-    observer.observe(nav,{childList:true});
-    decorate();
-    const setCollapsed=collapsed=>{
-      body.classList.toggle("if-sidebar-collapsed",collapsed);
-      toggle.setAttribute("aria-expanded",String(!collapsed));
-      toggle.textContent=collapsed?"☰  Expand navigation":"☰  Collapse navigation";
-      toggle.setAttribute("aria-label",collapsed?"Expand navigation":"Collapse navigation");
-    };
-    toggle.addEventListener("click",()=>setCollapsed(!body.classList.contains("if-sidebar-collapsed")));
+    document.addEventListener("click",event=>{
+      if(menu.classList.contains("is-open")&&!menu.contains(event.target)&&!toggle.contains(event.target))close();
+    });
+    document.addEventListener("keydown",event=>{if(event.key==="Escape")close();});
+  };
+  if(nav){
+    nav.id="if-dashboard-navigation";
+    nav.classList.add("if-hamburger-menu");
+    nav.querySelectorAll("button:not(.if-sidebar-toggle),a").forEach(el=>{
+      const label=(el.textContent||"").trim();
+      if(label){el.setAttribute("aria-label",label);el.setAttribute("title",label);}
+    });
+    nav.querySelector(".if-sidebar-toggle")?.remove();
+    addMenuButton(nav);
+  }else{
+    const bar=document.querySelector(".if-workspace-nav");
+    if(bar){
+      bar.id="if-workspace-navigation";
+      bar.classList.add("if-hamburger-menu");
+      addMenuButton(bar);
+    }
   }
   const brand=document.querySelector(".topbar .brand");
   if(brand&&/indinext/i.test(brand.textContent))brand.textContent="INDINEXT";
