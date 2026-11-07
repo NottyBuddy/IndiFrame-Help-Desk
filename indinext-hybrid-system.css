@@ -665,3 +665,146 @@ body.agent-workspace .topbar,body.admin-workspace .topbar,body.superadmin-mode .
 body.agent-workspace .topbar .brand,body.agent-workspace .topbar .subtitle,
 body.admin-workspace .topbar .brand,body.admin-workspace .topbar .subtitle,
 body.superadmin-mode .topbar .brand,body.superadmin-mode .topbar .subtitle{color:#20252b!important}
+
+
+/* =========================================================
+   INDINEXT UNIFIED CHARCOAL + ORANGE THEME
+   Scope: authenticated Agent, Admin and Super Admin workspaces.
+   Login page is deliberately excluded.
+   ========================================================= */
+body.agent-workspace,body.admin-workspace,body.superadmin-mode{
+ --if-page:#111111;--if-ink:#f7f3ef;--if-muted:#c9c1ba;--if-line:#39322e;
+ --if-surface:#201d1b;--if-surface-soft:#29231f;--if-accent:#e88745;
+ --if-accent-strong:#f39a58;--if-shadow:0 8px 24px rgba(0,0,0,.28);
+ color:#f7f3ef!important;
+ background:linear-gradient(135deg,#090909 0%,#171311 48%,#382016 100%) fixed!important;
+ color-scheme:dark;
+}
+body.agent-workspace *,body.admin-workspace *,body.superadmin-mode *{
+ scrollbar-color:#75452f #171513;
+}
+body.agent-workspace .topbar,body.admin-workspace .topbar,body.superadmin-mode .topbar{
+ color:#fff8f2!important;
+ background:linear-gradient(100deg,#111 0%,#211914 58%,#512b19 100%)!important;
+ border:1px solid #4b3024!important;border-bottom-color:#70452f!important;
+ box-shadow:0 5px 18px rgba(0,0,0,.28)!important;
+}
+body.agent-workspace .topbar *,body.admin-workspace .topbar *,body.superadmin-mode .topbar *{
+ color:#fff8f2!important;
+}
+body.agent-workspace .wrap,body.admin-workspace .wrap,body.superadmin-mode .wrap{
+ color:#f7f3ef!important;
+}
+body.agent-workspace .if-left-sidebar,body.admin-workspace .if-left-sidebar,body.superadmin-mode .if-left-sidebar,
+body.agent-workspace .nav,body.admin-workspace .nav,body.superadmin-mode .nav{
+ color:#f7f3ef!important;
+ background:linear-gradient(180deg,#211c19 0%,#151414 100%)!important;
+ border:1px solid #4b3a30!important;border-radius:13px!important;
+ box-shadow:0 8px 24px rgba(0,0,0,.28)!important;
+ -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+body.agent-workspace .if-left-sidebar *,body.admin-workspace .if-left-sidebar *,body.superadmin-mode .if-left-sidebar *,
+body.agent-workspace .nav *,body.admin-workspace .nav *,body.superadmin-mode .nav *{
+ color:#f4eee8;
+}
+body.agent-workspace .nav button,body.agent-workspace .nav a,body.agent-workspace .nav .nav-link,
+body.admin-workspace .nav button,body.admin-workspace .nav a,body.admin-workspace .nav .nav-link,
+body.superadmin-mode .nav button,body.superadmin-mode .nav a,body.superadmin-mode .nav .nav-link{
+ color:#eee7e1!important;background:#292421!important;border:1px solid #46372f!important;
+ box-shadow:none!important;text-shadow:none!important;
+}
+body.agent-workspace .nav button:hover,body.agent-workspace .nav a:hover,body.agent-workspace .nav .nav-link:hover,
+body.admin-workspace .nav button:hover,body.admin-workspace .nav a:hover,body.admin-workspace .nav .nav-link:hover,
+body.superadmin-mode .nav button:hover,body.superadmin-mode .nav a:hover,body.superadmin-mode .nav .nav-link:hover{
+ color:#fff!important;background:#3a2a21!important;border-color:#b76c3e!important;
+}
+body.agent-workspace .nav button.active,body.agent-workspace .nav a.active,body.agent-workspace .nav .nav-link.active,
+body.admin-workspace .nav button.active,body.admin-workspace .nav a.active,body.admin-workspace .nav .nav-link.active,
+body.superadmin-mode .nav button.active,body.superadmin-mode .nav a.active,body.superadmin-mode .nav .nav-link.active,
+body.agent-workspace .nav [aria-current="page"],body.admin-workspace .nav [aria-current="page"],body.superadmin-mode .nav [aria-current="page"]{
+ color:#fff!important;background:linear-gradient(110deg,#a95128 0%,#ef914f 100%)!important;
+ border-color:#f09a5c!important;box-shadow:0 3px 12px rgba(211,105,52,.2)!important;
+}
+body.agent-workspace main,body.admin-workspace main,body.superadmin-mode main{
+ color:#f7f3ef!important;
+}
+body.agent-workspace main :is(.card,.panel,.section,.section-hero,.section-filters,.section-metric,
+.overview-block,.overview-panel,.overview-metric-card,.attendance-summary-card,.stat-card,.metric-card,
+.kpi-card,.break-card,.cp-card,.cp-kpi,.cp-section,.cp-chart-panel,.admin-chart-card,
+.admin-module-card,.break-monitoring-panel,.sa-stat,.sa-edit-dialog,.tile,.widget,.report-card){
+ color:#f7f3ef!important;background:linear-gradient(145deg,#282320 0%,#191817 100%)!important;
+ background-image:linear-gradient(145deg,#282320 0%,#191817 100%)!important;
+ border:1px solid #463a33!important;border-radius:13px!important;
+ box-shadow:0 7px 20px rgba(0,0,0,.24)!important;
+ -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+body.agent-workspace main :is(.card,.panel,.section,.section-hero,.section-filters,.section-metric,
+.overview-block,.overview-panel,.overview-metric-card,.attendance-summary-card,.stat-card,.metric-card,
+.kpi-card,.break-card,.cp-card,.cp-kpi,.cp-section,.cp-chart-panel,.admin-chart-card,
+.admin-module-card,.break-monitoring-panel,.sa-stat,.sa-edit-dialog,.tile,.widget,.report-card) :is(h1,h2,h3,h4,p,small,strong,span,label,div){
+ color:#f4eee8!important;
+}
+body.agent-workspace main :is(h1,h2,h3,h4,h5,h6,p,small,label,span,strong,li,th,td,a),
+body.admin-workspace main :is(h1,h2,h3,h4,h5,h6,p,small,label,span,strong,li,th,td,a),
+body.superadmin-mode main :is(h1,h2,h3,h4,h5,h6,p,small,label,span,strong,li,th,td,a){
+ color:#f4eee8!important;text-shadow:none!important;
+}
+body.agent-workspace main :is(.muted,.hint,.description,.subtitle,.helper-text),
+body.admin-workspace main :is(.muted,.hint,.description,.subtitle,.helper-text),
+body.superadmin-mode main :is(.muted,.hint,.description,.subtitle,.helper-text){color:#c9c1ba!important}
+body.agent-workspace main a,body.admin-workspace main a,body.superadmin-mode main a{ text-decoration-color:#bd754b }
+body.agent-workspace main :is(button,.btn,.primary-btn,.sa-btn,[type="submit"]),
+body.admin-workspace main :is(button,.btn,.primary-btn,.sa-btn,[type="submit"]),
+body.superadmin-mode main :is(button,.btn,.primary-btn,.sa-btn,[type="submit"]){
+ color:#fff8f2!important;background:linear-gradient(110deg,#a95128 0%,#ed8b49 100%)!important;
+ border:1px solid #ed9a61!important;box-shadow:0 3px 12px rgba(0,0,0,.2)!important;
+}
+body.agent-workspace main :is(button,.btn,.primary-btn,.sa-btn,[type="submit"]):hover,
+body.admin-workspace main :is(button,.btn,.primary-btn,.sa-btn,[type="submit"]):hover,
+body.superadmin-mode main :is(button,.btn,.primary-btn,.sa-btn,[type="submit"]):hover{
+ background:linear-gradient(110deg,#bd6335 0%,#f5a366 100%)!important;
+}
+body.agent-workspace main :is(input,select,textarea),
+body.admin-workspace main :is(input,select,textarea),
+body.superadmin-mode main :is(input,select,textarea){
+ color:#fff8f2!important;background:#211e1c!important;border:1px solid #514138!important;
+ box-shadow:none!important;
+}
+body.agent-workspace main :is(input,select,textarea)::placeholder,
+body.admin-workspace main :is(input,select,textarea)::placeholder,
+body.superadmin-mode main :is(input,select,textarea)::placeholder{color:#bdb2a9!important}
+body.agent-workspace main table,body.admin-workspace main table,body.superadmin-mode main table{
+ color:#f4eee8!important;background:#1d1b1a!important;border-color:#443831!important;
+}
+body.agent-workspace main th,body.admin-workspace main th,body.superadmin-mode main th{
+ color:#fff5ed!important;background:#302721!important;border-color:#514035!important;
+}
+body.agent-workspace main td,body.admin-workspace main td,body.superadmin-mode main td{
+ color:#eee7e1!important;background:#1e1c1b!important;border-color:#3b332e!important;
+}
+body.agent-workspace main tr:hover td,body.admin-workspace main tr:hover td,body.superadmin-mode main tr:hover td{
+ background:#30251f!important;
+}
+body.agent-workspace main :is(.success,.error,.warning,.danger,.status,.badge,.pill),
+body.admin-workspace main :is(.success,.error,.warning,.danger,.status,.badge,.pill),
+body.superadmin-mode main :is(.success,.error,.warning,.danger,.status,.badge,.pill){
+ color:#f4eee8!important;background:#342820!important;border-color:#65432f!important;
+}
+body.agent-workspace main svg,body.admin-workspace main svg,body.superadmin-mode main svg{
+ color:#f0a06c;
+}
+body.agent-workspace main :is(.chart,.chart-container,.recharts-wrapper),
+body.admin-workspace main :is(.chart,.chart-container,.recharts-wrapper),
+body.superadmin-mode main :is(.chart,.chart-container,.recharts-wrapper){background:transparent!important}
+body.agent-workspace main :is(.chart *, .recharts-wrapper *),
+body.admin-workspace main :is(.chart *, .recharts-wrapper *),
+body.superadmin-mode main :is(.chart *, .recharts-wrapper *){color:#f4eee8}
+body.agent-workspace :is(.toast,.modal,.dialog,.dropdown-menu),
+body.admin-workspace :is(.toast,.modal,.dialog,.dropdown-menu),
+body.superadmin-mode :is(.toast,.modal,.dialog,.dropdown-menu){
+ color:#f4eee8!important;background:#211e1c!important;border-color:#514138!important;
+}
+@media(max-width:760px){
+ body.agent-workspace,body.admin-workspace,body.superadmin-mode{background:#111!important}
+ body.agent-workspace .wrap,body.admin-workspace .wrap,body.superadmin-mode .wrap{color:#f7f3ef!important}
+}
