@@ -22,13 +22,19 @@ export async function handleWeeklyData(req,env){
    const where=["i.dataset='attendance'"],args=[];
    if(from){where.push("r.record_date>=?");args.push(from);}
    if(to){where.push("r.record_date<=?");args.push(to);}
-   const found=(await env.DB.prepare("SELECT r.id,r.record_date,r.agent_name,r.source_json,i.filename,i.headers_json,i.imported_at FROM weekly_source_rows r JOIN weekly_source_imports i ON i.id=r.import_id WHERE "+where.join(" AND ")+" ORDER BY r.record_date DESC,r.id DESC LIMIT 5000").bind(...args).all()).results||[];
    const ownId=String(u.employee_id||"").trim().toLowerCase(),ownName=String(u.full_name||"").trim().toLowerCase();
-   const rows=found.map(r=>{let source={},headers=[];try{source=JSON.parse(r.source_json||"[]");}catch{}try{headers=JSON.parse(r.headers_json||"[]");}catch{}
-    const values=Array.isArray(source)?source.map(v=>String(v??"").trim().toLowerCase()):[];
-    const identityMatch=String(r.agent_name||"").trim().toLowerCase()===ownId||String(r.agent_name||"").trim().toLowerCase()===ownName||headers.some((h,i)=>/^(employee|agent)\s*(id|code)$/.test(String(h||"").trim().toLowerCase())&&values[i]===ownId)||headers.some((h,i)=>/^(employee|agent)\s*(name)?$/.test(String(h||"").trim().toLowerCase())&&values[i]===ownName);
+   if(!isAdmin){
+    where.push("(lower(trim(coalesce(r.agent_name,''))) IN (?,?) OR EXISTS (SELECT 1 FROM json_each(i.headers_json) h JOIN json_each(r.source_json) v ON v.key=h.key WHERE lower(trim(CAST(h.value AS TEXT))) IN ('employee id','employee code','agent id','agent code') AND lower(trim(CAST(v.value AS TEXT)))=? ) OR EXISTS (SELECT 1 FROM json_each(i.headers_json) h JOIN json_each(r.source_json) v ON v.key=h.key WHERE lower(trim(CAST(h.value AS TEXT))) IN ('employee name','agent name','employee','agent') AND lower(trim(CAST(v.value AS TEXT)))=?))");
+    args.push(ownId,ownName,ownId,ownName);
+   }
+   const found=(await env.DB.prepare("SELECT r.id,r.record_date,r.agent_name,r.source_json,i.filename,i.headers_json,i.imported_at FROM weekly_source_rows r JOIN weekly_source_imports i ON i.id=r.import_id WHERE "+where.join(" AND ")+" ORDER BY r.record_date DESC,r.id DESC LIMIT 5000").bind(...args).all()).results||[];
+   const pick=(headers,source,patterns)=>{const index=headers.findIndex(h=>patterns.some(p=>p.test(String(h||"").trim().toLowerCase())));return index>=0?String(source[index]??"").trim():"";};
+   const rows=found.map(r=>{
+    let source=[],headers=[];try{source=JSON.parse(r.source_json||"[]");}catch{}try{headers=JSON.parse(r.headers_json||"[]");}catch{}
+    if(!Array.isArray(source))source=[];if(!Array.isArray(headers))headers=[];
+    if(!isAdmin)return {recordDate:r.record_date,attendanceStatus:pick(headers,source,[/^(attendance )?status$/,/^day status$/]),punctuality:pick(headers,source,[/on.?time|late|punctual/]),filename:r.filename};
     return {recordDate:r.record_date,agentName:r.agent_name,headers,source,filename:r.filename,importedAt:r.imported_at};
-   }).filter((r,i)=>isAdmin?true:(String(r.agentName||"").trim().toLowerCase()===ownId||String(r.agentName||"").trim().toLowerCase()===ownName||(()=>{const values=Array.isArray(r.source)?r.source.map(v=>String(v??"").trim().toLowerCase()):[];return r.headers.some((h,i)=>/^(employee|agent)\s*(id|code)$/.test(String(h||"").trim().toLowerCase())&&values[i]===ownId)||r.headers.some((h,i)=>/^(employee|agent)\s*(name)?$/.test(String(h||"").trim().toLowerCase())&&values[i]===ownName);})()));
+   });
    return json({rows,count:rows.length,scope:isAdmin?"team":"own"});
   }
 
