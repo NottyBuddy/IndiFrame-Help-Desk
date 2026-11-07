@@ -2,7 +2,41 @@
 (function(){
   "use strict";
   const body=document.body;
+  const path=location.pathname.split("/").pop()||"dashboard.html";
   const nav=document.querySelector("body:not(.if-login) .nav");
+  const links=[
+    ["dashboard.html","Overview","⌂"],
+    ["call-performance.html","Call Performance","CP"],
+    ["breaks.html","Breaks","BR"],
+    ["admin-section.html","Admin Section","AD"],
+    ["weekly-data.html","Weekly Data","WD"],
+    ["superadmin.html","Super Admin","SA"],
+    ["change-password.html","Change Password","PW"]
+  ];
+  const makeWorkspaceNav=()=>{
+    const bar=document.createElement("nav");
+    bar.className="if-workspace-nav";
+    bar.setAttribute("aria-label","Workspace navigation");
+    links.forEach(([href,label,short])=>{
+      const a=document.createElement("a");
+      a.href=href;
+      a.className="if-workspace-link";
+      a.innerHTML='<span class="if-workspace-short" aria-hidden="true">'+short+'</span><span>'+label+'</span>';
+      if(path===href){a.classList.add("is-current");a.setAttribute("aria-current","page");}
+      bar.appendChild(a);
+    });
+    return bar;
+  };
+  const topbar=document.querySelector(".topbar");
+  if(topbar&&!nav){
+    topbar.insertAdjacentElement("afterend",makeWorkspaceNav());
+  }else if(!topbar&&!nav&&document.querySelector(".panel")){
+    const header=document.createElement("header");
+    header.className="topbar if-auth-topbar";
+    header.innerHTML='<div><div class="brand">INDINEXT</div><div class="subtitle">Secure Account Settings</div></div><div class="topright"><a class="logout-btn" href="dashboard.html">Dashboard</a></div>';
+    document.body.insertBefore(header,document.body.querySelector("main.panel"));
+    header.insertAdjacentElement("afterend",makeWorkspaceNav());
+  }
   if(nav){
     const toggle=document.createElement("button");
     toggle.type="button";
