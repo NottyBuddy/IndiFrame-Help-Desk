@@ -1,0 +1,24 @@
+/* INDINEXT Fresh Frontend — unified visual layer (UI only; existing page scripts/API remain intact) */
+:root{--if-bg:#100b14;--if-panel:rgba(49,27,53,.52);--if-panel-strong:rgba(35,22,40,.88);--if-line:rgba(226,216,238,.15);--if-text:#f7f5f2;--if-muted:#c5bacb;--if-blue:#bfd df2;--if-peach:#f4b39a;--if-lav:#cfc4e8;--if-copper:#c87543;--if-radius:20px}
+html{scroll-behavior:smooth}
+body:not(.helpdesk-login){background:radial-gradient(ellipse at 15% 0%,rgba(111,76,128,.18),transparent 38%),radial-gradient(ellipse at 100% 100%,rgba(90,132,166,.12),transparent 34%),#100b14!important;color:var(--if-text)!important;font-family:"DM Sans",Manrope,system-ui,sans-serif!important}
+body:not(.helpdesk-login) :is(h1,h2,h3,h4,.page-title,.section-title){font-family:Manrope,"DM Sans",sans-serif;letter-spacing:-.025em}
+body:not(.helpdesk-login) :is(.card,.stat-card,.metric-card,.panel,.section-card,.dashboard-card,.report-card,.table-card,.content-card,.glass-card,.admin-card,.kpi-card,.overview-card){background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(49,27,53,.52) 54%,rgba(19,13,23,.78))!important;border:1px solid var(--if-line)!important;border-radius:var(--if-radius)!important;box-shadow:0 18px 48px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.08)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+body:not(.helpdesk-login) :is(button,.btn,[role=button],input[type=submit]){border-radius:12px;transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}
+body:not(.helpdesk-login) :is(button,.btn,[role=button],input[type=submit]):hover{transform:translateY(-1px);filter:brightness(1.06)}
+body:not(.helpdesk-login) :is(input,select,textarea){background:rgba(12,9,16,.55)!important;color:#f7f5f2!important;border:1px solid rgba(224,213,236,.2)!important;border-radius:11px!important;min-height:42px}
+body:not(.helpdesk-login) :is(input,select,textarea):focus{outline:0;border-color:rgba(191,221,242,.7)!important;box-shadow:0 0 0 3px rgba(191,221,242,.11)!important}
+body:not(.helpdesk-login) :is(th,thead){color:#e9def1}
+body:not(.helpdesk-login) table{border-collapse:separate;border-spacing:0;width:100%;overflow:hidden;border-radius:14px}
+body:not(.helpdesk-login) :is(td,th){border-color:rgba(225,215,235,.1)!important}
+body:not(.helpdesk-login) tbody tr:hover{background:rgba(207,196,232,.055)}
+body:not(.helpdesk-login) a{color:#c8def0}
+body:not(.helpdesk-login) :is(.sidebar,.workspace-sidebar,.app-sidebar,.side-nav){background:rgba(20,13,24,.92)!important;border-color:var(--if-line)!important;backdrop-filter:blur(20px)}
+body:not(.helpdesk-login) :is(.active,.is-active,[aria-current=page]){border-color:rgba(207,196,232,.35)}
+body:not(.helpdesk-login) :is(.muted,.text-muted,.hint,.subtext){color:var(--if-muted)}
+body:not(.helpdesk-login) :is(.badge,.chip,.tag,.status-pill){border-radius:999px}
+body:not(.helpdesk-login) .if-workspace-nav{background:rgba(20,13,24,.92);border:1px solid var(--if-line);border-radius:16px;backdrop-filter:blur(20px)}
+body:not(.helpdesk-login) :is(.loading,.skeleton){background:linear-gradient(90deg,rgba(255,255,255,.035),rgba(207,196,232,.1),rgba(255,255,255,.035));background-size:200% 100%;animation:ifShimmer 2.2s linear infinite}
+@keyframes ifShimmer{to{background-position:-200% 0}}
+@media(max-width:760px){body:not(.helpdesk-login){font-size:14px}body:not(.helpdesk-login) :is(.card,.stat-card,.metric-card,.panel,.section-card,.dashboard-card,.report-card,.table-card,.content-card,.admin-card,.kpi-card,.overview-card){border-radius:16px!important}body:not(.helpdesk-login) table{display:block;overflow-x:auto;white-space:nowrap}}
+@media(prefers-reduced-motion:reduce){body:not(.helpdesk-login) *,body:not(.helpdesk-login) *:before,body:not(.helpdesk-login) *:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
