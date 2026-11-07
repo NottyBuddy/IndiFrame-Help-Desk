@@ -14,6 +14,24 @@ export async function handleWeeklyData(req,env){
   const u=await identity(req,env);if(!u)return json({error:"Session expired or invalid."},401);
   const sa=Number(u.is_super_admin)===1;
   if(path==="/api/hd/weekly-data/access"&&method==="GET")return json({isSuperAdmin:sa,role:u.role});
+  if(path==="/api/hd/weekly-data/published"&&method==="GET"){
+   const role=String(u.role||"").toLowerCase(),isAdmin=role==="admin"||sa;
+   if(!isAdmin&&role!=="agent")return json({error:"Attendance access denied."},403);
+   const from=url.searchParams.get("from"),to=url.searchParams.get("to");
+   if(from&&!isDate(from)||to&&!isDate(to))return json({error:"Invalid date filter."},400);
+   const where=["i.dataset='attendance'"],args=[];
+   if(from){where.push("r.record_date>=?");args.push(from);}
+   if(to){where.push("r.record_date<=?");args.push(to);}
+   const found=(await env.DB.prepare("SELECT r.id,r.record_date,r.agent_name,r.source_json,i.filename,i.headers_json,i.imported_at FROM weekly_source_rows r JOIN weekly_source_imports i ON i.id=r.import_id WHERE "+where.join(" AND ")+" ORDER BY r.record_date DESC,r.id DESC LIMIT 5000").bind(...args).all()).results||[];
+   const ownId=String(u.employee_id||"").trim().toLowerCase(),ownName=String(u.full_name||"").trim().toLowerCase();
+   const rows=found.map(r=>{let source={},headers=[];try{source=JSON.parse(r.source_json||"[]");}catch{}try{headers=JSON.parse(r.headers_json||"[]");}catch{}
+    const values=Array.isArray(source)?source.map(v=>String(v??"").trim().toLowerCase()):[];
+    const identityMatch=String(r.agent_name||"").trim().toLowerCase()===ownId||String(r.agent_name||"").trim().toLowerCase()===ownName||headers.some((h,i)=>/^(employee|agent)\s*(id|code)$/.test(String(h||"").trim().toLowerCase())&&values[i]===ownId)||headers.some((h,i)=>/^(employee|agent)\s*(name)?$/.test(String(h||"").trim().toLowerCase())&&values[i]===ownName);
+    return {recordDate:r.record_date,agentName:r.agent_name,headers,source,filename:r.filename,importedAt:r.imported_at};
+   }).filter((r,i)=>isAdmin?true:(String(r.agentName||"").trim().toLowerCase()===ownId||String(r.agentName||"").trim().toLowerCase()===ownName||(()=>{const values=Array.isArray(r.source)?r.source.map(v=>String(v??"").trim().toLowerCase()):[];return r.headers.some((h,i)=>/^(employee|agent)\s*(id|code)$/.test(String(h||"").trim().toLowerCase())&&values[i]===ownId)||r.headers.some((h,i)=>/^(employee|agent)\s*(name)?$/.test(String(h||"").trim().toLowerCase())&&values[i]===ownName);})()));
+   return json({rows,count:rows.length,scope:isAdmin?"team":"own"});
+  }
+
   if(!sa)return json({error:"Only Super Admin can access Weekly Data management."},403);
   if(path==="/api/hd/weekly-data/imports"&&method==="GET"){
    const imports=(await env.DB.prepare("SELECT i.id,i.dataset,i.filename,i.imported_by,i.imported_at,i.rows_received,i.rows_inserted,(SELECT COUNT(*) FROM weekly_source_rows r WHERE r.import_id=i.id) row_count FROM weekly_source_imports i ORDER BY i.id DESC LIMIT 200").all()).results;
