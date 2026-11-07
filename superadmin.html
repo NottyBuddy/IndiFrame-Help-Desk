@@ -45,6 +45,7 @@ body:not(:has(.login-layout)) .sa-table tr:hover td{background:rgba(255,255,255,
 </style>
   <link rel="stylesheet" href="indinext-liquid-glass.css?v=dark-glass-v1-20261106">
   <link rel="stylesheet" href="dark-theme-hardening.css?v=dark-hardening-v2-20261106">
+  <link rel="stylesheet" href="indinext-hybrid-system.css?v=hybrid-ui-v1">
 </head>
 <body>
 <script src="preloader.js?v=indinext-loader-snake-v3-20261105"></script> <header class="topbar"><div><div class="brand">Indinext</div><div class="subtitle">Super Admin Control Center</div></div><div class="topright"><a href="dashboard.html" class="logout-btn" style="text-decoration:none">Dashboard</a><button id="logoutBtn" class="logout-btn">Logout</button></div></header>
@@ -72,4 +73,5 @@ body:not(:has(.login-layout)) .sa-table tr:hover td{background:rgba(255,255,255,
 <section class="card"><div class="head"><h2>All Employee Accounts</h2><button id="refreshBtn" class="sa-small">Refresh</button></div><div id="accountList" class="empty">Loading accounts…</div></section>
 </div></main>
 <dialog id="accountEditDialog" class="sa-edit-dialog"><form id="accountEditForm" class="sa-form"><h2>Edit Account</h2><input id="editAccountId" type="hidden"><label>Employee ID<input id="editEmployeeId" required maxlength="50"></label><label>Full Name<input id="editFullName" required maxlength="160"></label><label>Role<select id="editRole"><option value="agent">Agent</option><option value="admin">Admin</option></select></label><div class="sa-actions"><button class="sa-btn" type="submit">Save Changes</button><button class="sa-small" id="cancelAccountEdit" type="button">Cancel</button></div></form></dialog>
-<script src="api.js"></script><script src="superadmin.js?v=analytics-v1-20261105"></script><script src="attendance-workbook-import.js?v=1"></script><script src="call-performance-import.js?v=6"></script></body></html>
+<script src="api.js"></script><script src="superadmin.js?v=analytics-v1-20261105"></script><script src="attendance-workbook-import.js?v=1"></script><script src="call-performance-import.js?v=6"></script><script src="indinext-workspace-ui.js?v=hybrid-ui-v1"></script>
+</body></html>
