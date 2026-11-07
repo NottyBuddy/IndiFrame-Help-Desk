@@ -76,8 +76,7 @@ async function loadPublishedAttendanceForAgent(){
   const month=$("attendanceMonth")?.value||"",params=new URLSearchParams();if(month){params.set("from",month+"-01");const [y,m]=month.split("-").map(Number);params.set("to",new Date(y,m,0).getFullYear()+"-"+String(new Date(y,m,0).getMonth()+1).padStart(2,"0")+"-"+String(new Date(y,m,0).getDate()).padStart(2,"0"));}
   const data=await request("/api/hd/weekly-data/published"+(params.toString()?"?"+params.toString():"")),items=data.rows||[];
   if(!items.length){status.textContent="No published Excel attendance rows found for this month. A missing row is not treated as Absent.";host.innerHTML="";return;}
-  const pick=(r,patterns)=>{const i=(r.headers||[]).findIndex(h=>patterns.some(p=>p.test(String(h||"").trim().toLowerCase())));return i>=0?String((r.source||[])[i]??"—"):"—";};
-  const body=items.map(r=>"<tr><td>"+esc(r.recordDate||"—")+"</td><td>"+esc(pick(r,[/^attendance ?status$/,/^day status$/,/^status$/]))+"</td><td>"+esc(pick(r,[/on.?time|late|punctual/]))+"</td><td>"+esc(r.filename||"—")+"</td></tr>").join("");
+  const body=items.map(r=>"<tr><td>"+esc(r.recordDate||"—")+"</td><td>"+esc(r.attendanceStatus||"—")+"</td><td>"+esc(r.punctuality||"—")+"</td><td>"+esc(r.filename||"—")+"</td></tr>").join("");
   host.innerHTML='<div class="attendance-ledger-scroll"><table class="attendance-ledger"><thead><tr><th>Date</th><th>Published status</th><th>Login status</th><th>Source workbook</th></tr></thead><tbody>'+body+'</tbody></table></div>';
   status.textContent=items.length+" published source rows · Excel records are separate from website Check In / Check Out.";
  }catch(e){status.textContent="Published Excel attendance unavailable: "+e.message+". Worker route and D1 migration 008 must be deployed first.";host.innerHTML="";}
