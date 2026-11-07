@@ -21,21 +21,56 @@
       const a=document.createElement("a");
       a.href=href;
       a.className="if-workspace-link";
+      a.dataset.workspaceHref=href;
       a.innerHTML='<span class="if-workspace-short" aria-hidden="true">'+short+'</span><span>'+label+'</span>';
       if(path===href){a.classList.add("is-current");a.setAttribute("aria-current","page");}
       bar.appendChild(a);
     });
     return bar;
   };
+  const applyRoleNavigation=async bar=>{
+    const forced=sessionStorage.getItem("forcePasswordChange")==="true";
+    if(forced){
+      bar?.remove();
+      document.querySelector(".if-auth-topbar .topright")?.replaceChildren();
+      return;
+    }
+    try{
+      const token=sessionStorage.getItem("indiframe_token")||"";
+      if(!token)throw new Error("No session");
+      const response=await fetch("https://indiframe-helpdesk-api.mukuls2302.workers.dev/api/me",{headers:{Accept:"application/json",Authorization:"Bearer "+token}});
+      if(!response.ok)throw new Error("Session unavailable");
+      const payload=await response.json();
+      const user=payload.user||payload;
+      const role=String(user.role||user.userRole||"").toLowerCase().replace(/[ _-]/g,"");
+      const isSuper=role==="superadmin"||user.isSuperAdmin===true||Number(user.isSuperAdmin)===1;
+      const isAdmin=isSuper||role==="admin";
+      const allowed=new Set(["dashboard.html","call-performance.html","change-password.html"]);
+      if(!isAdmin)allowed.add("breaks.html");
+      if(isAdmin)allowed.add("admin-section.html");
+      if(isSuper){allowed.add("weekly-data.html");allowed.add("superadmin.html");}
+      bar?.querySelectorAll("[data-workspace-href]").forEach(link=>{
+        if(!allowed.has(link.dataset.workspaceHref))link.remove();
+      });
+    }catch(_){
+      bar?.querySelectorAll("[data-workspace-href]").forEach(link=>{
+        if(!["dashboard.html","change-password.html"].includes(link.dataset.workspaceHref))link.remove();
+      });
+    }
+  };
   const topbar=document.querySelector(".topbar");
   if(topbar&&!nav){
-    topbar.insertAdjacentElement("afterend",makeWorkspaceNav());
+    const bar=makeWorkspaceNav();
+    topbar.insertAdjacentElement("afterend",bar);
+    applyRoleNavigation(bar);
   }else if(!topbar&&!nav&&document.querySelector(".panel")){
     const header=document.createElement("header");
     header.className="topbar if-auth-topbar";
     header.innerHTML='<div><div class="brand">INDINEXT</div><div class="subtitle">Secure Account Settings</div></div><div class="topright"><a class="logout-btn" href="dashboard.html">Dashboard</a></div>';
     document.body.insertBefore(header,document.body.querySelector("main.panel"));
-    header.insertAdjacentElement("afterend",makeWorkspaceNav());
+    const bar=makeWorkspaceNav();
+    header.insertAdjacentElement("afterend",bar);
+    applyRoleNavigation(bar);
   }
   if(nav){
     const toggle=document.createElement("button");
