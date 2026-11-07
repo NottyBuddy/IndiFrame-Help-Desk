@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="call-performance-redesign.css?v=animated-glass-v1-20261105">\n  <link rel="stylesheet" href="call-performance-agent-polish.css?v=agent-page-v1-20261106">
   <link rel="stylesheet" href="indinext-liquid-glass.css?v=dark-glass-v1-20261106">
   <link rel="stylesheet" href="agent-charcoal-copper.css?v=agent-premium-v1-20261106">
+  <link rel="stylesheet" href="indinext-hybrid-system.css?v=hybrid-ui-v1">
 </head>
 <body>
 <script src="preloader.js?v=indinext-loader-snake-v3-20261105"></script>
@@ -38,4 +39,5 @@
 <section class="card cp-section" id="cpCleanupPanel" hidden><h2>Call Performance Data Cleanup</h2><p class="cp-muted">Super Admin only · Select an inclusive custom date range. Preview both daily and report rows before permanently deleting. Import audit history is retained; KPI and Help Desk records are untouched.</p><div class="cp-toolbar"><label>From date<input id="cpDeleteFrom" type="date"></label><label>To date<input id="cpDeleteTo" type="date"></label><button id="cpDeletePreview" class="secondary-btn" type="button">Preview selected range</button><button id="cpDeleteConfirm" class="primary-btn" type="button" disabled>Delete selected records</button></div><div id="cpDeleteStatus" class="cp-status" role="status"></div></section><section class="card cp-section"><h2>Day-wise Data</h2><p class="cp-muted">Original imported daily rows. Source columns and values are preserved; Agent ID is added for identification and access control.</p><div id="cpDayRows" class="cp-table-wrap">Loading…</div></section>
 </main>
 <script src="api.js"></script><script src="call-performance.js?v=11"></script>
+<script src="indinext-workspace-ui.js?v=hybrid-ui-v1"></script>
 </body></html>
