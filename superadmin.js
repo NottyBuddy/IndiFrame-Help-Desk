@@ -5,16 +5,40 @@ async function request(path,options){return api.apiRequest(path,options)}
 async function loadAnalytics(){
  const host=$("analyticsGrid"),status=$("analyticsStatus");if(!host)return;
  status.textContent="Refreshing live metrics…";
- const paths=["/api/admin/agents","/api/hd/kpis/summary","/api/quiz-attempts","/api/hd/attendance/history","/api/hd/admin/breaks/status","/api/hd/projects?limit=100","/api/hd/admin/call-performance/summary"];
- const jobs=await Promise.allSettled(paths.map(p=>request(p))),v=i=>jobs[i].status==="fulfilled"?jobs[i].value:null;
- const agents=v(0)?.agents||[],kpi=v(1)?.totals||{},quiz=v(2)?.attempts||[],attendance=v(3)?.records||[],breakData=v(4)||{},breaks=breakData.breaks||[],projects=v(5)?.projects||[],calls=v(6)?.totals||{};
- const active=agents.filter(a=>Number(a.active)===1),checked=attendance.filter(a=>!a.checkOutAt),activeBreaks=Array.isArray(breakData.activeBreaks)?breakData.activeBreaks:breaks.filter(b=>!b.ended_at);
- const quizScore=quiz.reduce((n,a)=>n+Number(a.score||0),0),quizTotal=quiz.reduce((n,a)=>n+Number(a.totalQuestions||a.total_questions||0),0);
+ const sources=[
+  {name:"Agents",path:"/api/admin/agents"},
+  {name:"KPI",path:"/api/hd/kpis/summary"},
+  {name:"Quiz",path:"/api/quiz-attempts"},
+  {name:"Attendance",path:"/api/hd/attendance/history"},
+  {name:"Breaks",path:"/api/hd/admin/breaks/status"},
+  {name:"Call Performance",path:"/api/hd/admin/call-performance/summary"}
+ ];
+ const jobs=await Promise.allSettled(sources.map(x=>request(x.path)));
+ const data=i=>jobs[i].status==="fulfilled"?jobs[i].value:null;
+ const agents=data(0)?.agents||[],kpi=data(1)?.totals||{},quiz=data(2)?.attempts||[];
+ const attendance=data(3)?.records||[],breakData=data(4)||{},breaks=breakData.breaks||[];
+ const calls=data(5)?.totals||{};
+ const active=agents.filter(a=>Number(a.active)===1);
+ const checked=attendance.filter(a=>!(a.checkOutAt||a.check_out_at));
+ const activeBreaks=Array.isArray(breakData.activeBreaks)?breakData.activeBreaks:breaks.filter(b=>!b.ended_at);
+ const quizScore=quiz.reduce((n,a)=>n+Number(a.score||0),0);
+ const quizTotal=quiz.reduce((n,a)=>n+Number(a.totalQuestions||a.total_questions||a.total||0),0);
  const avg=quizTotal?(quizScore/quizTotal*100).toFixed(1)+"%":"—";
- const stats=[["Active agents",active.length,"of "+agents.length+" registered"],["Checked in now",checked.length,"from attendance records"],["Active breaks",activeBreaks.length,"currently running"],["KPI attempts",Number(kpi.attempts||0).toLocaleString(),"daily KPI records"],["Quiz attempts",quiz.length.toLocaleString(),"all weeks"],["Quiz average",avg,"score percentage"],["Projects",projects.length.toLocaleString(),"active pipeline records"],["Call records",Number(calls.calls||0).toLocaleString(),"imported call rows"]];
+ const metric=(index,value)=>jobs[index].status==="fulfilled"?value:"—";
+ const stats=[
+  ["Active agents",metric(0,active.length),"of "+(jobs[0].status==="fulfilled"?agents.length:"—")+" registered"],
+  ["Checked in now",metric(3,checked.length),"from website attendance records"],
+  ["Active breaks",metric(4,activeBreaks.length),"currently running"],
+  ["KPI attempts",metric(1,Number(kpi.attempts||0).toLocaleString()),"daily KPI records"],
+  ["Quiz attempts",metric(2,quiz.length.toLocaleString()),"all weeks"],
+  ["Quiz average",metric(2,avg),"score percentage"],
+  ["Call records",metric(5,Number(calls.calls||0).toLocaleString()),"imported call rows"]
+ ];
  host.innerHTML=stats.map(x=>'<article class="sa-stat"><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong><small>'+esc(x[2])+'</small></article>').join("");
- const failed=jobs.map((x,i)=>x.status==="rejected"?["Agents","KPI","Quiz","Attendance","Breaks","Projects","Call Performance"][i]:null).filter(Boolean);
- status.textContent=failed.length?"Some data sources could not load: "+failed.join(", ")+".":"All available analytics sources refreshed successfully.";
+ const failed=jobs.map((x,i)=>x.status==="rejected"?sources[i].name:null).filter(Boolean);
+ status.textContent=failed.length
+  ?"Some analytics sources are unavailable: "+failed.join(", ")+". Unavailable metrics are shown as —, not zero."
+  :"All 6 analytics sources refreshed successfully.";
 }
 async function load(){
  try{
