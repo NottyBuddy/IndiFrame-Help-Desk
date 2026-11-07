@@ -72,7 +72,6 @@
     header.insertAdjacentElement("afterend",bar);
     applyRoleNavigation(bar);
   }
-  const topbar=document.querySelector(".topbar");
   const addMenuButton=(menu)=>{
     if(!topbar)return;
     const right=topbar.querySelector(".topright")||topbar;
