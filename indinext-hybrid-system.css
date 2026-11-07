@@ -373,75 +373,90 @@ body.password-workspace #status{min-height:22px;margin-top:12px}
  .if-hamburger-menu{top:66px!important;right:12px!important}
 }
 
-/* FINAL WORKSPACE GEOMETRY — one top-bar menu, no legacy sidebar/grid reservation. */
-body:has(.if-hamburger-menu) .wrap{
- display:block!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto!important;
- column-gap:0!important;row-gap:0!important;width:min(1480px,calc(100% - 40px))!important;
- max-width:1480px!important;min-height:0!important;margin:0 auto!important;padding:26px 0 48px!important;
+/* SHARED WORKSPACE LAYOUT — single source of truth for Agent, Admin and Super Admin. */
+body:has(.if-left-sidebar) .topbar{position:sticky!important;top:0!important;left:auto!important;right:auto!important;width:100%!important;min-height:68px!important;z-index:40!important}
+body:has(.if-left-sidebar) main.wrap:has(> .if-left-sidebar),
+body:has(.if-left-sidebar) main.wrap:has(> .nav){
+ display:grid!important;grid-template-columns:252px minmax(0,1fr)!important;
+ grid-auto-flow:row!important;align-items:start!important;column-gap:22px!important;row-gap:16px!important;
+ width:min(1540px,calc(100% - 44px))!important;max-width:1540px!important;
+ min-width:0!important;margin:0 auto!important;padding:26px 0 48px!important;
 }
-body:has(.if-hamburger-menu) .if-hamburger-menu{
- position:fixed!important;top:76px!important;right:clamp(12px,3vw,34px)!important;
- left:auto!important;bottom:auto!important;width:min(340px,calc(100vw - 24px))!important;
- min-width:0!important;height:auto!important;min-height:0!important;max-height:calc(100vh - 92px)!important;
- margin:0!important;padding:12px!important;display:none!important;flex-direction:column!important;
- align-items:stretch!important;overflow:auto!important;z-index:1000!important;
-}
-body:has(.if-hamburger-menu) .if-hamburger-menu.is-open{display:flex!important}
-body:has(.if-hamburger-menu) .if-menu-toggle{position:relative;z-index:1001}
-body.superadmin-mode{background:var(--if-page)!important;color:var(--if-ink)!important}
-body.superadmin-mode main .card,
-body.superadmin-mode .sa-stat,
-body.superadmin-mode .sa-edit-dialog{
- color:var(--if-ink)!important;background:var(--if-surface)!important;
- border:1px solid var(--if-line)!important;border-radius:var(--if-radius)!important;
+body:has(.if-left-sidebar) main.wrap > .if-left-sidebar,
+body:has(.if-left-sidebar) main.wrap > .nav{
+ grid-column:1!important;grid-row:1 / span 80!important;position:sticky!important;top:88px!important;
+ align-self:start!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ flex-wrap:nowrap!important;gap:7px!important;width:100%!important;min-width:0!important;
+ min-height:calc(100vh - 112px)!important;max-height:calc(100vh - 104px)!important;
+ height:max-content!important;overflow-y:auto!important;overflow-x:hidden!important;
+ margin:0!important;padding:16px 12px!important;border:1px solid var(--if-line)!important;
+ border-radius:16px!important;background:var(--if-nav)!important;color:var(--if-nav-text)!important;
  box-shadow:var(--if-shadow)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body:has(.if-left-sidebar) main.wrap > .head,
+body:has(.if-left-sidebar) main.wrap > #globalStatus,
+body:has(.if-left-sidebar) main.wrap > #message,
+body:has(.if-left-sidebar) main.wrap > .tab-panel,
+body:has(.if-left-sidebar) main.wrap > section,
+body:has(.if-left-sidebar) main.wrap > .sa-grid,
+body:has(.if-left-sidebar) main.wrap > .footer{
+ grid-column:2!important;min-width:0!important;width:100%!important;
+}
+body:has(.if-left-sidebar) main.wrap > .head{grid-row:1!important;margin:0 0 4px!important}
+body:has(.if-left-sidebar) main.wrap > .if-left-sidebar a,
+body:has(.if-left-sidebar) main.wrap > .if-left-sidebar button,
+body:has(.if-left-sidebar) main.wrap > .nav a,
+body:has(.if-left-sidebar) main.wrap > .nav button{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ flex:0 0 auto!important;width:100%!important;min-width:0!important;min-height:44px!important;
+ padding:10px 12px!important;border:1px solid rgba(255,255,255,.12)!important;
+ border-radius:10px!important;background:var(--if-nav-raised)!important;color:var(--if-nav-text)!important;
+ text-align:left!important;text-decoration:none!important;white-space:normal!important;
+}
+body.agent-mode:has(.if-left-sidebar) main.wrap > .nav button.active,
+body.agent-mode:has(.if-left-sidebar) main.wrap > .if-left-sidebar .is-current{
+ background:linear-gradient(110deg,#96552f,#bd7547)!important;border-color:#d18a5b!important;color:#fff!important;
+}
+body.admin-mode:has(.if-left-sidebar) main.wrap > .nav button.active,
+body.admin-mode:has(.if-left-sidebar) main.wrap > .if-left-sidebar .is-current{
+ background:linear-gradient(110deg,#147f78,#1a9a91)!important;border-color:#43b9ad!important;color:#fff!important;
+}
+body:has(.if-left-sidebar) main.wrap > .nav:before,
+body:has(.if-left-sidebar) main.wrap > .if-left-sidebar:before{content:"INDINEXT\\A HELP DESK PORTAL";white-space:pre;display:block;margin:0 4px 10px;padding:0 0 10px 10px;border-left:3px solid var(--if-copper);color:#fff;font-size:15px;font-weight:850;line-height:1.35}
+body.superadmin-mode:has(.if-left-sidebar) main.wrap > .if-left-sidebar .is-current{background:linear-gradient(110deg,#147f78,#1a9a91)!important}
+body.superadmin-mode{background:var(--if-page)!important;color:var(--if-ink)!important}
+body.superadmin-mode main .card,body.superadmin-mode .sa-stat,body.superadmin-mode .sa-edit-dialog{
+ color:var(--if-ink)!important;background:var(--if-surface)!important;border:1px solid var(--if-line)!important;
+ border-radius:var(--if-radius)!important;box-shadow:var(--if-shadow)!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
 }
 body.superadmin-mode .sa-stat{background:var(--if-surface-soft)!important}
 body.superadmin-mode .sa-stat span,body.superadmin-mode .sa-stat small,
 body.superadmin-mode .muted,body.superadmin-mode .sa-msg{color:var(--if-muted)!important}
 body.superadmin-mode .sa-stat strong,body.superadmin-mode main h1,
 body.superadmin-mode main h2,body.superadmin-mode main h3{color:var(--if-ink)!important}
-@media(max-width:640px){
- body:has(.if-hamburger-menu) .wrap{width:calc(100% - 24px)!important;padding:16px 0 32px!important}
- body:has(.if-hamburger-menu) .if-hamburger-menu{top:66px!important;right:12px!important}
+@media(max-width:760px){
+ body:has(.if-left-sidebar) main.wrap:has(> .if-left-sidebar),
+ body:has(.if-left-sidebar) main.wrap:has(> .nav){
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:calc(100% - 24px)!important;
+  padding:16px 0 30px!important;row-gap:12px!important
+ }
+ body:has(.if-left-sidebar) main.wrap > .if-left-sidebar,
+ body:has(.if-left-sidebar) main.wrap > .nav{
+  position:relative!important;top:auto!important;grid-column:1!important;grid-row:1!important;
+  min-height:0!important;max-height:none!important;flex-direction:row!important;flex-wrap:nowrap!important;
+  overflow-x:auto!important;overflow-y:hidden!important;gap:7px!important;padding:9px!important;
+ }
+ body:has(.if-left-sidebar) main.wrap > .if-left-sidebar a,
+ body:has(.if-left-sidebar) main.wrap > .if-left-sidebar button,
+ body:has(.if-left-sidebar) main.wrap > .nav a,
+ body:has(.if-left-sidebar) main.wrap > .nav button{width:auto!important;min-width:max-content!important}
+ body:has(.if-left-sidebar) main.wrap > .head,
+ body:has(.if-left-sidebar) main.wrap > #globalStatus,
+ body:has(.if-left-sidebar) main.wrap > #message,
+ body:has(.if-left-sidebar) main.wrap > .tab-panel,
+ body:has(.if-left-sidebar) main.wrap > section,
+ body:has(.if-left-sidebar) main.wrap > .sa-grid,
+ body:has(.if-left-sidebar) main.wrap > .footer{grid-column:1!important}
 }
-
-
-/* LEFT WORKSPACE SIDEBAR — persistent navigation beside the page content. */
-body.agent-workspace .wrap:has(> .nav){
- display:grid!important;grid-template-columns:260px minmax(0,1fr)!important;
- grid-auto-flow:row!important;column-gap:24px!important;row-gap:16px!important;
- width:min(1540px,calc(100% - 44px))!important;max-width:1540px!important;
- margin:0 auto!important;padding:28px 0 48px!important;
-}
-body.agent-workspace .wrap:has(> .nav) > .head{grid-column:2!important;grid-row:1!important;min-width:0}
-body.agent-workspace .wrap:has(> .nav) > .nav{
- grid-column:1!important;grid-row:1 / span 30!important;position:sticky!important;top:88px!important;
- align-self:start!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;
- width:100%!important;min-width:0!important;min-height:calc(100vh - 112px)!important;
- height:max-content!important;max-height:calc(100vh - 104px)!important;overflow-y:auto!important;
- margin:0!important;padding:16px 12px!important;border:1px solid rgba(255,255,255,.14)!important;
- border-radius:16px!important;background:#17232d!important;box-shadow:0 14px 34px rgba(0,0,0,.22)!important;
-}
-body.agent-workspace .wrap:has(> .nav) > #globalStatus,
-body.agent-workspace .wrap:has(> .nav) > .tab-panel,
-body.agent-workspace .wrap:has(> .nav) > .footer{grid-column:2!important;min-width:0!important}
-body.agent-workspace .wrap:has(> .nav) > .nav button,
-body.agent-workspace .wrap:has(> .nav) > .nav .nav-link{
- display:flex!important;width:100%!important;min-height:44px!important;justify-content:flex-start!important;
- text-align:left!important;padding:11px 13px!important;border:1px solid rgba(255,255,255,.1)!important;
- border-radius:10px!important;background:#202d38!important;color:#eaf1f2!important;
-}
-body.agent-workspace .wrap:has(> .nav) > .nav button.active,
-body.agent-workspace .wrap:has(> .nav) > .nav button:hover,
-body.agent-workspace .wrap:has(> .nav) > .nav .nav-link:hover{
- background:linear-gradient(110deg,#96552f,#bd7547)!important;border-color:#d18a5b!important;color:#fff!important;
-}
-body.agent-workspace .if-menu-toggle{display:none!important}
-@media(max-width:900px){
- body.agent-workspace .wrap:has(> .nav){grid-template-columns:220px minmax(0,1fr)!important;width:calc(100% - 28px)!important;column-gap:16px!important}
-}
-@media(max-width:680px){
- body.agent-workspace .wrap:has(> .nav){display:flex!important;flex-direction:column!important;width:calc(100% - 24px)!important;padding-top:16px!important}
- body.agent-workspace .wrap:has(> .nav) > .nav{position:relative!important;top:auto!important;width:100%!important;min-height:0!important;max-height:none!important;grid-row:auto!important}
-}
+@media(prefers-reduced-motion:reduce){body:has(.if-left-sidebar) *{scroll-behavior:auto!important;transition:none!important}}

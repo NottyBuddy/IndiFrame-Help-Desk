@@ -61,7 +61,9 @@
   const topbar=document.querySelector(".topbar");
   if(topbar&&!nav){
     const bar=makeWorkspaceNav();
-    topbar.insertAdjacentElement("afterend",bar);
+    const workspace=document.querySelector("main.wrap");
+    if(workspace)workspace.insertBefore(bar,workspace.firstChild);
+    else topbar.insertAdjacentElement("afterend",bar);
     applyRoleNavigation(bar);
   }else if(!topbar&&!nav&&document.querySelector(".panel")){
     const header=document.createElement("header");
