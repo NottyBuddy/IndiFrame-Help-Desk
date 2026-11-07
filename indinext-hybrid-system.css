@@ -460,3 +460,58 @@ body.superadmin-mode main h2,body.superadmin-mode main h3{color:var(--if-ink)!im
  body:has(.if-left-sidebar) main.wrap > .footer{grid-column:1!important}
 }
 @media(prefers-reduced-motion:reduce){body:has(.if-left-sidebar) *{scroll-behavior:auto!important;transition:none!important}}
+
+
+/* Super Admin visual correction — keep the dark operations theme coherent.
+   Overrides the earlier light Super Admin normalization that caused dark cards
+   to sit on a pale canvas and made the white heading unreadable. */
+body.superadmin-mode{
+ --if-page:#111318;--if-ink:#f0eee9;--if-muted:#aeb7c2;
+ --if-line:rgba(255,255,255,.13);--if-surface:#191c22;--if-surface-soft:#20242c;
+ --if-nav:#17232d;--if-nav-raised:#22323d;--if-nav-text:#edf2f4;
+ background:#111318!important;color:#f0eee9!important;
+}
+body.superadmin-mode main h1,
+body.superadmin-mode main h2,
+body.superadmin-mode main h3,
+body.superadmin-mode main .head h1{color:#f5f1eb!important}
+body.superadmin-mode main p,
+body.superadmin-mode main .muted,
+body.superadmin-mode main .sa-msg,
+body.superadmin-mode main .sa-stat span,
+body.superadmin-mode main .sa-stat small{color:#aeb7c2!important}
+body.superadmin-mode main .card,
+body.superadmin-mode main>.card,
+body.superadmin-mode main .sa-stat,
+body.superadmin-mode main .sa-edit-dialog{
+ color:#f0eee9!important;
+ background:linear-gradient(145deg,#20242c,#171a20 72%,#111318)!important;
+ border:1px solid rgba(255,255,255,.13)!important;
+ box-shadow:0 16px 38px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.06)!important;
+ -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+body.superadmin-mode main .sa-stat strong{color:#f4c19b!important}
+body.superadmin-mode main .sa-form label,
+body.superadmin-mode main>section>label{color:#d9dfe6!important}
+body.superadmin-mode main input,
+body.superadmin-mode main select,
+body.superadmin-mode main textarea,
+body.superadmin-mode main input[type=file]{
+ color:#f0eee9!important;background:#11151b!important;
+ border:1px solid rgba(255,255,255,.18)!important;
+}
+body.superadmin-mode main input::file-selector-button{
+ color:#f5f1eb;background:#29313b;border:1px solid rgba(255,255,255,.18);
+ border-radius:7px;padding:6px 9px;margin-right:8px;
+}
+body.superadmin-mode main .sa-table,
+body.superadmin-mode main .sa-table td{color:#e8edf2!important}
+body.superadmin-mode main .sa-table th{background:#252b34!important;color:#f0c19c!important}
+body.superadmin-mode main .sa-table td{background:#191d24!important;border-bottom:1px solid rgba(255,255,255,.09)!important}
+body.superadmin-mode main .sa-small{
+ color:#f0eee9!important;background:#292f38!important;
+ border:1px solid rgba(255,255,255,.16)!important;
+}
+body.superadmin-mode:has(.if-left-sidebar) main.wrap>.if-left-sidebar:before{
+ font-size:12px;line-height:1.35;overflow-wrap:anywhere;word-break:normal;
+}
