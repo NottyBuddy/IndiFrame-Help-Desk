@@ -1,5 +1,5 @@
 /* INDINEXT HYBRID DESIGN SYSTEM — shared visual layer
-   Theme: hybrid | Density: balanced | Navigation: collapsible
+   Theme: hybrid | Density: balanced | Navigation: top-bar hamburger
    This layer intentionally centralizes presentation without changing application data logic. */
 :root{
   color-scheme:light;
@@ -55,46 +55,6 @@ body.agent-mode .role-badge-button,body.cp-agent-view .cp-page-eyebrow{color:var
 body.admin-mode .role-badge-button{color:var(--if-teal)!important}
 body.agent-mode .overview-eyebrow,body.agent-mode .attendance-eyebrow{color:var(--if-copper)!important}
 body.admin-mode .section-eyebrow,body.admin-mode .break-eyebrow{color:var(--if-teal)!important}
-
-/* Unified dashboard navigation: expanded by default, icon rail when collapsed. */
-body:not(.if-sidebar-collapsed) .nav{background:var(--if-nav)!important;border:1px solid rgba(255,255,255,.08)!important;border-radius:15px!important;padding:12px!important;box-shadow:var(--if-shadow)}
-body:not(.if-sidebar-collapsed) .nav button,body:not(.if-sidebar-collapsed) .nav .nav-link{color:#eaf1f2!important;border-radius:10px!important;text-decoration:none}
-body:not(.if-sidebar-collapsed) .nav button:hover,body:not(.if-sidebar-collapsed) .nav .nav-link:hover{background:rgba(255,255,255,.09)!important}
-body:not(.if-sidebar-collapsed) .nav button.active,body:not(.if-sidebar-collapsed) .nav .admin-side-link.active{background:rgba(184,115,69,.2)!important;color:#f2c5a5!important}
-.if-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:8px 12px;margin:0 0 12px;border:1px solid var(--if-line);border-radius:10px;background:#fff;color:var(--if-ink);font-weight:650;cursor:pointer}
-.if-sidebar-collapsed .wrap{grid-template-columns:76px minmax(0,1fr)!important;column-gap:22px!important}
-.if-sidebar-collapsed .nav{width:76px;min-width:76px;overflow:visible;padding:10px 8px!important;align-items:stretch}
-.if-sidebar-collapsed .nav button,.if-sidebar-collapsed .nav .nav-link{font-size:0!important;justify-content:center!important;padding:12px 6px!important;min-height:44px;white-space:nowrap}
-.if-sidebar-collapsed .nav button::first-letter,.if-sidebar-collapsed .nav .nav-link::first-letter{font-size:0}
-.if-sidebar-collapsed .nav button[data-view]::after{font-size:11px}
-.if-sidebar-collapsed .nav button[data-view="overview"]::after{content:"OV"}
-.if-sidebar-collapsed .nav button[data-view="kpis"]::after{content:"KP"}
-.if-sidebar-collapsed .nav button[data-view="attendance"]::after{content:"AT"}
-.if-sidebar-collapsed .nav button[data-view="quiz"]::after{content:"QZ"}
-.if-sidebar-collapsed .nav button[data-view="admin"]::after{content:"AD"}
-.if-sidebar-collapsed .nav .nav-link{font-size:0!important}
-.if-sidebar-collapsed .nav .nav-link[href="breaks.html"]::after{content:"BR";font-size:11px}
-.if-sidebar-collapsed .nav .nav-link[href="call-performance.html"]::after{content:"CP";font-size:11px}
-.if-sidebar-collapsed .nav .nav-link[href="change-password.html"]::after{content:"PW";font-size:11px}
-.if-sidebar-collapsed .nav .nav-link[href="superadmin.html"]::after{content:"SA";font-size:11px}
-.if-sidebar-collapsed .nav button::after,.if-sidebar-collapsed .nav .nav-link::after{font-weight:800;letter-spacing:.04em;color:inherit}
-.if-sidebar-collapsed .nav button,.if-sidebar-collapsed .nav .nav-link{position:relative}
-.if-sidebar-collapsed .nav button:hover::before,.if-sidebar-collapsed .nav .nav-link:hover::before{content:attr(aria-label);position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);z-index:60;padding:7px 10px;border-radius:8px;background:#111c24;color:#fff;font-size:12px;box-shadow:var(--if-shadow)}
-@media(max-width:900px){
- body.if-sidebar-collapsed .wrap{grid-template-columns:1fr!important}
- .wrap{width:min(100% - 28px,1480px);padding-top:18px}
- body.if-sidebar-collapsed .nav{width:100%;min-width:0}
- body.if-sidebar-collapsed .nav button,body.if-sidebar-collapsed .nav .nav-link{font-size:13px!important}
- body.if-sidebar-collapsed .nav button::after,body.if-sidebar-collapsed .nav .nav-link::after{content:none!important}
-}
-@media(max-width:640px){
- .topbar{min-height:60px;padding:10px 14px}
- .wrap{width:calc(100% - 24px);padding:16px 0 32px}
- .card,.section-data,.break-card,.overview-block,.overview-panel{border-radius:13px!important;padding:16px!important}
- .topright{gap:8px;flex-wrap:wrap}
- table{min-width:560px}
-}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 /* Shared navigation for standalone workspace pages. */
 .if-workspace-nav{position:sticky;top:68px;z-index:35;display:flex;align-items:center;gap:7px;overflow-x:auto;padding:10px clamp(14px,3vw,34px);background:#22323d;border-bottom:1px solid rgba(255,255,255,.09);scrollbar-width:thin}
@@ -411,4 +371,25 @@ body.password-workspace #status{min-height:22px;margin-top:12px}
  .if-menu-toggle{min-height:38px;padding:7px 10px!important}
  .if-menu-toggle-label{display:none}
  .if-hamburger-menu{top:66px!important;right:12px!important}
+}
+
+/* Final navigation geometry: replace all legacy sidebar layouts with one top-bar menu. */
+body.admin-mode .wrap:has(.if-hamburger-menu){
+ display:block!important;grid-template-columns:minmax(0,1fr)!important;column-gap:0!important;
+ row-gap:0!important;width:min(1480px,100% - 40px)!important;max-width:1480px!important;
+ min-height:0!important;margin:0 auto!important;padding:26px 0 48px!important;
+}
+body.admin-mode .if-hamburger-menu,
+body.agent-workspace .if-hamburger-menu{
+ position:fixed!important;top:76px!important;right:clamp(12px,3vw,34px)!important;
+ left:auto!important;bottom:auto!important;width:min(340px,calc(100vw - 24px))!important;
+ min-width:0!important;height:auto!important;min-height:0!important;max-height:calc(100vh - 92px)!important;
+ margin:0!important;display:none!important;flex-direction:column!important;align-items:stretch!important;
+ overflow:auto!important;z-index:1000!important;
+}
+body.admin-mode .if-hamburger-menu.is-open,
+body.agent-workspace .if-hamburger-menu.is-open{display:flex!important}
+@media(max-width:640px){
+ body.admin-mode .wrap:has(.if-hamburger-menu){width:calc(100% - 24px)!important;padding:16px 0 32px!important}
+ body.admin-mode .if-hamburger-menu,body.agent-workspace .if-hamburger-menu{top:66px!important;right:12px!important}
 }
