@@ -1,5 +1,5 @@
 /* INDINEXT Fresh Frontend — unified visual layer (UI only; existing page scripts/API remain intact) */
-:root{--if-bg:#100b14;--if-panel:rgba(49,27,53,.52);--if-panel-strong:rgba(35,22,40,.88);--if-line:rgba(226,216,238,.15);--if-text:#f7f5f2;--if-muted:#c5bacb;--if-blue:#bfd df2;--if-peach:#f4b39a;--if-lav:#cfc4e8;--if-copper:#c87543;--if-radius:20px}
+:root{--if-bg:#100b14;--if-panel:rgba(49,27,53,.52);--if-panel-strong:rgba(35,22,40,.88);--if-line:rgba(226,216,238,.15);--if-text:#f7f5f2;--if-muted:#c5bacb;--if-blue:#bfddf2;--if-peach:#f4b39a;--if-lav:#cfc4e8;--if-copper:#c87543;--if-radius:20px}
 html{scroll-behavior:smooth}
 body:not(.helpdesk-login){background:radial-gradient(ellipse at 15% 0%,rgba(111,76,128,.18),transparent 38%),radial-gradient(ellipse at 100% 100%,rgba(90,132,166,.12),transparent 34%),#100b14!important;color:var(--if-text)!important;font-family:"DM Sans",Manrope,system-ui,sans-serif!important}
 body:not(.helpdesk-login) :is(h1,h2,h3,h4,.page-title,.section-title){font-family:Manrope,"DM Sans",sans-serif;letter-spacing:-.025em}
