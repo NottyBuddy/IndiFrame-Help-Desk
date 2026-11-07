@@ -3,6 +3,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg"><title>Indinext — Superadmin</title><link rel="stylesheet" href="dashboard.css">
   <link rel="stylesheet" href="portal-clean.css?v=portal-ui-v2-20261105">
   <link rel="stylesheet" href="preloader.css?v=indinext-loader-snake-v3-20261105">
+  <link rel="stylesheet" href="indinext-hybrid-system.css?v=shared-sidebar-v2-20261107">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><style>
 :root{--sa-navy:#18364b;--sa-teal:#159b91;--sa-violet:#7867d8;--sa-amber:#e5a43b}
 body{background:radial-gradient(ellipse at 8% 0%,rgba(21,155,145,.15),transparent 34%),radial-gradient(ellipse at 95% 8%,rgba(120,103,216,.14),transparent 32%),linear-gradient(145deg,#eef4f7,#e8eff5 55%,#f4f1ec)}
@@ -73,5 +74,5 @@ body:not(:has(.login-layout)) .sa-table tr:hover td{background:rgba(255,255,255,
 <section class="card"><div class="head"><h2>All Employee Accounts</h2><button id="refreshBtn" class="sa-small">Refresh</button></div><div id="accountList" class="empty">Loading accounts…</div></section>
 </div></main>
 <dialog id="accountEditDialog" class="sa-edit-dialog"><form id="accountEditForm" class="sa-form"><h2>Edit Account</h2><input id="editAccountId" type="hidden"><label>Employee ID<input id="editEmployeeId" required maxlength="50"></label><label>Full Name<input id="editFullName" required maxlength="160"></label><label>Role<select id="editRole"><option value="agent">Agent</option><option value="admin">Admin</option></select></label><div class="sa-actions"><button class="sa-btn" type="submit">Save Changes</button><button class="sa-small" id="cancelAccountEdit" type="button">Cancel</button></div></form></dialog>
-<script src="api.js"></script><script src="superadmin.js?v=analytics-v1-20261105"></script><script src="attendance-workbook-import.js?v=1"></script><script src="call-performance-import.js?v=6"></script><script src="indinext-workspace-ui.js?v=hybrid-ui-v1"></script>
+<script src="api.js"></script><script src="superadmin.js?v=analytics-v1-20261105"></script><script src="attendance-workbook-import.js?v=1"></script><script src="call-performance-import.js?v=6"></script><script src="indinext-workspace-ui.js?v=shared-sidebar-v2-20261107"></script>
 </body></html>
