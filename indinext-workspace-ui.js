@@ -1,4 +1,4 @@
-/* INDINEXT shared workspace navigation enhancement. No API or data logic. */
+/* INDINEXT shared workspace navigation enhancement. Presentation only. */
 (function(){
   "use strict";
   const body=document.body;
@@ -11,24 +11,27 @@
     toggle.setAttribute("aria-expanded","true");
     toggle.textContent="☰  Collapse navigation";
     nav.id="if-dashboard-navigation";
+    const decorate=()=>{
+      nav.querySelectorAll("button:not(.if-sidebar-toggle),a").forEach(el=>{
+        const label=(el.textContent||"").trim();
+        if(label){el.setAttribute("aria-label",label);el.setAttribute("title",label);}
+      });
+    };
     nav.insertBefore(toggle,nav.firstChild);
-    const observer=new MutationObserver(()=>{if(!toggle.isConnected)nav.insertBefore(toggle,nav.firstChild);});
-    observer.observe(nav,{childList:true});
-    const labels=new Map();
-    nav.querySelectorAll("button,a").forEach(el=>{
-      const label=(el.textContent||"").trim();
-      if(label){el.setAttribute("aria-label",label);el.setAttribute("title",label);labels.set(el,label);}
+    const observer=new MutationObserver(()=>{
+      if(!toggle.isConnected)nav.insertBefore(toggle,nav.firstChild);
+      decorate();
     });
-    const setCollapsed=(collapsed)=>{
+    observer.observe(nav,{childList:true});
+    decorate();
+    const setCollapsed=collapsed=>{
       body.classList.toggle("if-sidebar-collapsed",collapsed);
       toggle.setAttribute("aria-expanded",String(!collapsed));
       toggle.textContent=collapsed?"☰  Expand navigation":"☰  Collapse navigation";
       toggle.setAttribute("aria-label",collapsed?"Expand navigation":"Collapse navigation");
     };
     toggle.addEventListener("click",()=>setCollapsed(!body.classList.contains("if-sidebar-collapsed")));
-    if(window.matchMedia&&window.matchMedia("(max-width: 900px)").matches)setCollapsed(false);
   }
-  // Standardize the identity label across all authenticated workspaces.
   const brand=document.querySelector(".topbar .brand");
   if(brand&&/indinext/i.test(brand.textContent))brand.textContent="INDINEXT";
 })();
