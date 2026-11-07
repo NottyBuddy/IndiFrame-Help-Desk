@@ -1,121 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#160d1b">
+  <meta name="description" content="Secure employee access to the Help Desk workspace.">
+  <title>Help Desk — Employee Access</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <title>INDINEXT | Employee Portal</title>
-  <link rel="stylesheet" href="login.css?v=clean-login-v2-20261105">
-  <link rel="stylesheet" href="preloader.css?v=indinext-loader-snake-v3-20261105">
-  <link rel="stylesheet" href="indinext-premium.css?v=indinext-ember-glass-20261105">
-  <link rel="stylesheet" href="indinext-auth-refinement.css?v=auth-glass-v1-20261105">
-  <link rel="stylesheet" href="indinext-liquid-glass.css?v=dark-glass-v1-20261106">
-  <link rel="stylesheet" href="indinext-hybrid-system.css?v=hybrid-ui-v2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="login.css?v=starfield-glass-v1">
 </head>
-<body>
-<script src="preloader.js?v=indinext-loader-snake-v3-20261105"></script>
-<main class="login-layout">
-<section class="login-showcase">
-<div class="showcase-brand"><span class="brand-mark">I</span><span>INDINEXT</span></div>
-<div class="abstract-scene material-scene" aria-hidden="true">
-  <div class="material-halo"></div>
-  <div class="glass-slab slab-back"></div>
-  <div class="glass-slab slab-mid"></div>
-  <div class="glass-slab slab-front"><span class="slab-reflection"></span></div>
-  <div class="champagne-filament filament-a"></div>
-  <div class="champagne-filament filament-b"></div>
-  <div class="material-glint"></div>
-  <div class="material-caption">EUROPEAN ENGINEERING <span>—</span> REFINED MATERIALS</div>
-</div>
-<div class="showcase-copy">
-  <div class="showcase-eyebrow">INDINEXT · PREMIUM WINDOWS &amp; DOORS</div>
-  <h2>Crafted to fit.<br><em>Installed to last.</em></h2>
-  <p>European-inspired engineering, refined materials and precision-crafted solutions for modern spaces.</p>
-</div>
-</section><section class="login-shell">
-    <h1>Indinext</h1>
-    <p class="subtitle">Employee Login Portal</p>
-
-    <form id="loginForm" novalidate>
-      <div class="field">
-        <label for="employeeId">Employee ID</label>
-        <input id="employeeId" name="employeeId" autocomplete="username" placeholder="Enter employee ID" required>
+<body class="helpdesk-login">
+  <div class="starfield" id="starfield" aria-hidden="true"></div>
+  <div class="ambient ambient-blue" aria-hidden="true"></div>
+  <div class="ambient ambient-peach" aria-hidden="true"></div>
+  <main class="login-stage">
+    <section class="brand-stage" aria-label="Help Desk">
+      <div class="brand-orbit-scene">
+        <div class="orbit-track" aria-hidden="true">
+          <div class="orbit-node node-support"><div class="orbit-card"><span class="orbit-icon">✦</span><span>Support</span></div></div>
+          <div class="orbit-node node-analytics"><div class="orbit-card"><span class="orbit-icon">▥</span><span>Analytics</span></div></div>
+          <div class="orbit-node node-team"><div class="orbit-card"><span class="orbit-icon">♧</span><span>Team</span></div></div>
+          <div class="orbit-node node-secure"><div class="orbit-card"><span class="orbit-icon">◇</span><span>Secure</span></div></div>
+        </div>
+        <div class="hero-emblem" aria-hidden="true">
+          <div class="emblem-halo"></div>
+          <svg viewBox="0 0 240 240" role="img" aria-label="">
+            <defs>
+              <linearGradient id="headsetStroke" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#d8eafa"/>
+                <stop offset=".55" stop-color="#cfc4e8"/>
+                <stop offset="1" stop-color="#f4b39a"/>
+              </linearGradient>
+              <linearGradient id="copperMark" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#c87543"/>
+                <stop offset="1" stop-color="#f0a36d"/>
+              </linearGradient>
+            </defs>
+            <circle cx="120" cy="120" r="92" fill="rgba(255,255,255,.025)" stroke="rgba(224,218,241,.2)" stroke-width="1"/>
+            <path d="M55 119v-9a65 65 0 0 1 130 0v9" fill="none" stroke="url(#headsetStroke)" stroke-width="11" stroke-linecap="round"/>
+            <rect x="47" y="112" width="25" height="53" rx="12" fill="#c7dff2" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+            <rect x="168" y="112" width="25" height="53" rx="12" fill="#c7dff2" stroke="rgba(255,255,255,.7)" stroke-width="2"/>
+            <path d="M168 158c-7 22-24 34-48 34h-8" fill="none" stroke="url(#headsetStroke)" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="102" cy="100" r="22" fill="#e8e3f0"/>
+            <path d="M65 166c5-28 19-42 37-42s33 14 38 42" fill="#bbaed4" stroke="#e9e4f3" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M132 145h23a13 13 0 0 1 0 26h-23" fill="none" stroke="url(#copperMark)" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="155" cy="158" r="4" fill="#f0a36d"/>
+            <path d="M93 99c5-9 15-12 24-8" fill="none" stroke="#8d7b9d" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span class="emblem-spark spark-one"></span><span class="emblem-spark spark-two"></span><span class="emblem-spark spark-three"></span>
+        </div>
       </div>
-
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+      <div class="brand-copy">
+        <p class="eyebrow">EMPLOYEE WORKSPACE</p>
+        <h1>Help Desk</h1>
+        <p class="tagline">Crafted to Fit. Installed to Last.</p>
+        <p class="brand-description">One connected workspace for people, performance and support.</p>
       </div>
+    </section>
 
-      <button id="loginButton" type="submit">Login</button>
-      <div id="message" class="message" role="status" aria-live="polite"></div>
-    </form>
-</section></main>
-
-  <script>
-    const API = 'https://indiframe-helpdesk-api.mukuls2302.workers.dev';
-    const showMessage = (text, type = 'error') => {
-      const message = document.getElementById('message');
-      message.textContent = text;
-      message.className = 'message ' + (type === 'success' ? 'success' : '');
-    };
-
-    document.getElementById('loginForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const employeeId = document.getElementById('employeeId').value.trim();
-      const password = document.getElementById('password').value;
-      const button = document.getElementById('loginButton');
-
-      if (!employeeId || !password) {
-        showMessage('Please enter both Employee ID and password.');
-        return;
-      }
-
-      button.disabled = true;
-      showMessage('Logging in...');
-
-      try {
-        const response = await fetch(API + '/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ employeeId, password })
-        });
-
-        let data = {};
-        try { data = await response.json(); } catch {}
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Invalid Employee ID or password');
-        }
-
-        if (!data.token) {
-          throw new Error('Login response mein token nahi mila.');
-        }
-
-        sessionStorage.setItem('indiframe_token', data.token);
-
-        const shouldForcePasswordChange = data.mustChangePassword === true;
-
-        if (shouldForcePasswordChange) {
-          sessionStorage.setItem('forcePasswordChange', 'true');
-          showMessage('Default password detected. Redirecting to password change...', 'success');
-          setTimeout(() => window.location.href = 'change-password.html', 500);
-          return;
-        }
-
-        sessionStorage.setItem('forcePasswordChange', 'false');
-        showMessage('Login successful! Opening dashboard...', 'success');
-        setTimeout(() => window.location.href = 'dashboard.html', 500);
-      } catch (error) {
-        const text = error.message === 'Failed to fetch'
-          ? 'Server se connect nahi ho raha. API settings check karein.'
-          : error.message;
-        showMessage(text);
-      } finally {
-        button.disabled = false;
-      }
-    });
-  </script>
+    <section class="login-panel" aria-labelledby="login-title">
+      <div class="glass-card">
+        <div class="card-topline"><span class="status-dot"></span><span>SECURE ACCESS</span></div>
+        <div class="card-heading">
+          <p class="card-kicker">WELCOME BACK</p>
+          <h2 id="login-title">Sign in</h2>
+          <p>Enter your employee credentials to continue.</p>
+        </div>
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="employeeId">Employee ID</label>
+            <input id="employeeId" name="employeeId" autocomplete="username" placeholder="Enter your Employee ID" required>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+          </div>
+          <button id="loginButton" type="submit"><span>Sign in to workspace</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+          <div id="message" class="message" role="status" aria-live="polite"></div>
+        </form>
+        <div class="card-footer"><span class="footer-shield">◇</span> Your workspace is protected by secure sign-in.</div>
+      </div>
+    </section>
+  </main>
+  <script src="login.js?v=starfield-glass-v1" defer></script>
 </body>
 </html>
