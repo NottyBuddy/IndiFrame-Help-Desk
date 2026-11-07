@@ -65,3 +65,11 @@ body.helpdesk-login{min-height:100vh;overflow-x:hidden;position:relative;isolati
 @media(max-width:850px){.login-stage{grid-template-columns:1fr;gap:6px;max-width:600px;padding:18px 0}.brand-orbit-scene{width:min(88vw,390px)}.hero-emblem{width:clamp(170px,36vw,220px)}.brand-copy{margin-top:-14px}.brand-copy h1{font-size:48px}.login-panel{max-width:440px}.login-stage{min-height:0}}
 @media(max-width:480px){body.helpdesk-login{padding:12px}.login-stage{gap:0}.brand-orbit-scene{width:min(88vw,310px)}.hero-emblem{width:165px}.orbit-card{width:94px;min-height:42px;padding:7px 8px;font-size:10px}.orbit-node{width:98px}.brand-copy h1{font-size:41px}.brand-description{margin-top:10px}.glass-card{padding:26px 23px;border-radius:22px}.card-heading{margin:27px 0 23px}.card-heading h2{font-size:32px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+
+/* Ultra-narrow phones: keep orbit cards inside the viewport. */
+@media (max-width: 380px) {
+  .brand-orbit-scene .orbit-track {
+    inset: 18%;
+  }
+}
