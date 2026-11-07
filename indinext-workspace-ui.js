@@ -73,8 +73,9 @@
     applyRoleNavigation(bar);
   }
   const addMenuButton=(menu)=>{
-    if(!topbar)return;
-    const right=topbar.querySelector(".topright")||topbar;
+    const activeTopbar=document.querySelector(".topbar");
+    if(!activeTopbar)return;
+    const right=activeTopbar.querySelector(".topright")||activeTopbar;
     const toggle=document.createElement("button");
     toggle.type="button";
     toggle.className="if-menu-toggle";
