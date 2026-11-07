@@ -1,0 +1,94 @@
+/* INDINEXT — unified smoked liquid-glass system (authenticated workspaces only) */
+body.agent-workspace,body.admin-workspace,body.superadmin-mode{
+ --lg-bg:#090a0c;--lg-text:#f7f2ed;--lg-muted:#d0c5bb;--lg-line:rgba(255,255,255,.13);
+ --lg-glass:rgba(30,28,27,.64);--lg-glass-strong:rgba(24,23,22,.82);--lg-orange:#ef9458;
+ color:var(--lg-text)!important;
+ background:radial-gradient(ellipse at 12% 0%,rgba(218,111,57,.22),transparent 36%),
+ radial-gradient(ellipse at 92% 12%,rgba(151,79,43,.18),transparent 34%),
+ linear-gradient(135deg,#08090b 0%,#171412 52%,#2d1b13 100%) fixed!important;
+ color-scheme:dark;
+}
+body.agent-workspace :is(.topbar,.nav,.if-left-sidebar,main .card,main .panel,main .section,main .sa-stat,
+main .sa-edit-dialog,main .section-hero,main .section-filters,main .section-metric,main .overview-block,
+main .overview-panel,main .overview-metric-card,main .attendance-summary-card,main .stat-card,
+main .metric-card,main .kpi-card,main .break-card,main .cp-card,main .cp-kpi,main .cp-section,
+main .cp-chart-panel,main .admin-chart-card,main .admin-module-card,main .break-monitoring-panel,
+main .tile,main .widget,main .report-card),
+body.admin-workspace :is(.topbar,.nav,.if-left-sidebar,main .card,main .panel,main .section,main .sa-stat,
+main .sa-edit-dialog,main .section-hero,main .section-filters,main .section-metric,main .overview-block,
+main .overview-panel,main .overview-metric-card,main .attendance-summary-card,main .stat-card,
+main .metric-card,main .kpi-card,main .break-card,main .cp-card,main .cp-kpi,main .cp-section,
+main .cp-chart-panel,main .admin-chart-card,main .admin-module-card,main .break-monitoring-panel,
+main .tile,main .widget,main .report-card),
+body.superadmin-mode :is(.topbar,.nav,.if-left-sidebar,main .card,main .panel,main .section,main .sa-stat,
+main .sa-edit-dialog,main .section-hero,main .section-filters,main .section-metric,main .overview-block,
+main .overview-panel,main .overview-metric-card,main .attendance-summary-card,main .stat-card,
+main .metric-card,main .kpi-card,main .break-card,main .cp-card,main .cp-kpi,main .cp-section,
+main .cp-chart-panel,main .admin-chart-card,main .admin-module-card,main .break-monitoring-panel,
+main .tile,main .widget,main .report-card){
+ color:var(--lg-text)!important;
+ background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035) 42%,rgba(8,9,11,.58))!important;
+ border:1px solid var(--lg-line)!important;border-radius:16px!important;
+ box-shadow:0 16px 42px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.12)!important;
+ -webkit-backdrop-filter:blur(22px) saturate(145%)!important;backdrop-filter:blur(22px) saturate(145%)!important;
+}
+body.agent-workspace .topbar,body.admin-workspace .topbar,body.superadmin-mode .topbar{
+ background:linear-gradient(100deg,rgba(12,12,13,.82),rgba(56,31,20,.72))!important;
+}
+body.agent-workspace .nav,body.admin-workspace .nav,body.superadmin-mode .nav,
+body.agent-workspace .if-left-sidebar,body.admin-workspace .if-left-sidebar,body.superadmin-mode .if-left-sidebar{
+ background:linear-gradient(180deg,rgba(38,34,31,.82),rgba(16,16,17,.78))!important;
+}
+body.agent-workspace main :is(h1,h2,h3,h4,h5,h6,p,small,label,span,strong,li,th,td,a),
+body.admin-workspace main :is(h1,h2,h3,h4,h5,h6,p,small,label,span,strong,li,th,td,a),
+body.superadmin-mode main :is(h1,h2,h3,h4,h5,h6,p,small,label,span,strong,li,th,td,a),
+body.agent-workspace .topbar *,body.admin-workspace .topbar *,body.superadmin-mode .topbar *,
+body.agent-workspace .nav *,body.admin-workspace .nav *,body.superadmin-mode .nav *{color:#f5eee8!important;text-shadow:none!important}
+body.agent-workspace main :is(.muted,.hint,.description,.subtitle,.helper-text,.sa-msg),
+body.admin-workspace main :is(.muted,.hint,.description,.subtitle,.helper-text,.sa-msg),
+body.superadmin-mode main :is(.muted,.hint,.description,.subtitle,.helper-text,.sa-msg){color:#d0c5bb!important}
+body.agent-workspace main :is(input,select,textarea),body.admin-workspace main :is(input,select,textarea),
+body.superadmin-mode main :is(input,select,textarea){
+ color:#fff8f2!important;background:rgba(7,8,10,.56)!important;border:1px solid rgba(255,255,255,.17)!important;
+ border-radius:10px!important;box-shadow:inset 0 1px rgba(255,255,255,.05)!important;
+ -webkit-backdrop-filter:blur(12px)!important;backdrop-filter:blur(12px)!important;
+}
+body.agent-workspace main :is(input,select,textarea)::placeholder,
+body.admin-workspace main :is(input,select,textarea)::placeholder,
+body.superadmin-mode main :is(input,select,textarea)::placeholder{color:#bfb3a9!important}
+body.agent-workspace main :is(button,.btn,.primary-btn,.sa-btn,[type=submit]),
+body.admin-workspace main :is(button,.btn,.primary-btn,.sa-btn,[type=submit]),
+body.superadmin-mode main :is(button,.btn,.primary-btn,.sa-btn,[type=submit]){
+ color:#fff8f2!important;background:linear-gradient(115deg,#a84f28,#ee9254)!important;
+ border:1px solid rgba(255,190,145,.42)!important;border-radius:10px!important;
+ box-shadow:0 7px 18px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.2)!important;
+}
+body.agent-workspace .nav :is(a,button,.nav-link).active,
+body.admin-workspace .nav :is(a,button,.nav-link).active,
+body.superadmin-mode .nav :is(a,button,.nav-link).active,
+body.agent-workspace .nav [aria-current=page],body.admin-workspace .nav [aria-current=page],body.superadmin-mode .nav [aria-current=page]{
+ color:#fff!important;background:linear-gradient(115deg,#a84f28,#ee9254)!important;border-color:rgba(255,190,145,.48)!important;
+}
+body.agent-workspace main table,body.admin-workspace main table,body.superadmin-mode main table{background:rgba(9,10,12,.38)!important;color:#f5eee8!important}
+body.agent-workspace main th,body.admin-workspace main th,body.superadmin-mode main th{background:rgba(255,255,255,.09)!important;color:#fff!important}
+body.agent-workspace main td,body.admin-workspace main td,body.superadmin-mode main td{background:rgba(0,0,0,.12)!important;color:#f2eae3!important;border-color:rgba(255,255,255,.09)!important}
+body.agent-workspace :is(.modal,.dialog,.dropdown-menu,.toast),body.admin-workspace :is(.modal,.dialog,.dropdown-menu,.toast),
+body.superadmin-mode :is(.modal,.dialog,.dropdown-menu,.toast){
+ color:#f5eee8!important;background:rgba(24,22,21,.92)!important;border:1px solid rgba(255,255,255,.16)!important;
+ -webkit-backdrop-filter:blur(24px) saturate(145%)!important;backdrop-filter:blur(24px) saturate(145%)!important;
+}
+body.agent-workspace main svg,body.admin-workspace main svg,body.superadmin-mode main svg{color:#f0a06c}
+@media(hover:hover){
+ body.agent-workspace main .card:hover,body.admin-workspace main .card:hover,body.superadmin-mode main .card:hover{
+  border-color:rgba(239,148,88,.32)!important;box-shadow:0 20px 48px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.14)!important;
+ }
+}
+@media(max-width:760px){
+ body.agent-workspace,body.admin-workspace,body.superadmin-mode{background:#0c0c0d!important}
+ body.agent-workspace main :is(.card,.panel),body.admin-workspace main :is(.card,.panel),body.superadmin-mode main :is(.card,.panel){
+  -webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body.agent-workspace *,body.admin-workspace *,body.superadmin-mode *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
