@@ -80,6 +80,7 @@ body:not(.if-sidebar-collapsed) .nav button.active,body:not(.if-sidebar-collapse
 .if-sidebar-collapsed .nav button,.if-sidebar-collapsed .nav .nav-link{position:relative}
 .if-sidebar-collapsed .nav button:hover::before,.if-sidebar-collapsed .nav .nav-link:hover::before{content:attr(aria-label);position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);z-index:60;padding:7px 10px;border-radius:8px;background:#111c24;color:#fff;font-size:12px;box-shadow:var(--if-shadow)}
 @media(max-width:900px){
+ body.if-sidebar-collapsed .wrap{grid-template-columns:1fr!important}
  .wrap{width:min(100% - 28px,1480px);padding-top:18px}
  body.if-sidebar-collapsed .nav{width:100%;min-width:0}
  body.if-sidebar-collapsed .nav button,body.if-sidebar-collapsed .nav .nav-link{font-size:13px!important}
