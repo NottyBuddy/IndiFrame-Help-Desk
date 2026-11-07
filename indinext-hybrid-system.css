@@ -174,3 +174,75 @@ body.superadmin-mode .sa-edit-dialog::backdrop{background:rgba(23,35,45,.42)}
  body.superadmin-mode .sa-actions button{flex:1 1 145px}
 }
 @media(max-width:420px){body.superadmin-mode .sa-analytics-grid{grid-template-columns:minmax(0,1fr)}}
+
+
+/* Admin reporting workspace — hybrid surfaces, teal role accent, readable tables. */
+body.admin-workspace{background:var(--if-page)!important;color:var(--if-ink)!important}
+body.admin-workspace .section-hero,
+body.admin-workspace .section-filters,
+body.admin-workspace .section-data,
+body.admin-workspace .attendance-excel-panel,
+body.admin-workspace .break-monitoring-panel{
+ color:var(--if-ink)!important;background:var(--if-surface)!important;
+ border:1px solid var(--if-line)!important;border-radius:var(--if-radius)!important;
+ box-shadow:var(--if-shadow)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body.admin-workspace .section-hero{background:linear-gradient(120deg,#fff 0%,#f1f8f6 100%)!important}
+body.admin-workspace .section-eyebrow,
+body.admin-workspace .attendance-excel-eyebrow,
+body.admin-workspace .break-eyebrow{color:var(--if-teal)!important}
+body.admin-workspace main h1,
+body.admin-workspace main h2,
+body.admin-workspace main h3,
+body.admin-workspace .section-metric strong,
+body.admin-workspace .section-data-head h2{color:var(--if-ink)!important}
+body.admin-workspace .section-hero p,
+body.admin-workspace .section-data p,
+body.admin-workspace .attendance-excel-head p,
+body.admin-workspace .attendance-excel-state span{color:var(--if-muted)!important}
+body.admin-workspace .section-metric{background:var(--if-surface-soft)!important;border:1px solid var(--if-line)!important;box-shadow:none!important}
+body.admin-workspace .section-filters label,
+body.admin-workspace .break-monitor-filters label{color:var(--if-ink)!important}
+body.admin-workspace .section-filters input,
+body.admin-workspace .section-filters select,
+body.admin-workspace .break-monitor-filters input,
+body.admin-workspace .break-monitor-filters select{background:#fff!important;color:var(--if-ink)!important;border:1px solid #cbd7da!important}
+body.admin-workspace .section-table,
+body.admin-workspace .break-live-table,
+body.admin-workspace .break-acw-table{background:#fff!important;border:1px solid var(--if-line)!important;border-radius:12px!important}
+body.admin-workspace .section-table th,
+body.admin-workspace .break-live-table th,
+body.admin-workspace .break-acw-table th{background:#edf3f2!important;color:#52636d!important}
+body.admin-workspace .section-table td,
+body.admin-workspace .break-live-table td,
+body.admin-workspace .break-acw-table td{background:#fff!important;color:var(--if-ink)!important;border-bottom:1px solid #e7edef!important}
+body.admin-workspace .section-table tbody tr:nth-child(even),
+body.admin-workspace .break-live-table tbody tr:nth-child(even),
+body.admin-workspace .break-acw-table tbody tr:nth-child(even){background:#f7faf9!important}
+body.admin-workspace .section-table tbody tr:hover td,
+body.admin-workspace .break-live-table tbody tr:hover td,
+body.admin-workspace .break-acw-table tbody tr:hover td{background:#f1f8f6!important}
+body.admin-workspace .attendance-excel-state{background:#fffaf3!important;border-color:#e8c9a9!important}
+body.admin-workspace .attendance-excel-state strong{color:#9a633b!important}
+body.admin-workspace .attendance-excel-statuses span{background:var(--if-surface-soft)!important;color:var(--if-muted)!important}
+body.admin-workspace .break-monitoring-heading p,
+body.admin-workspace .break-section-heading p{color:var(--if-muted)!important}
+body.admin-workspace .break-type-card,
+body.admin-workspace .break-acw-panel{background:var(--if-surface-soft)!important;border:1px solid var(--if-line)!important;color:var(--if-ink)!important}
+body.admin-workspace .break-type-card :is(h3,strong,b),
+body.admin-workspace .break-acw-state,
+body.admin-workspace .break-acw-state strong{color:var(--if-ink)!important}
+body.admin-workspace .break-status-tag{background:#edf3f2!important;color:#52636d!important}
+body.admin-workspace .break-status-tag.is-break{background:#fbefe4!important;color:#98603b!important}
+body.admin-workspace .break-status-tag.is-working{background:#e6f4ec!important;color:#26734a!important}
+body.admin-workspace .break-acw-icon{background:var(--if-copper-soft)!important;color:#925a36!important;border-color:#e6c7b1!important}
+body.admin-workspace .break-view-pill{background:var(--if-teal-soft)!important;color:#087b73!important}
+body.admin-workspace .break-live-indicator{color:#26734a!important}
+@media(max-width:620px){
+ body.admin-workspace .attendance-excel-panel,
+ body.admin-workspace .break-monitoring-panel,
+ body.admin-workspace .section-data{padding:16px!important}
+ body.admin-workspace .section-table table,
+ body.admin-workspace .break-live-table table,
+ body.admin-workspace .break-acw-table table{min-width:620px}
+}
