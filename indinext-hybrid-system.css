@@ -62,7 +62,7 @@ body:not(.if-sidebar-collapsed) .nav button,body:not(.if-sidebar-collapsed) .nav
 body:not(.if-sidebar-collapsed) .nav button:hover,body:not(.if-sidebar-collapsed) .nav .nav-link:hover{background:rgba(255,255,255,.09)!important}
 body:not(.if-sidebar-collapsed) .nav button.active,body:not(.if-sidebar-collapsed) .nav .admin-side-link.active{background:rgba(184,115,69,.2)!important;color:#f2c5a5!important}
 .if-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:8px 12px;margin:0 0 12px;border:1px solid var(--if-line);border-radius:10px;background:#fff;color:var(--if-ink);font-weight:650;cursor:pointer}
-.if-sidebar-collapsed .nav{width:76px;min-width:76px;overflow:visible;padding:10px 8px!important;align-items:stretch}
+.if-sidebar-collapsed .wrap{grid-template-columns:76px minmax(0,1fr)!important;column-gap:22px!important}\n.if-sidebar-collapsed .nav{width:76px;min-width:76px;overflow:visible;padding:10px 8px!important;align-items:stretch}
 .if-sidebar-collapsed .nav button,.if-sidebar-collapsed .nav .nav-link{font-size:0!important;justify-content:center!important;padding:12px 6px!important;min-height:44px;white-space:nowrap}
 .if-sidebar-collapsed .nav button::first-letter,.if-sidebar-collapsed .nav .nav-link::first-letter{font-size:0}
 .if-sidebar-collapsed .nav button[data-view]::after{font-size:11px}
