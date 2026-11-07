@@ -11,7 +11,7 @@
     toggle.setAttribute("aria-expanded","true");
     toggle.textContent="☰  Collapse navigation";
     nav.id="if-dashboard-navigation";
-    nav.parentNode.insertBefore(toggle,nav);
+    nav.insertBefore(toggle,nav.firstChild);
     const labels=new Map();
     nav.querySelectorAll("button,a").forEach(el=>{
       const label=(el.textContent||"").trim();
