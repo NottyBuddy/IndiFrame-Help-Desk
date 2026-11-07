@@ -515,3 +515,54 @@ body.superadmin-mode main .sa-small{
 body.superadmin-mode:has(.if-left-sidebar) main.wrap>.if-left-sidebar:before{
  font-size:12px;line-height:1.35;overflow-wrap:anywhere;word-break:normal;
 }
+
+
+/* CRM-inspired clean workspace layer. Login route is intentionally excluded. */
+body.agent-workspace,body.admin-workspace,body.superadmin-mode{
+ --if-page:#f5f6f8;--if-ink:#20252b;--if-muted:#707983;--if-line:#e2e6ea;
+ --if-surface:#fff;--if-surface-soft:#f8f9fa;--if-shadow:0 2px 10px rgba(24,35,45,.045);
+ background:#f5f6f8!important;color:#20252b!important;
+}
+body.agent-workspace .topbar,body.admin-workspace .topbar,body.superadmin-mode .topbar{
+ background:#fff!important;color:#20252b!important;border-bottom:1px solid #e5e8eb!important;
+ box-shadow:0 1px 3px rgba(20,30,40,.035)!important;
+}
+body.agent-workspace .topbar .brand,body.admin-workspace .topbar .brand,body.superadmin-mode .topbar .brand,
+body.agent-workspace .topbar .subtitle,body.admin-workspace .topbar .subtitle,body.superadmin-mode .topbar .subtitle{color:#20252b!important}
+body.agent-workspace .topbar .logout-btn,body.admin-workspace .topbar .logout-btn,body.superadmin-mode .topbar .logout-btn{
+ color:#39424b!important;background:#fff!important;border:1px solid #dfe4e8!important;box-shadow:none!important
+}
+body.agent-workspace .wrap,body.admin-workspace .wrap,body.superadmin-mode .wrap{padding-top:20px}
+body.agent-workspace main h1,body.agent-workspace main h2,body.agent-workspace main h3,
+body.admin-workspace main h1,body.admin-workspace main h2,body.admin-workspace main h3,
+body.superadmin-mode main h1,body.superadmin-mode main h2,body.superadmin-mode main h3{color:#20252b!important}
+body.agent-workspace main p,body.admin-workspace main p,body.superadmin-mode main p,
+body.agent-workspace .muted,body.admin-workspace .muted,body.superadmin-mode .muted{color:#707983!important}
+body.agent-workspace main .card,body.agent-workspace main .overview-block,body.agent-workspace main .overview-panel,
+body.agent-workspace main .overview-metric-card,body.agent-workspace main .attendance-summary-card,
+body.agent-workspace main .section-metric,body.agent-workspace main .cp-section,
+body.admin-workspace main .card,body.admin-workspace main .section-hero,body.admin-workspace main .section-filters,
+body.admin-workspace main .section-metric,body.admin-workspace main .break-monitoring-panel,
+body.superadmin-mode main .card,body.superadmin-mode main .sa-stat,body.superadmin-mode main .sa-edit-dialog{
+ background:#fff!important;color:#20252b!important;border:1px solid #e2e6ea!important;
+ border-radius:12px!important;box-shadow:0 2px 10px rgba(24,35,45,.045)!important;
+ -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+body.agent-workspace main .overview-metric-card,body.agent-workspace main .attendance-summary-card,
+body.agent-workspace main .section-metric,body.superadmin-mode main .sa-stat{background:#f8f9fa!important}
+body.agent-workspace main .overview-metric-card strong,body.agent-workspace main .attendance-summary-card strong,
+body.admin-workspace main .section-metric strong,body.superadmin-mode main .sa-stat strong{color:#20252b!important}
+body.agent-workspace main input,body.agent-workspace main select,body.agent-workspace main textarea,
+body.admin-workspace main input,body.admin-workspace main select,body.admin-workspace main textarea,
+body.superadmin-mode main input,body.superadmin-mode main select,body.superadmin-mode main textarea{
+ color:#20252b!important;background:#fff!important;border:1px solid #dfe4e8!important;border-radius:8px!important;box-shadow:none!important
+}
+body.agent-workspace main .primary-btn,body.admin-workspace main .primary-btn,
+body.superadmin-mode main .sa-btn{background:#168f86!important;border-color:#168f86!important;color:#fff!important;box-shadow:none!important}
+body.agent-workspace main th,body.admin-workspace main th,body.superadmin-mode main th{background:#f5f7f8!important;color:#414b55!important;border-bottom:1px solid #e2e6ea!important}
+body.agent-workspace main td,body.admin-workspace main td,body.superadmin-mode main td{color:#39424b!important;border-bottom:1px solid #edf0f2!important}
+body.agent-workspace .status,body.admin-workspace .status{background:#edf8f5!important;color:#53716a!important;border:1px solid #dcefe9!important}
+body.superadmin-mode{--if-page:#f5f6f8;--if-ink:#20252b;--if-muted:#707983;--if-line:#e2e6ea;--if-surface:#fff;--if-surface-soft:#f8f9fa}
+@media(max-width:760px){
+ body.agent-workspace .wrap,body.admin-workspace .wrap,body.superadmin-mode .wrap{width:calc(100% - 24px)!important;padding-top:12px!important}
+}
