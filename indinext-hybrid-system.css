@@ -405,3 +405,43 @@ body.superadmin-mode main h2,body.superadmin-mode main h3{color:var(--if-ink)!im
  body:has(.if-hamburger-menu) .wrap{width:calc(100% - 24px)!important;padding:16px 0 32px!important}
  body:has(.if-hamburger-menu) .if-hamburger-menu{top:66px!important;right:12px!important}
 }
+
+
+/* LEFT WORKSPACE SIDEBAR — persistent navigation beside the page content. */
+body.agent-workspace .wrap:has(> .nav){
+ display:grid!important;grid-template-columns:260px minmax(0,1fr)!important;
+ grid-auto-flow:row!important;column-gap:24px!important;row-gap:16px!important;
+ width:min(1540px,calc(100% - 44px))!important;max-width:1540px!important;
+ margin:0 auto!important;padding:28px 0 48px!important;
+}
+body.agent-workspace .wrap:has(> .nav) > .head{grid-column:2!important;grid-row:1!important;min-width:0}
+body.agent-workspace .wrap:has(> .nav) > .nav{
+ grid-column:1!important;grid-row:1 / span 30!important;position:sticky!important;top:88px!important;
+ align-self:start!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ width:100%!important;min-width:0!important;min-height:calc(100vh - 112px)!important;
+ height:max-content!important;max-height:calc(100vh - 104px)!important;overflow-y:auto!important;
+ margin:0!important;padding:16px 12px!important;border:1px solid rgba(255,255,255,.14)!important;
+ border-radius:16px!important;background:#17232d!important;box-shadow:0 14px 34px rgba(0,0,0,.22)!important;
+}
+body.agent-workspace .wrap:has(> .nav) > #globalStatus,
+body.agent-workspace .wrap:has(> .nav) > .tab-panel,
+body.agent-workspace .wrap:has(> .nav) > .footer{grid-column:2!important;min-width:0!important}
+body.agent-workspace .wrap:has(> .nav) > .nav button,
+body.agent-workspace .wrap:has(> .nav) > .nav .nav-link{
+ display:flex!important;width:100%!important;min-height:44px!important;justify-content:flex-start!important;
+ text-align:left!important;padding:11px 13px!important;border:1px solid rgba(255,255,255,.1)!important;
+ border-radius:10px!important;background:#202d38!important;color:#eaf1f2!important;
+}
+body.agent-workspace .wrap:has(> .nav) > .nav button.active,
+body.agent-workspace .wrap:has(> .nav) > .nav button:hover,
+body.agent-workspace .wrap:has(> .nav) > .nav .nav-link:hover{
+ background:linear-gradient(110deg,#96552f,#bd7547)!important;border-color:#d18a5b!important;color:#fff!important;
+}
+body.agent-workspace .if-menu-toggle{display:none!important}
+@media(max-width:900px){
+ body.agent-workspace .wrap:has(> .nav){grid-template-columns:220px minmax(0,1fr)!important;width:calc(100% - 28px)!important;column-gap:16px!important}
+}
+@media(max-width:680px){
+ body.agent-workspace .wrap:has(> .nav){display:flex!important;flex-direction:column!important;width:calc(100% - 24px)!important;padding-top:16px!important}
+ body.agent-workspace .wrap:has(> .nav) > .nav{position:relative!important;top:auto!important;width:100%!important;min-height:0!important;max-height:none!important;grid-row:auto!important}
+}
