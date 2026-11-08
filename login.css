@@ -559,10 +559,20 @@ body.helpdesk-login{background:radial-gradient(ellipse at 24% 52%,rgba(129,78,48
 @media(max-width:520px){.space-backdrop:after{top:11%;height:38%}.solar-scene{top:34%;width:130vw;opacity:.4}.login-panel .glass-card{border-radius:24px}}
 
 
-/* Cinematic intro branding: logo reveals with the black hole, then gently glows throughout the 15.5s sequence. */
-.cosmic-intro .intro-brand{opacity:0;animation:introBrandReveal 1.25s cubic-bezier(.2,.75,.25,1) .45s forwards,introBrandGlow 3.6s ease-in-out 1.7s infinite}
-.cosmic-intro .intro-tagline{opacity:0;animation:introTaglineReveal 1s ease .95s forwards}
-@keyframes introBrandReveal{0%{opacity:0;transform:translateY(15px);letter-spacing:.7em;filter:blur(7px)}100%{opacity:1;transform:translateY(0);letter-spacing:.42em;filter:blur(0)}}
-@keyframes introBrandGlow{0%,100%{text-shadow:0 0 15px rgba(225,145,88,.18);filter:brightness(1)}50%{text-shadow:0 0 28px rgba(225,145,88,.48),0 0 48px rgba(200,121,69,.2);filter:brightness(1.12)}}
-@keyframes introTaglineReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.cosmic-intro .intro-brand,.cosmic-intro .intro-tagline{opacity:1;animation:none!important;filter:none}}
+/* Opening sequence: only the black hole is visible for 15.5 seconds. */
+.cosmic-intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;background:#020306;opacity:1;visibility:visible;transition:opacity 1.05s ease,visibility 1.05s ease}
+.cosmic-intro.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.intro-black-hole{position:relative;width:clamp(190px,38vw,390px);aspect-ratio:1;display:grid;place-items:center}
+.intro-hole-halo{position:absolute;inset:2%;border-radius:50%;background:radial-gradient(circle,transparent 27%,rgba(246,150,80,.24) 43%,rgba(224,91,43,.12) 59%,transparent 74%);filter:blur(13px);animation:introHaloPulse 3.8s ease-in-out infinite}
+.intro-hole-ring{position:absolute;border-radius:50%;border-style:solid;filter:drop-shadow(0 0 16px rgba(255,148,76,.78))}
+.intro-hole-ring-outer{inset:13%;border-width:13px 4px 7px;border-color:rgba(255,218,159,.96) rgba(194,75,38,.78) rgba(255,151,76,.96) rgba(255,228,181,.72);transform:rotate(-24deg) scaleY(.39);animation:blackHoleSpin 8s linear infinite}
+.intro-hole-ring-inner{inset:27%;border-width:5px 2px;border-color:rgba(255,236,193,.98) rgba(221,103,51,.92);transform:rotate(38deg) scaleY(.44);animation:blackHoleSpin 5.4s linear infinite reverse}
+.intro-hole-core{position:absolute;inset:36%;border-radius:50%;background:#010102;box-shadow:0 0 26px 15px rgba(0,0,0,.98),0 0 58px 22px rgba(229,126,64,.3)}
+@keyframes introHaloPulse{0%,100%{opacity:.68;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
+.solar-scene .black-hole{display:none!important}
+.solar-scene .sun-core{display:grid!important;position:absolute;left:50%;top:50%;width:clamp(84px,10vw,132px);aspect-ratio:1;transform:translate(-50%,-50%);place-items:center;border-radius:50%;background:radial-gradient(circle at 36% 32%,#fff5d2 0%,#ffd58c 13%,#ed9a4e 43%,#a94e2d 73%,#351817 100%);box-shadow:0 0 26px 9px rgba(255,176,91,.36),0 0 88px 26px rgba(221,133,66,.23),0 0 190px 55px rgba(198,116,55,.12);animation:sunPulse 8s ease-in-out infinite;z-index:2}
+.solar-scene .sun-core:before,.solar-scene .sun-core:after{content:"";position:absolute;inset:-13%;border:1px solid rgba(255,190,116,.38);border-radius:50%;transform:rotate(-20deg) scaleY(.42)}
+.solar-scene .sun-core:after{inset:-25%;border-color:rgba(255,196,126,.18);transform:rotate(22deg) scaleY(.42)}
+.solar-scene .sun-label{position:relative;color:#311d17;font-size:clamp(8px,.85vw,11px);font-weight:900;letter-spacing:.12em;text-align:center}
+@media(max-width:520px){.intro-black-hole{width:min(68vw,300px)}}
+@media(prefers-reduced-motion:reduce){.intro-hole-halo,.intro-hole-ring,.solar-scene .sun-core{animation:none!important}}
