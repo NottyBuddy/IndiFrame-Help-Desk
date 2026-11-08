@@ -557,3 +557,12 @@ body.helpdesk-login{background:radial-gradient(ellipse at 24% 52%,rgba(129,78,48
 @keyframes architectureBreath{from{opacity:.45;transform:scale(.99)}to{opacity:.9;transform:scale(1.015)}}
 @media(max-width:850px){.space-backdrop:before{left:0;top:10%;width:100%;height:48%;opacity:.12}.space-backdrop:after{left:8%;top:12%;width:84%;height:43%;opacity:.5}.solar-scene{left:50%;top:35%;width:115vw;opacity:.48}}
 @media(max-width:520px){.space-backdrop:after{top:11%;height:38%}.solar-scene{top:34%;width:130vw;opacity:.4}.login-panel .glass-card{border-radius:24px}}
+
+
+/* Cinematic intro branding: logo reveals with the black hole, then gently glows throughout the 15.5s sequence. */
+.cosmic-intro .intro-brand{opacity:0;animation:introBrandReveal 1.25s cubic-bezier(.2,.75,.25,1) .45s forwards,introBrandGlow 3.6s ease-in-out 1.7s infinite}
+.cosmic-intro .intro-tagline{opacity:0;animation:introTaglineReveal 1s ease .95s forwards}
+@keyframes introBrandReveal{0%{opacity:0;transform:translateY(15px);letter-spacing:.7em;filter:blur(7px)}100%{opacity:1;transform:translateY(0);letter-spacing:.42em;filter:blur(0)}}
+@keyframes introBrandGlow{0%,100%{text-shadow:0 0 15px rgba(225,145,88,.18);filter:brightness(1)}50%{text-shadow:0 0 28px rgba(225,145,88,.48),0 0 48px rgba(200,121,69,.2);filter:brightness(1.12)}}
+@keyframes introTaglineReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.cosmic-intro .intro-brand,.cosmic-intro .intro-tagline{opacity:1;animation:none!important;filter:none}}
