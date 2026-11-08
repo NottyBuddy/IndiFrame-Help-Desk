@@ -32,3 +32,49 @@ body> :not(.indinext-solar-bg){position:relative;z-index:1}
 @media(max-width:760px){.indinext-solar-scene{width:120vw;height:74vh;min-height:400px;opacity:.46}.indinext-solar-scene .planet-label{font-size:7px;letter-spacing:.12em}.indinext-solar-bg:after{background:linear-gradient(90deg,rgba(5,6,9,.55),rgba(5,6,9,.12),rgba(5,6,9,.48)),linear-gradient(0deg,rgba(5,6,9,.5),transparent 35%,transparent 65%,rgba(5,6,9,.4))}}
 @media(max-width:480px){.indinext-solar-scene{width:138vw;height:66vh;min-height:360px;opacity:.38}.indinext-solar-scene .planet-label{font-size:6px}}
 @media(prefers-reduced-motion:reduce){.indinext-solar-nebula,.indinext-solar-scene *{animation:none!important}}
+
+
+/* INDINEXT transparent liquid glass: reveal the animated space canvas without sacrificing contrast. */
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.topbar,.if-left-sidebar,.nav,.sidebar,.admin-sidebar){
+  background:rgba(7,11,16,.38)!important;
+  border-color:rgba(226,207,184,.16)!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.07)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(125%)!important;
+  backdrop-filter:blur(14px) saturate(125%)!important;
+}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.wrap,main,.main-content,.content,.workspace-content,.page-content){background:transparent!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.card,.panel,.section,.section-hero,.section-filters,.section-data,.section-metric,.section-metrics,.stat-card,.metric-card,.kpi-card,.agent-info-card,.break-card,.admin-chart-card,.admin-module-card,.cp-card,.cp-section,.cp-kpi,.cp-chart-panel,.dp-card,.sa-stat,.sa-edit-dialog,.admin-detail-bar,.summary-chip,.chart-card,.report-card,.module-card,.overview-block,.overview-panel,.glass-card,.glass-panel,.liquid-glass){
+  color:#f4eee8!important;
+  background:linear-gradient(145deg,rgba(23,31,38,.30),rgba(8,13,19,.20) 58%,rgba(5,8,13,.30))!important;
+  border-color:rgba(225,205,184,.20)!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.09)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(125%)!important;
+  backdrop-filter:blur(14px) saturate(125%)!important;
+}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.section-hero,.section-filters,.section-data,.section-metric,.admin-module-card,.admin-detail-bar,.cp-kpi,.cp-chart-panel,.cp-section,.dp-card,.sa-stat){background:linear-gradient(145deg,rgba(23,31,38,.34),rgba(8,13,19,.24))!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.card,.panel,.section,.section-hero,.section-filters,.section-data,.section-metric,.stat-card,.metric-card,.kpi-card,.agent-info-card,.break-card,.admin-module-card,.cp-kpi,.cp-section,.cp-chart-panel,.dp-card,.sa-stat,.overview-block,.overview-panel) :is(h1,h2,h3,h4,h5,h6,p,label,small,strong,span,th,td){color:#f3eee8!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.card,.panel,.section,.section-hero,.section-filters,.section-data,.section-metric,.stat-card,.metric-card,.kpi-card,.agent-info-card,.break-card,.admin-module-card,.cp-kpi,.cp-section,.cp-chart-panel,.dp-card,.sa-stat,.overview-block,.overview-panel) :is(.muted,.subtle,.hint,.note,.description,.subtitle){color:#c6c0b9!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(table,thead,tbody,tr,th,td){background-color:rgba(7,11,16,.22)!important;color:#f1eee9!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(input,select,textarea){color:#f7f2ec!important;background:rgba(5,9,14,.56)!important;border-color:rgba(225,205,184,.24)!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(input,select,textarea)::placeholder{color:#bdb5ad!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.nav button,.nav a,.nav-link,.admin-side-link){color:#f0eae3!important;background:rgba(255,255,255,.035)!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.nav button.active,.nav a.active,.nav-link.active,.admin-side-link.active){background:rgba(200,121,69,.38)!important;color:#fff7ef!important;border-color:rgba(232,174,126,.38)!important}
+html body.admin-mode #view-admin :is(.section.card,.stat-card,.admin-module-card,.admin-detail-bar){background:linear-gradient(145deg,rgba(23,31,38,.34),rgba(8,13,19,.24))!important;color:#f3eee8!important;border-color:rgba(225,205,184,.20)!important}
+html body.admin-mode #view-admin :is(.section.card,.stat-card,.admin-module-card,.admin-detail-bar) :is(h1,h2,h3,p,span,strong,small,label){color:#f3eee8!important}
+@media(max-width:760px){
+ html body:not(.helpdesk-login):not(#unused-specificity) :is(.card,.panel,.section,.section-hero,.section-filters,.section-data,.section-metric,.stat-card,.metric-card,.kpi-card,.agent-info-card,.break-card,.admin-module-card,.cp-kpi,.cp-section,.cp-chart-panel,.dp-card,.sa-stat,.overview-block,.overview-panel){background:linear-gradient(145deg,rgba(20,28,35,.38),rgba(7,11,16,.30))!important;-webkit-backdrop-filter:blur(11px) saturate(118%)!important;backdrop-filter:blur(11px) saturate(118%)!important}
+}
+
+
+/* Keep the canvas itself visible beneath the translucent glass layer. */
+.indinext-solar-bg{
+  background:radial-gradient(ellipse at 50% 48%,rgba(22,19,23,.20),rgba(5,6,9,.64) 78%)!important;
+}
+.indinext-solar-bg:after{
+  background:linear-gradient(90deg,rgba(5,6,9,.34),rgba(5,6,9,.06) 48%,rgba(5,6,9,.32)),linear-gradient(0deg,rgba(5,6,9,.28),transparent 28%,transparent 72%,rgba(5,6,9,.24))!important;
+}
+@media(max-width:760px){
+  .indinext-solar-bg:after{
+    background:linear-gradient(90deg,rgba(5,6,9,.34),rgba(5,6,9,.08),rgba(5,6,9,.30)),linear-gradient(0deg,rgba(5,6,9,.32),transparent 35%,transparent 65%,rgba(5,6,9,.26))!important;
+  }
+}
