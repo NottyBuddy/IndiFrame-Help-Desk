@@ -1,0 +1,40 @@
+/* Shared INDINEXT solar-system canvas for every authenticated workspace */
+.indinext-solar-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;isolation:isolate;background:radial-gradient(ellipse at 50% 48%,rgba(22,19,23,.48),rgba(5,6,9,.92) 78%)}
+.indinext-solar-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,6,9,.58),rgba(5,6,9,.12) 48%,rgba(5,6,9,.55)),linear-gradient(0deg,rgba(5,6,9,.46),transparent 28%,transparent 72%,rgba(5,6,9,.36))}
+.indinext-solar-nebula{position:absolute;inset:-20%;background:radial-gradient(ellipse at 24% 32%,rgba(184,112,62,.17),transparent 30%),radial-gradient(ellipse at 77% 68%,rgba(93,91,140,.13),transparent 34%);filter:blur(55px);animation:indinextNebulaDrift 34s ease-in-out infinite alternate}
+.indinext-solar-scene{position:absolute;left:50%;top:50%;width:min(94vw,1050px);height:min(90vh,800px);min-height:490px;transform:translate(-50%,-50%);opacity:.68;filter:drop-shadow(0 18px 44px rgba(0,0,0,.35))}
+.indinext-solar-scene .black-hole{position:absolute;left:50%;top:50%;width:min(36vw,340px);aspect-ratio:1;transform:translate(-50%,-50%);display:grid;place-items:center}
+.indinext-solar-scene .black-hole-halo{position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,transparent 36%,rgba(233,143,76,.15) 48%,rgba(226,115,54,.025) 70%,transparent 74%);filter:blur(10px);animation:indinextHolePulse 3.3s ease-in-out infinite}
+.indinext-solar-scene .black-hole-ring{position:absolute;border-radius:50%;border-style:solid;filter:drop-shadow(0 0 12px rgba(244,146,78,.65))}
+.indinext-solar-scene .ring-outer{inset:15%;border-width:9px 3px 5px;border-color:rgba(255,196,130,.85) rgba(190,87,48,.6) rgba(255,158,89,.85) rgba(255,214,159,.55);transform:rotate(-24deg) scaleY(.38);animation:indinextBlackHoleSpin 8.8s linear infinite}
+.indinext-solar-scene .ring-inner{inset:27%;border-width:4px 2px;border-color:rgba(255,223,174,.85) rgba(214,111,57,.8);transform:rotate(38deg) scaleY(.45);animation:indinextBlackHoleSpin 5.5s linear infinite reverse}
+.indinext-solar-scene .black-hole-core{position:absolute;inset:35%;border-radius:50%;background:#010102;box-shadow:0 0 22px 12px rgba(0,0,0,.95),0 0 48px 18px rgba(229,126,64,.2)}
+.indinext-solar-scene .planet-orbit{position:absolute;inset:0;transform-origin:50% 50%;animation:indinextOrbit var(--speed) linear infinite}
+.indinext-solar-scene .planet-orbit:before{content:"";position:absolute;left:50%;top:50%;width:var(--orbit-w);height:var(--orbit-h);transform:translate(-50%,-50%);border:1px solid rgba(225,194,154,.17);border-radius:50%;box-shadow:0 0 20px rgba(206,147,93,.035)}
+.indinext-solar-scene .planet-wrap{position:absolute;left:50%;top:calc(50% - var(--radius-y));display:flex;flex-direction:column;align-items:center;gap:7px;transform:translate(-50%,-50%);animation:indinextCounterOrbit var(--speed) linear infinite}
+.indinext-solar-scene .planet{display:block;width:var(--planet-size);height:var(--planet-size);border-radius:50%;position:relative;box-shadow:inset -7px -5px 12px rgba(0,0,0,.62),inset 3px 3px 6px rgba(255,255,255,.34),0 0 16px var(--planet-glow)}
+.indinext-solar-scene .planet:after{content:"";position:absolute;inset:15%;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.3),transparent 46%)}
+.indinext-solar-scene .planet-label{white-space:nowrap;color:var(--label-color);font-size:9px;font-weight:700;letter-spacing:.2em;text-shadow:0 1px 9px #050609,0 0 12px #050609}
+.indinext-solar-scene .planet-measure{background:radial-gradient(circle at 30% 25%,#e8edf0,#9daab6 42%,#46515e 78%);--planet-glow:rgba(179,204,225,.3)}
+.indinext-solar-scene .planet-quote{background:radial-gradient(circle at 30% 25%,#ffe0ad,#d48b55 45%,#74412f 82%);--planet-glow:rgba(226,155,94,.32)}
+.indinext-solar-scene .planet-design{background:radial-gradient(circle at 30% 25%,#e5d9ff,#9281c8 48%,#40345f 82%);--planet-glow:rgba(171,147,226,.3)}
+.indinext-solar-scene .planet-manufacture{background:radial-gradient(circle at 30% 25%,#e8d0a9,#a98a61 48%,#51402f 82%);--planet-glow:rgba(200,166,119,.3)}
+.indinext-solar-scene .planet-deliver{background:radial-gradient(circle at 30% 25%,#d2f5fa,#69a9b8 48%,#31515f 82%);--planet-glow:rgba(122,192,211,.3)}
+.indinext-solar-scene .planet-install{background:radial-gradient(circle at 30% 25%,#ffe0bd,#d9824e 48%,#713d2b 82%);--planet-glow:rgba(230,142,91,.3)}
+.indinext-solar-scene .planet-service{background:radial-gradient(circle at 30% 25%,#dcf0d7,#7eaa78 48%,#354b39 82%);--planet-glow:rgba(144,194,135,.3)}
+.indinext-solar-scene .orbit-measure{--orbit-w:22%;--orbit-h:17%;--radius-y:8.5%;--speed:34s;--planet-size:10px;--label-color:#d2dbe2}
+.indinext-solar-scene .orbit-quote{--orbit-w:34%;--orbit-h:27%;--radius-y:13.5%;--speed:47s;--planet-size:12px;--label-color:#e8b88e}
+.indinext-solar-scene .orbit-design{--orbit-w:46%;--orbit-h:37%;--radius-y:18.5%;--speed:61s;--planet-size:13px;--label-color:#c7b9ef}
+.indinext-solar-scene .orbit-manufacture{--orbit-w:58%;--orbit-h:47%;--radius-y:23.5%;--speed:77s;--planet-size:16px;--label-color:#d7c09a}
+.indinext-solar-scene .orbit-deliver{--orbit-w:70%;--orbit-h:57%;--radius-y:28.5%;--speed:95s;--planet-size:14px;--label-color:#9ed4e0}
+.indinext-solar-scene .orbit-install{--orbit-w:82%;--orbit-h:67%;--radius-y:33.5%;--speed:113s;--planet-size:17px;--label-color:#f0b18b}
+.indinext-solar-scene .orbit-service{--orbit-w:94%;--orbit-h:77%;--radius-y:38.5%;--speed:133s;--planet-size:12px;--label-color:#b7d5ad}
+body> :not(.indinext-solar-bg){position:relative;z-index:1}
+@keyframes indinextOrbit{to{transform:rotate(360deg)}}
+@keyframes indinextCounterOrbit{to{transform:rotate(-360deg)}}
+@keyframes indinextBlackHoleSpin{to{rotate:360deg}}
+@keyframes indinextHolePulse{0%,100%{transform:scale(.94);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+@keyframes indinextNebulaDrift{from{transform:translate3d(-2%,1%,0) scale(.94)}to{transform:translate3d(3%,-3%,0) scale(1.08)}}
+@media(max-width:760px){.indinext-solar-scene{width:120vw;height:74vh;min-height:400px;opacity:.46}.indinext-solar-scene .black-hole{width:min(48vw,240px)}.indinext-solar-scene .planet-label{font-size:7px;letter-spacing:.12em}.indinext-solar-bg:after{background:linear-gradient(90deg,rgba(5,6,9,.55),rgba(5,6,9,.12),rgba(5,6,9,.48)),linear-gradient(0deg,rgba(5,6,9,.5),transparent 35%,transparent 65%,rgba(5,6,9,.4))}}
+@media(max-width:480px){.indinext-solar-scene{width:138vw;height:66vh;min-height:360px;opacity:.38}.indinext-solar-scene .black-hole{width:54vw}.indinext-solar-scene .planet-label{font-size:6px}}
+@media(prefers-reduced-motion:reduce){.indinext-solar-nebula,.indinext-solar-scene *{animation:none!important}}
