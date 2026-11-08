@@ -166,3 +166,10 @@ body.intro-brand .black-hole{opacity:0}
 @media(max-width:850px){.login-stage{grid-template-columns:1fr;gap:0;max-width:560px;min-height:100vh;padding:22px 0}.brand-stage{min-height:0;padding:12px 0 22px}.brand-copy h1{font-size:52px}.brand-description{margin-top:9px}.solar-scene{left:50%;top:35%;width:100vw;height:70vh;min-height:450px;opacity:.58}.login-panel{max-width:440px}.glass-card{backdrop-filter:blur(24px) saturate(135%)}}
 @media(max-width:520px){body.helpdesk-login{padding:12px}.login-stage{padding:20px 0}.brand-stage{padding:12px 0 18px}.brand-copy h1{font-size:43px}.brand-subtitle{font-size:12px;letter-spacing:.25em}.brand-description{max-width:320px;font-size:9px}.solar-scene{top:32%;width:118vw;height:60vh;min-height:390px;opacity:.48}.sun-core{width:76px}.sun-label{font-size:7px}.planet-label{font-size:6px;letter-spacing:.12em}.planet-orbit:before{border-color:rgba(225,194,154,.11)}.orbit-measure{--line-x:-120px}.orbit-quote{--line-x:-80px}.orbit-design{--line-x:-40px}.orbit-manufacture{--line-x:0px}.orbit-deliver{--line-x:40px}.orbit-install{--line-x:80px}.orbit-service{--line-x:120px}.glass-card{padding:25px 22px;border-radius:22px}.card-heading{margin:25px 0 22px}.black-hole{width:min(78vw,360px)}.intro-bottom{bottom:7vh;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.solar-scene,.solar-scene *,.space-nebula,.sun-core{animation:none!important}.cosmic-intro{display:none}.planet-orbit{transform:none!important}}
+
+/* Straighten the orbital plane before the seven-planet brand alignment. */
+body.intro-align .solar-scene .planet-orbit{
+  animation:none;
+  transform:rotate(0deg);
+  transition:transform 1.45s cubic-bezier(.2,.8,.2,1);
+}
