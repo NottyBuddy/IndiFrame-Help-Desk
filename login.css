@@ -442,3 +442,86 @@ body.helpdesk-login{
 @media(prefers-reduced-motion:reduce){
   .login-top-copy,.login-panel,.brand-footer{animation:none!important}
 }
+
+
+/* Visible black-hole centerpiece with a slower, steady accretion-ring animation. */
+.solar-scene .black-hole{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:clamp(118px,15vw,190px);
+  aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  display:grid;
+  place-items:center;
+  z-index:1;
+  pointer-events:none;
+}
+.solar-scene .black-hole-halo{
+  position:absolute;
+  inset:3%;
+  border-radius:50%;
+  background:radial-gradient(circle,transparent 28%,rgba(235,143,77,.16) 45%,rgba(221,105,51,.06) 62%,transparent 73%);
+  filter:blur(8px);
+  animation:holePulse 4.2s ease-in-out infinite;
+}
+.solar-scene .black-hole-ring{
+  position:absolute;
+  border-radius:50%;
+  border-style:solid;
+  filter:drop-shadow(0 0 10px rgba(244,146,78,.62));
+}
+.solar-scene .ring-outer{
+  inset:12%;
+  border-width:10px 3px 5px;
+  border-color:rgba(255,196,130,.88) rgba(190,87,48,.66) rgba(255,158,89,.88) rgba(255,214,159,.58);
+  transform:rotate(-24deg) scaleY(.38);
+  animation:blackHoleSpin 11s linear infinite;
+}
+.solar-scene .ring-inner{
+  inset:25%;
+  border-width:4px 2px;
+  border-color:rgba(255,223,174,.9) rgba(214,111,57,.82);
+  transform:rotate(38deg) scaleY(.45);
+  animation:blackHoleSpin 7.5s linear infinite reverse;
+}
+.solar-scene .black-hole-core{
+  position:absolute;
+  inset:34%;
+  border-radius:50%;
+  background:#010102;
+  box-shadow:0 0 20px 11px rgba(0,0,0,.98),0 0 44px 16px rgba(229,126,64,.24);
+}
+.solar-scene .black-hole-label{
+  position:absolute;
+  top:calc(100% + 13px);
+  color:#f0c995;
+  font-size:8px;
+  font-weight:800;
+  line-height:1.25;
+  letter-spacing:.15em;
+  text-align:center;
+  text-shadow:0 1px 8px #050609,0 0 12px #050609;
+  white-space:nowrap;
+}
+.solar-scene .sun-core{display:none}
+
+/* Slightly faster continuous planet motion; each orbit remains independent. */
+.orbit-measure{--speed:31s}
+.orbit-quote{--speed:43s}
+.orbit-design{--speed:56s}
+.orbit-manufacture{--speed:70s}
+.orbit-deliver{--speed:86s}
+.orbit-install{--speed:103s}
+.orbit-service{--speed:121s}
+
+/* Remove the login card's outer border while preserving its glass finish. */
+.login-panel .glass-card{
+  border:0;
+  outline:0;
+  box-shadow:0 30px 90px rgba(0,0,0,.55),inset 0 1px rgba(255,205,159,.12),0 0 35px rgba(174,91,47,.08);
+}
+.login-panel .glass-card:before{inset:0}
+@media(max-width:520px){
+  .solar-scene .black-hole{width:clamp(105px,30vw,145px)}
+}
