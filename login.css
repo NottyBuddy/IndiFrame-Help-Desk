@@ -204,3 +204,115 @@ body.intro-align .solar-scene .planet-wrap{
   .brand-stage{width:100%}
   .login-panel{width:100%;max-width:440px}
 }
+
+
+/* Login-only composition: intro text at the top, sign-in in the center,
+   and the INDINEXT brand lockup anchored at the bottom. */
+body.helpdesk-login{
+  min-height:100svh;
+  display:block;
+  padding:clamp(18px,3vh,34px) clamp(14px,3vw,36px);
+  overflow-x:hidden;
+}
+.login-stage.login-only-layout{
+  width:min(100%,920px);
+  min-height:calc(100svh - clamp(36px,6vh,68px));
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:auto 1fr auto;
+  align-items:center;
+  justify-items:center;
+  gap:clamp(12px,2.5vh,28px);
+  position:relative;
+  z-index:2;
+}
+.login-top-copy{
+  width:100%;
+  text-align:center;
+  align-self:start;
+  padding-top:clamp(2px,1.5vh,16px);
+  animation:riseIn .8s ease both;
+}
+.login-top-copy .eyebrow{margin:0 0 8px;color:#e8bd88}
+.login-top-copy h1{
+  margin:0;
+  color:#fff1df;
+  font:800 clamp(25px,3.4vw,38px)/1.12 Manrope,sans-serif;
+  letter-spacing:.015em;
+}
+.login-top-copy .top-description{
+  margin:8px 0 0;
+  color:rgba(244,225,207,.78);
+  font-size:clamp(11px,1.2vw,13px);
+}
+.login-top-copy .brand-description{
+  max-width:100%;
+  margin:8px auto 0;
+  color:rgba(236,203,175,.62);
+  font-size:9px;
+  letter-spacing:.12em;
+}
+.login-panel{
+  width:min(100%,430px);
+  max-width:430px;
+  justify-self:center;
+  align-self:center;
+  margin:0;
+  animation:riseIn .9s .08s ease both;
+}
+.brand-footer{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  width:100%;
+  text-align:center;
+  padding:8px 0 2px;
+  animation:riseIn 1s .16s ease both;
+}
+.brand-footer-name{
+  color:#f1d2a3;
+  font:800 clamp(22px,3vw,30px)/1 Manrope,sans-serif;
+  letter-spacing:.2em;
+  text-shadow:0 0 24px rgba(227,175,112,.2);
+}
+.brand-footer-tagline{
+  color:rgba(239,218,194,.78);
+  font:500 10px/1.4 "DM Sans",sans-serif;
+  letter-spacing:.08em;
+}
+.solar-scene{
+  left:50%;
+  top:50%;
+  width:min(110vw,1120px);
+  height:min(92vh,820px);
+  opacity:.78;
+}
+@media(max-width:850px){
+  .login-stage.login-only-layout{
+    min-height:calc(100svh - 36px);
+    max-width:560px;
+    grid-template-rows:auto 1fr auto;
+    gap:12px;
+    padding:0;
+  }
+  .login-top-copy{padding-top:4px}
+  .login-panel{width:100%;max-width:440px}
+  .solar-scene{left:50%;top:49%;width:120vw;height:76vh;opacity:.55}
+}
+@media(max-width:520px){
+  body.helpdesk-login{padding:14px 12px}
+  .login-stage.login-only-layout{min-height:calc(100svh - 28px);gap:8px}
+  .login-top-copy h1{font-size:27px}
+  .login-top-copy .brand-description{font-size:8px;letter-spacing:.06em}
+  .glass-card{padding:24px 21px}
+  .brand-footer{padding-bottom:4px}
+  .brand-footer-name{font-size:23px}
+  .brand-footer-tagline{font-size:9px}
+  .solar-scene{top:49%;width:132vw;height:68vh;opacity:.48}
+}
+@media(prefers-reduced-motion:reduce){
+  .login-top-copy,.login-panel,.brand-footer{animation:none!important}
+}
