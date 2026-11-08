@@ -36,7 +36,8 @@ for (const viewport of viewports) {
     expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport);
     expect(dimensions.body).toBeLessThanOrEqual(dimensions.viewport);
 
-    await boxesDoNotOverlap(page.locator(".brand-stage"), page.locator(".login-panel"));
+    await boxesDoNotOverlap(page.locator(".login-top-copy"), page.locator(".login-panel"));
+    await boxesDoNotOverlap(page.locator(".login-panel"), page.locator(".brand-footer"));
     await boxesDoNotOverlap(page.locator("#employeeId"), page.locator("#password"));
     await boxesDoNotOverlap(page.locator("#password"), page.locator("#loginButton"));
     await boxesDoNotOverlap(page.locator("#loginButton"), page.locator("#message"));
