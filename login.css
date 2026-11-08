@@ -576,3 +576,9 @@ body.helpdesk-login{background:radial-gradient(ellipse at 24% 52%,rgba(129,78,48
 .solar-scene .sun-label{position:relative;color:#311d17;font-size:clamp(8px,.85vw,11px);font-weight:900;letter-spacing:.12em;text-align:center}
 @media(max-width:520px){.intro-black-hole{width:min(68vw,300px)}}
 @media(prefers-reduced-motion:reduce){.intro-hole-halo,.intro-hole-ring,.solar-scene .sun-core{animation:none!important}}
+
+
+/* Six-and-a-half-second branded opening: black hole with clear centre title. */
+.cosmic-intro .intro-brand{position:absolute;left:50%;top:calc(50% + clamp(145px,20vw,205px));transform:translateX(-50%);width:max-content;max-width:90vw;color:#f8e7d7;font:800 clamp(15px,2.2vw,22px) Manrope,sans-serif;letter-spacing:.22em;text-align:center;text-transform:uppercase;text-shadow:0 0 12px rgba(242,166,111,.55),0 0 30px rgba(212,103,54,.35);animation:introTitleReveal .9s ease .25s both}
+@keyframes introTitleReveal{from{opacity:0;filter:blur(8px);transform:translate(-50%,10px)}to{opacity:1;filter:blur(0);transform:translate(-50%,0)}}
+@media(max-width:520px){.cosmic-intro .intro-brand{top:calc(50% + min(35vw,130px));letter-spacing:.13em;font-size:15px}}
