@@ -29,7 +29,7 @@
   const form = document.getElementById("loginForm");
   if (!form) return;
   const message = document.getElementById("message");
-  const button = document.getElementById("loginButton");
+  const button = document.getElementById("loginButton");\n  const loader = document.getElementById("indinextLoader");\n  const loaderMessage = document.getElementById("indinextLoaderMessage");
   const showMessage = (text, type = "error") => {
     message.textContent = text;
     message.className = "message" + (type === "success" ? " success" : "");
@@ -63,9 +63,9 @@
         window.location.href = forceChange ? "change-password.html" : "dashboard.html";
       }, 420);
     } catch (error) {
-      showMessage(error.message === "Failed to fetch" ? "Server se connect nahi ho raha. API connection check karein." : error.message);
+      showMessage(error.message === "Failed to fetch" ? "Server se connect nahi ho raha. API connection check karein." : error.message);\n      loader?.classList.add("is-hidden");
     } finally {
-      button.disabled = false;
+      button.disabled = false;\n      if (!message.classList.contains("success")) loader?.classList.add("is-hidden");
     }
   });
 })();
