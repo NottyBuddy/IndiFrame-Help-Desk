@@ -5,7 +5,7 @@
     window.setTimeout(() => {
       intro.classList.add("is-done");
       window.setTimeout(() => intro.remove(), 1100);
-    }, 2600);
+    }, 15500);
   } else {
     intro?.remove();
   }
