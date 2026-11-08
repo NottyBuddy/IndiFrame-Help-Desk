@@ -577,3 +577,30 @@ body.helpdesk-login{background:radial-gradient(ellipse at 24% 52%,rgba(129,78,48
 @keyframes introHalo{50%{transform:scale(1.08);opacity:.35}}
 @keyframes introHoleArrival{from{transform:scale(.58);opacity:0}to{transform:scale(1);opacity:1}}
 @media(prefers-reduced-motion:reduce){.cosmic-intro{display:none!important}.intro-black-hole,.intro-hole-halo,.intro-hole-ring,.cosmic-intro:before,.cosmic-intro:after{animation:none!important}}
+
+
+/* Cinematic intro branding: logo reveals with the black hole, then gently glows throughout the 15.5s sequence. */
+.cosmic-intro .intro-brand{
+  opacity:0;
+  animation:introBrandReveal 1.25s cubic-bezier(.2,.75,.25,1) .45s forwards,
+             introBrandGlow 3.6s ease-in-out 1.7s infinite;
+}
+.cosmic-intro .intro-tagline{
+  opacity:0;
+  animation:introTaglineReveal 1s ease .95s forwards;
+}
+@keyframes introBrandReveal{
+  0%{opacity:0;transform:translateY(15px);letter-spacing:.7em;filter:blur(7px)}
+  100%{opacity:1;transform:translateY(0);letter-spacing:.42em;filter:blur(0)}
+}
+@keyframes introBrandGlow{
+  0%,100%{text-shadow:0 0 15px rgba(225,145,88,.18);filter:brightness(1)}
+  50%{text-shadow:0 0 28px rgba(225,145,88,.48),0 0 48px rgba(200,121,69,.2);filter:brightness(1.12)}
+}
+@keyframes introTaglineReveal{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .cosmic-intro .intro-brand,.cosmic-intro .intro-tagline{opacity:1;animation:none!important;filter:none}
+}
