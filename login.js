@@ -30,6 +30,8 @@
   if (!form) return;
   const message = document.getElementById("message");
   const button = document.getElementById("loginButton");
+  const loader = document.getElementById("indinextLoader");
+  const loaderMessage = document.getElementById("indinextLoaderMessage");
   const showMessage = (text, type = "error") => {
     message.textContent = text;
     message.className = "message" + (type === "success" ? " success" : "");
@@ -64,8 +66,10 @@
       }, 420);
     } catch (error) {
       showMessage(error.message === "Failed to fetch" ? "Server se connect nahi ho raha. API connection check karein." : error.message);
+      loader?.classList.add("is-hidden");
     } finally {
       button.disabled = false;
+      if (!message.classList.contains("success")) loader?.classList.add("is-hidden");
     }
   });
 })();

@@ -1,0 +1,17 @@
+:root{--indinext-copper:#c87945;--indinext-cream:#f0d5b1}
+.indinext-loader{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:24px;background:rgba(5,6,9,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);opacity:1;visibility:visible;transition:opacity .35s ease,visibility .35s ease}
+.indinext-loader.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.indinext-loader-card{width:min(330px,88vw);display:grid;justify-items:center;gap:17px;padding:28px 24px;border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(20,16,15,.58));box-shadow:0 24px 70px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.12)}
+.indinext-frame{width:54px;height:54px;position:relative}
+.indinext-frame:before,.indinext-frame:after{content:"";position:absolute;inset:0;border:2px solid transparent;border-radius:12px}
+.indinext-frame:before{border-top-color:#f0c18c;border-right-color:#c87945;animation:indinextFrame 1.35s linear infinite}
+.indinext-frame:after{inset:8px;border-bottom:1px solid rgba(240,193,140,.8);border-left:1px solid rgba(200,121,69,.7);transform:rotate(45deg);animation:indinextFrame 2s linear infinite reverse}
+.indinext-loader-brand{color:#f0d5b1;font:800 13px/1 Manrope,sans-serif;letter-spacing:.28em}
+.indinext-loader-message{color:rgba(245,230,211,.7);font:500 11px/1.5 "DM Sans",sans-serif;text-align:center}
+.indinext-loader-skeleton{width:100%;display:grid;gap:7px}
+.indinext-skeleton-line{height:7px;border-radius:20px;background:linear-gradient(90deg,rgba(255,255,255,.06) 20%,rgba(226,174,126,.24) 48%,rgba(255,255,255,.06) 76%);background-size:220% 100%;animation:indinextShimmer 1.5s ease-in-out infinite}
+.indinext-skeleton-line:nth-child(2){width:78%}.indinext-skeleton-line:nth-child(3){width:56%}
+.dashboard-loader .indinext-loader-card{width:min(390px,90vw)}
+@keyframes indinextFrame{to{transform:rotate(360deg)}}
+@keyframes indinextShimmer{to{background-position:-220% 0}}
+@media(prefers-reduced-motion:reduce){.indinext-frame:before,.indinext-frame:after,.indinext-skeleton-line{animation:none!important}}
