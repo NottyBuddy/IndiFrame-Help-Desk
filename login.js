@@ -1,5 +1,14 @@
 (() => {
   "use strict";
+  const intro = document.getElementById("cosmicIntro");
+  if (intro && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    window.setTimeout(() => {
+      intro.classList.add("is-done");
+      window.setTimeout(() => intro.remove(), 1100);
+    }, 15500);
+  } else {
+    intro?.remove();
+  }
   const starfield = document.getElementById("starfield");
   if (starfield) {
     let seed = 92741;
