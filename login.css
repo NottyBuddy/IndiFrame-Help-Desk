@@ -525,3 +525,35 @@ body.helpdesk-login{
 @media(max-width:520px){
   .solar-scene .black-hole{width:clamp(105px,30vw,145px)}
 }
+
+/* INDINEXT Architectural Luxury + Dark Liquid Glass final direction */
+:root{--space:#07090c;--champagne:#e8c184;--copper:#c87945;--orange-light:#ffc18a}
+body.helpdesk-login{background:radial-gradient(ellipse at 24% 52%,rgba(129,78,48,.16),transparent 36%),radial-gradient(ellipse at 78% 42%,#17151a 0%,#0b0b10 50%,#050609 100%);color:#f7f3ed}
+.space-backdrop:before{content:"";position:absolute;left:0;top:8%;width:52%;height:82%;opacity:.22;pointer-events:none;background:linear-gradient(90deg,transparent 0 9%,rgba(221,178,133,.22) 9.1% 9.25%,transparent 9.35% 48%,rgba(221,178,133,.18) 48.1% 48.25%,transparent 48.35%),linear-gradient(0deg,transparent 0 12%,rgba(221,178,133,.17) 12.1% 12.25%,transparent 12.35% 86%,rgba(221,178,133,.14) 86.1% 86.25%,transparent 86.35%);mask-image:linear-gradient(90deg,#000,transparent 96%);animation:architectureGlow 12s ease-in-out infinite alternate}
+.space-backdrop:after{content:"";position:absolute;left:4%;top:12%;width:44%;height:72%;border:1px solid rgba(222,178,131,.16);box-shadow:inset 0 0 80px rgba(196,126,76,.045),0 0 55px rgba(196,126,76,.035);pointer-events:none;animation:architectureBreath 9s ease-in-out infinite alternate}
+.space-nebula{background:radial-gradient(ellipse at 23% 30%,rgba(184,112,62,.15),transparent 28%),radial-gradient(ellipse at 78% 68%,rgba(93,91,140,.09),transparent 32%)}
+.solar-scene{left:27%;width:min(72vw,900px);opacity:.9;filter:drop-shadow(0 18px 44px rgba(0,0,0,.3))}
+.login-top-copy .eyebrow{color:#d8a879}
+.login-top-copy h1{color:#fff3e3}
+.login-top-copy .top-description{color:rgba(244,225,207,.8)}
+.login-top-copy .brand-description{color:rgba(236,203,175,.66)}
+.login-panel{max-width:450px}
+.login-panel .glass-card{border:0!important;outline:0!important;border-radius:28px;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(37,28,25,.68) 42%,rgba(9,10,13,.82));box-shadow:0 34px 100px rgba(0,0,0,.58),inset 0 1px rgba(255,255,255,.14),0 0 55px rgba(194,111,61,.09);backdrop-filter:blur(30px) saturate(140%);-webkit-backdrop-filter:blur(30px) saturate(140%)}
+.login-panel .glass-card:before{inset:0;border-radius:inherit;background:linear-gradient(125deg,rgba(255,255,255,.10),transparent 28%,transparent 72%,rgba(202,128,76,.08))}
+.card-topline{color:rgba(244,225,207,.68)}
+.status-dot{background:#d89a67;box-shadow:0 0 12px rgba(216,154,103,.8)}
+.card-kicker{color:#e6a775}
+.card-heading h2{color:#fff3e3}
+.field label{color:#f0e6da}
+.field input{border-color:rgba(232,193,132,.16);background:rgba(4,5,7,.4)}
+.field input:focus{border-color:rgba(232,166,111,.72);box-shadow:0 0 0 3px rgba(200,121,69,.13),0 0 24px rgba(200,121,69,.12)}
+#loginButton{border:0;background:linear-gradient(105deg,#e7c08f,#d58b58 58%,#b96b40);color:#1a100c;box-shadow:0 14px 32px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.42)}
+#loginButton:hover{box-shadow:0 18px 38px rgba(0,0,0,.4),0 0 28px rgba(200,121,69,.22)}
+.card-footer{border-top-color:rgba(232,193,132,.12);color:rgba(239,218,194,.58)}
+.footer-shield{color:#e6ad79}
+.brand-footer-name{color:#f0d0a5;text-shadow:0 0 25px rgba(227,175,112,.22)}
+.brand-footer-tagline{color:rgba(239,218,194,.8)}
+@keyframes architectureGlow{from{opacity:.12;transform:translateX(-5px)}to{opacity:.3;transform:translateX(8px)}}
+@keyframes architectureBreath{from{opacity:.45;transform:scale(.99)}to{opacity:.9;transform:scale(1.015)}}
+@media(max-width:850px){.space-backdrop:before{left:0;top:10%;width:100%;height:48%;opacity:.12}.space-backdrop:after{left:8%;top:12%;width:84%;height:43%;opacity:.5}.solar-scene{left:50%;top:35%;width:115vw;opacity:.48}}
+@media(max-width:520px){.space-backdrop:after{top:11%;height:38%}.solar-scene{top:34%;width:130vw;opacity:.4}.login-panel .glass-card{border-radius:24px}}
