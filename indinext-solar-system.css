@@ -64,3 +64,17 @@ html body.admin-mode #view-admin :is(.section.card,.stat-card,.admin-module-card
 @media(max-width:760px){
  html body:not(.helpdesk-login):not(#unused-specificity) :is(.card,.panel,.section,.section-hero,.section-filters,.section-data,.section-metric,.stat-card,.metric-card,.kpi-card,.agent-info-card,.break-card,.admin-module-card,.cp-kpi,.cp-section,.cp-chart-panel,.dp-card,.sa-stat,.overview-block,.overview-panel){background:linear-gradient(145deg,rgba(20,28,35,.38),rgba(7,11,16,.30))!important;-webkit-backdrop-filter:blur(11px) saturate(118%)!important;backdrop-filter:blur(11px) saturate(118%)!important}
 }
+
+
+/* Keep the canvas itself visible beneath the translucent glass layer. */
+.indinext-solar-bg{
+  background:radial-gradient(ellipse at 50% 48%,rgba(22,19,23,.20),rgba(5,6,9,.64) 78%)!important;
+}
+.indinext-solar-bg:after{
+  background:linear-gradient(90deg,rgba(5,6,9,.34),rgba(5,6,9,.06) 48%,rgba(5,6,9,.32)),linear-gradient(0deg,rgba(5,6,9,.28),transparent 28%,transparent 72%,rgba(5,6,9,.24))!important;
+}
+@media(max-width:760px){
+  .indinext-solar-bg:after{
+    background:linear-gradient(90deg,rgba(5,6,9,.34),rgba(5,6,9,.08),rgba(5,6,9,.30)),linear-gradient(0deg,rgba(5,6,9,.32),transparent 35%,transparent 65%,rgba(5,6,9,.26))!important;
+  }
+}
