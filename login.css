@@ -316,3 +316,129 @@ body.helpdesk-login{
 @media(prefers-reduced-motion:reduce){
   .login-top-copy,.login-panel,.brand-footer{animation:none!important}
 }
+
+
+/* Desktop split composition: continuous solar system on the left, login on the right. */
+body.helpdesk-login{
+  display:block;
+  min-height:100svh;
+  padding:clamp(18px,3vh,34px) clamp(18px,4vw,56px);
+  overflow-x:hidden;
+}
+.login-stage.login-only-layout{
+  width:min(100%,1240px);
+  min-height:calc(100svh - clamp(36px,6vh,68px));
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);
+  grid-template-rows:auto 1fr auto;
+  align-items:center;
+  justify-items:stretch;
+  column-gap:clamp(30px,5vw,76px);
+  row-gap:clamp(12px,2vh,22px);
+  position:relative;
+  z-index:2;
+}
+.login-top-copy{
+  grid-column:2;
+  grid-row:1;
+  width:100%;
+  text-align:left;
+  align-self:end;
+  padding:0;
+  animation:riseIn .8s ease both;
+}
+.login-top-copy .eyebrow{margin:0 0 8px;color:#e8bd88}
+.login-top-copy h1{
+  margin:0;
+  color:#fff1df;
+  font:800 clamp(27px,3vw,38px)/1.12 Manrope,sans-serif;
+  letter-spacing:.015em;
+}
+.login-top-copy .top-description{
+  margin:8px 0 0;
+  color:rgba(244,225,207,.78);
+  font-size:clamp(11px,1.2vw,13px);
+}
+.login-top-copy .brand-description{
+  max-width:100%;
+  margin:8px 0 0;
+  color:rgba(236,203,175,.62);
+  font-size:9px;
+  letter-spacing:.08em;
+}
+.login-panel{
+  grid-column:2;
+  grid-row:2;
+  width:100%;
+  max-width:440px;
+  justify-self:start;
+  align-self:center;
+  margin:0;
+  animation:riseIn .9s .08s ease both;
+}
+.brand-footer{
+  grid-column:1 / -1;
+  grid-row:3;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  width:100%;
+  text-align:center;
+  padding:8px 0 2px;
+  animation:riseIn 1s .16s ease both;
+}
+.brand-footer-name{
+  color:#f1d2a3;
+  font:800 clamp(22px,3vw,30px)/1 Manrope,sans-serif;
+  letter-spacing:.2em;
+  text-shadow:0 0 24px rgba(227,175,112,.2);
+}
+.brand-footer-tagline{
+  color:rgba(239,218,194,.78);
+  font:500 10px/1.4 "DM Sans",sans-serif;
+  letter-spacing:.08em;
+}
+/* Keep every planet on its own orbit; never pause, straighten, or line them up. */
+.solar-scene{
+  left:27%;
+  top:50%;
+  width:min(72vw,900px);
+  height:min(88vh,780px);
+  min-height:480px;
+  opacity:.82;
+  transition:none;
+}
+.planet-orbit{animation-play-state:running!important}
+.planet-wrap{animation-play-state:running!important}
+@media(max-width:850px){
+  .login-stage.login-only-layout{
+    min-height:calc(100svh - 36px);
+    max-width:560px;
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:auto 1fr auto;
+    gap:12px;
+    padding:0;
+  }
+  .login-top-copy{grid-column:1;grid-row:1;text-align:center;padding-top:4px}
+  .login-top-copy .brand-description{margin-left:auto;margin-right:auto}
+  .login-panel{grid-column:1;grid-row:2;width:100%;max-width:440px;justify-self:center}
+  .brand-footer{grid-column:1;grid-row:3}
+  .solar-scene{left:50%;top:48%;width:118vw;height:78vh;opacity:.52}
+}
+@media(max-width:520px){
+  body.helpdesk-login{padding:14px 12px}
+  .login-stage.login-only-layout{min-height:calc(100svh - 28px);gap:8px}
+  .login-top-copy h1{font-size:27px}
+  .login-top-copy .brand-description{font-size:8px;letter-spacing:.05em}
+  .glass-card{padding:24px 21px}
+  .brand-footer{padding-bottom:4px}
+  .brand-footer-name{font-size:23px}
+  .brand-footer-tagline{font-size:9px}
+  .solar-scene{top:48%;width:132vw;height:68vh;opacity:.46}
+}
+@media(prefers-reduced-motion:reduce){
+  .login-top-copy,.login-panel,.brand-footer{animation:none!important}
+}
