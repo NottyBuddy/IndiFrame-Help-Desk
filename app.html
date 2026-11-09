@@ -219,7 +219,8 @@ function calculateAttendance(){
   const breakMinutes = getAttendanceBreakMinutes();
   const netMinutes = Math.max(0, loginMinutes - breakMinutes);
   const status = getAttendanceStatus(loginMinutes, breakMinutes, checkIn, checkOut);
-  const todayKey = new Date().toISOString().slice(0,10);
+  const now = new Date();
+  const todayKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const attendanceRecord = {
     id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
     date: todayKey,
