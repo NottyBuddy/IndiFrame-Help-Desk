@@ -1,16 +1,13 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" type="image/svg+xml" href="favicon.svg"><title>Indinext — Superadmin</title><link rel="stylesheet" href="dashboard.css">
-  <link rel="stylesheet" href="portal-clean.css?v=portal-ui-v2-20261105">
-  <link rel="stylesheet" href="preloader.css?v=cursor-loader-v1-20261107">
-  <link rel="stylesheet" href="indinext-hybrid-system.css?v=charcoal-orange-unified-v1-20261107">
+<link rel="stylesheet" href="preloader.css?v=cursor-loader-v1-20261107">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><style>
 :root{--sa-navy:#18364b;--sa-teal:#159b91;--sa-violet:#7867d8;--sa-amber:#e5a43b}
 body{background:radial-gradient(ellipse at 8% 0%,rgba(21,155,145,.15),transparent 34%),radial-gradient(ellipse at 95% 8%,rgba(120,103,216,.14),transparent 32%),linear-gradient(145deg,#eef4f7,#e8eff5 55%,#f4f1ec)}
 .sa-analytics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}.sa-stat{padding:16px;border:1px solid rgba(255,255,255,.75);border-radius:16px;background:rgba(255,255,255,.58);min-width:0}.sa-stat span{display:block;color:#5a7180;font-size:12px;font-weight:700}.sa-stat strong{display:block;color:#142f43;font-size:25px;margin-top:6px;overflow-wrap:anywhere}.sa-stat small{display:block;color:#69808e;margin-top:4px}.sa-grid{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.5fr);gap:18px}.sa-grid>.card,main>.card{border:1px solid rgba(255,255,255,.72)!important;border-radius:22px!important;background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(235,245,248,.48))!important;box-shadow:0 18px 48px rgba(21,48,68,.11),inset 0 1px rgba(255,255,255,.95)!important;backdrop-filter:blur(26px) saturate(155%)}.sa-form{display:grid;gap:12px}.sa-form label{display:grid;gap:5px;font-weight:600;font-size:13px}.sa-form input,.sa-form select{padding:11px 12px;border:1px solid rgba(91,124,145,.2);border-radius:12px;background:rgba(255,255,255,.72);font:inherit;color:var(--sa-navy);backdrop-filter:blur(12px)}.sa-btn{padding:10px 15px;border:1px solid rgba(255,255,255,.5);border-radius:12px;background:linear-gradient(120deg,var(--sa-navy),var(--sa-teal));color:#fff;font-weight:800;cursor:pointer;box-shadow:0 9px 22px rgba(24,54,75,.16)}.sa-table{width:100%;border-collapse:collapse;min-width:650px}.sa-table th,.sa-table td{padding:10px;border-bottom:1px solid #e8edf4;text-align:left}.sa-table th{font-size:12px;color:#f5fbff;background:rgba(24,54,75,.94)}.sa-table-wrap{overflow:auto}.sa-msg{margin:12px 0;color:#52627b}.sa-msg.error{color:#b42318}.sa-actions{display:flex;gap:7px;flex-wrap:wrap}.sa-danger{color:#a12626;background:rgba(190,50,50,.1)}.sa-status{font-weight:750;font-size:12px}.sa-status.active{color:#137547}.sa-status.inactive{color:#a15c16}.sa-edit-dialog{width:min(460px,calc(100% - 28px));border:1px solid #dce6ed;border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(15,35,50,.28)}.sa-edit-dialog::backdrop{background:rgba(13,29,42,.48)}.sa-danger{color:#a12626;background:rgba(190,50,50,.1)}.sa-status{font-weight:750;font-size:12px}.sa-status.active{color:#137547}.sa-status.inactive{color:#a15c16}.sa-edit-dialog{width:min(460px,calc(100% - 28px));border:1px solid #dce6ed;border-radius:18px;padding:22px;box-shadow:0 24px 70px rgba(15,35,50,.28)}.sa-edit-dialog::backdrop{background:rgba(13,29,42,.48)}.sa-small{padding:7px 10px;border:1px solid rgba(120,103,216,.18);border-radius:10px;cursor:pointer;background:linear-gradient(135deg,rgba(120,103,216,.12),rgba(255,255,255,.78));color:#51459a;font-weight:750}
 @media(max-width:850px){.sa-grid{grid-template-columns:1fr}.sa-analytics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:420px){.sa-analytics-grid{grid-template-columns:1fr}.sa-stat strong{font-size:22px}}
 </style>  <link rel="stylesheet" href="indinext-premium.css?v=indinext-ember-glass-20261105">
-  <link rel="stylesheet" href="indinext-operations-refinement.css?v=ops-glass-v1-20261105">
 <style id="superadmin-dark-glass-final">
 /* Super Admin: keep every card dark smoked-glass, including hover/focus states. */
 body:not(:has(.login-layout)) :is(main .card,.sa-stat,.sa-edit-dialog){
@@ -44,12 +41,7 @@ body:not(:has(.login-layout)) .sa-table th{background:rgba(23,28,35,.94)!importa
 body:not(:has(.login-layout)) .sa-table td{background:rgba(5,7,10,.24)!important;border-bottom-color:rgba(255,255,255,.09)!important}
 body:not(:has(.login-layout)) .sa-table tr:hover td{background:rgba(255,255,255,.035)!important}
 </style>
-  <link rel="stylesheet" href="indinext-liquid-glass.css?v=dark-glass-v1-20261106">
-  <link rel="stylesheet" href="dark-theme-hardening.css?v=dark-hardening-v2-20261106">
-
-  <link rel="stylesheet" href="indinext-liquid-glass-unified.css?v=orange-edge-liquid-glass-v1-20261107">
-  <link rel="stylesheet" href="indinext-rebuild.css?v=20261108">
-  <link rel="stylesheet" href="indinext-solar-system.css?v=solar-unified-v2-20261109">
+<link rel="stylesheet" href="indinext-solar-system.css?v=solar-unified-v2-20261109">
   <link rel="stylesheet" href="indinext-final-ui.css?v=20261109-final1">
 </head>
 <body class="superadmin-mode">
