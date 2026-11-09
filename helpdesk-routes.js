@@ -286,7 +286,7 @@ async function breakStart(req,env,u) {
   try {
     // Keep the attendance check in the INSERT itself so a concurrent check-out cannot
     // create a break after the agent's attendance session has already closed.
-    const r=await env.DB.prepare("INSERT INTO agent_breaks(employee_id,agent_id,break_type,started_at,created_at) SELECT ?,?,?,?,? WHERE EXISTS (SELECT 1 FROM attendance WHERE employee_id=? AND check_out_at IS NULL)").bind(u.employeeId,u.agentId,type,t,t,u.employeeId).run();
+    const r=await env.DB.prepare("INSERT INTO agent_breaks(agent_id,break_type,started_at,created_at) SELECT ?,?,?,? WHERE EXISTS (SELECT 1 FROM attendance WHERE employee_id=? AND check_out_at IS NULL)").bind(u.agentId,type,t,t,u.employeeId).run();
     if(!r.meta.changes) bad("Check in before starting a break.",409);
     return { id:r.meta.last_row_id, breakType:type, startedAt:t };
   } catch(e) {
@@ -298,7 +298,8 @@ async function breakEnd(env,u) {
   const active=await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
   if(!active) bad("There is no active break to end.",409);
   const t=now(), seconds=Math.max(0,Math.floor((Date.parse(t)-Date.parse(active.started_at))/1000));
-  await env.DB.prepare("UPDATE agent_breaks SET ended_at=?,duration_seconds=?,duration_minutes=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,Math.floor(seconds/60),active.id).run();
+  const result=await env.DB.prepare("UPDATE agent_breaks SET ended_at=?,duration_seconds=? WHERE id=? AND ended_at IS NULL").bind(t,seconds,active.id).run();
+  if(!result.meta.changes) bad("Break session was already ended.",409);
   return { id:active.id,breakType:active.break_type,startedAt:active.started_at,endedAt:t,durationSeconds:seconds };
 }
 async function acwStatus(env,u) {
@@ -312,9 +313,10 @@ async function acwStart(env,u) {
   if(activeBreak) bad("End your break before starting ACW.",409);
   const t=now();
   try {
-    const r=await env.DB.prepare("INSERT INTO agent_acw_sessions(employee_id,agent_id,started_at,created_at) VALUES(?,?,?,?)").bind(u.employeeId,u.agentId,t,t).run();
+    const r=await env.DB.prepare("INSERT INTO agent_acw_sessions(employee_id,agent_id,started_at,created_at) SELECT ?,?,?,? WHERE EXISTS (SELECT 1 FROM attendance WHERE employee_id=? AND check_out_at IS NULL)").bind(u.employeeId,u.agentId,t,t,u.employeeId).run();
+    if(!r.meta.changes) bad("Check in before starting ACW.",409);
     return {id:r.meta.last_row_id,startedAt:t};
-  } catch(e) { bad("An active break or ACW session already exists.",409); }
+  } catch(e) { if(e instanceof HttpError) throw e; bad("An active break or ACW session already exists.",409); }
 }
 async function acwEnd(env,u) {
   const active=await env.DB.prepare("SELECT id,started_at FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
@@ -344,9 +346,9 @@ async function adminBreakStatus(url, env) {
   const where=["1=1"],args=[];
   if(from){where.push("date(b.started_at)>=?");args.push(from);}
   if(to){where.push("date(b.started_at)<=?");args.push(to);}
-  const rows=(await env.DB.prepare("SELECT b.id,b.break_type,b.started_at,b.ended_at,b.duration_minutes,a.employee_id,a.full_name FROM agent_breaks b JOIN agents a ON a.id=b.agent_id WHERE "+where.join(" AND ")+" ORDER BY b.started_at DESC LIMIT 2000").bind(...args).all()).results;
+  const rows=(await env.DB.prepare("SELECT b.id,b.break_type,b.started_at,b.ended_at,b.duration_seconds,a.employee_id,a.full_name FROM agent_breaks b JOIN agents a ON a.id=b.agent_id WHERE "+where.join(" AND ")+" ORDER BY b.started_at DESC LIMIT 2000").bind(...args).all()).results;
   const t=Date.now();
-  return { breaks:rows.map(r=>({...r,elapsedSeconds:r.ended_at?Math.max(0,Math.floor((Date.parse(r.ended_at)-Date.parse(r.started_at))/1000)):Math.max(0,Math.floor((t-Date.parse(r.started_at))/1000))})), serverTime:now() };
+  return { breaks:rows.map(r=>{const elapsedSeconds=r.ended_at?Math.max(0,Math.floor((Date.parse(r.ended_at)-Date.parse(r.started_at))/1000)):Math.max(0,Math.floor((t-Date.parse(r.started_at))/1000));return {...r,duration_minutes:r.duration_seconds==null?null:Math.floor(Number(r.duration_seconds)/60),elapsedSeconds};}), serverTime:now() };
 }
 
 // ---------- Agent Overview live work summary ----------
@@ -361,7 +363,7 @@ async function agentOverviewLive(url, env, u) {
   const end = new Date(startMs + 86400000).toISOString();
   const [attendance, breaks] = await Promise.all([
     env.DB.prepare("SELECT check_in_at,check_out_at FROM attendance WHERE employee_id=? AND work_date=? ORDER BY check_in_at DESC LIMIT 1").bind(u.employeeId, date).first(),
-    env.DB.prepare("SELECT started_at,ended_at,duration_seconds FROM agent_breaks WHERE employee_id=? AND break_type IN ('tea','lunch','bio') AND started_at>=? AND started_at<? ORDER BY started_at").bind(u.employeeId, start, end).all()
+    env.DB.prepare("SELECT started_at,ended_at,duration_seconds FROM agent_breaks WHERE agent_id=? AND break_type IN ('tea','lunch','bio') AND started_at>=? AND started_at<? ORDER BY started_at").bind(u.agentId, start, end).all()
   ]);
   const currentMs = Date.now();
   let breakSeconds = 0;
