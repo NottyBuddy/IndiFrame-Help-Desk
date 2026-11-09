@@ -98,3 +98,18 @@ html body:not(.helpdesk-login):not(#unused-specificity) :is(input,select,textare
 html body:not(.helpdesk-login):not(#unused-specificity) :is(table,thead,tbody,tr,th,td){background-color:rgba(7,12,18,.18)!important;color:#f3eee8!important}
 @media(max-width:760px){.indinext-solar-scene{opacity:.56!important}.indinext-solar-scene .sun-core{width:clamp(58px,12vw,88px)}}
 @media(prefers-reduced-motion:reduce){.indinext-solar-nebula,.indinext-solar-scene .planet-orbit,.indinext-solar-scene .planet-wrap,.indinext-solar-scene .sun-core{animation:none!important}}
+
+
+/* Solar system refinement: smaller central sun, clearer planets and no orbit guide rings. */
+.indinext-solar-scene .planet-orbit:before{display:none!important;content:none!important;border:0!important;box-shadow:none!important}
+.indinext-solar-scene .sun-core{width:clamp(44px,6.2vw,70px)!important}
+.indinext-solar-scene .planet-label{font-size:12px!important;letter-spacing:.14em!important;font-weight:800!important}
+.indinext-solar-scene .orbit-measure{--planet-size:14px}
+.indinext-solar-scene .orbit-quote{--planet-size:16px}
+.indinext-solar-scene .orbit-design{--planet-size:17px}
+.indinext-solar-scene .orbit-manufacture{--planet-size:20px}
+.indinext-solar-scene .orbit-deliver{--planet-size:18px}
+.indinext-solar-scene .orbit-install{--planet-size:21px}
+.indinext-solar-scene .orbit-service{--planet-size:16px}
+@media(max-width:760px){.indinext-solar-scene .planet-label{font-size:10px!important;letter-spacing:.1em!important}}
+@media(max-width:480px){.indinext-solar-scene .planet-label{font-size:9px!important;letter-spacing:.08em!important}}
