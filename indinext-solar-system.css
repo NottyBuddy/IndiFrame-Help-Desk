@@ -113,3 +113,21 @@ html body:not(.helpdesk-login):not(#unused-specificity) :is(table,thead,tbody,tr
 .indinext-solar-scene .orbit-service{--planet-size:16px}
 @media(max-width:760px){.indinext-solar-scene .planet-label{font-size:10px!important;letter-spacing:.1em!important}}
 @media(max-width:480px){.indinext-solar-scene .planet-label{font-size:9px!important;letter-spacing:.08em!important}}
+
+
+/* FINAL SOLAR SYSTEM OVERRIDES — remove all visible orbit/ring outlines and force readable scale. */
+html body .indinext-solar-bg .indinext-solar-scene .planet-orbit:before,
+html body .indinext-solar-bg .indinext-solar-scene .planet-orbit:after{content:none!important;display:none!important;visibility:hidden!important;border:0!important;outline:0!important;box-shadow:none!important;background:none!important}
+html body .indinext-solar-bg .indinext-solar-scene .sun-core:before,
+html body .indinext-solar-bg .indinext-solar-scene .sun-core:after{content:none!important;display:none!important;visibility:hidden!important;border:0!important;outline:0!important;box-shadow:none!important}
+html body .indinext-solar-bg .indinext-solar-scene .sun-core{width:clamp(46px,5.2vw,62px)!important;min-width:46px!important;height:auto!important;aspect-ratio:1!important}
+html body .indinext-solar-bg .indinext-solar-scene .planet-label{font-size:14px!important;font-weight:800!important;letter-spacing:.13em!important;line-height:1.2!important}
+html body .indinext-solar-bg .indinext-solar-scene .orbit-measure{--planet-size:18px!important}
+html body .indinext-solar-bg .indinext-solar-scene .orbit-quote{--planet-size:20px!important}
+html body .indinext-solar-bg .indinext-solar-scene .orbit-design{--planet-size:21px!important}
+html body .indinext-solar-bg .indinext-solar-scene .orbit-manufacture{--planet-size:24px!important}
+html body .indinext-solar-bg .indinext-solar-scene .orbit-deliver{--planet-size:22px!important}
+html body .indinext-solar-bg .indinext-solar-scene .orbit-install{--planet-size:25px!important}
+html body .indinext-solar-bg .indinext-solar-scene .orbit-service{--planet-size:20px!important}
+@media(max-width:760px){html body .indinext-solar-bg .indinext-solar-scene .planet-label{font-size:11px!important;letter-spacing:.09em!important}}
+@media(max-width:480px){html body .indinext-solar-bg .indinext-solar-scene .planet-label{font-size:10px!important}}
