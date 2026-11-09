@@ -211,7 +211,7 @@ function calculateAttendance(){
     $('netWorkingHours').textContent = '00:00:00';
     $('attendanceStatus').textContent = 'Absent';
     $('todayAttendanceValue').textContent = '00:00:00';
-    $('monthlyPresentDaysValue').textContent = '0';
+    $('monthlyPresentDaysValue').textContent = String(getMonthlyPresentDays(loadStoredAttendanceRecords()));
     return;
   }
 
