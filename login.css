@@ -582,3 +582,106 @@ body.helpdesk-login{background:radial-gradient(ellipse at 24% 52%,rgba(129,78,48
 .cosmic-intro .intro-brand{position:absolute;left:50%;top:calc(50% + clamp(145px,20vw,205px));transform:translateX(-50%);width:max-content;max-width:90vw;color:#f8e7d7;font:800 clamp(15px,2.2vw,22px) Manrope,sans-serif;letter-spacing:.22em;text-align:center;text-transform:uppercase;text-shadow:0 0 12px rgba(242,166,111,.55),0 0 30px rgba(212,103,54,.35);animation:introTitleReveal .9s ease .25s both}
 @keyframes introTitleReveal{from{opacity:0;filter:blur(8px);transform:translate(-50%,10px)}to{opacity:1;filter:blur(0);transform:translate(-50%,0)}}
 @media(max-width:520px){.cosmic-intro .intro-brand{top:calc(50% + min(35vw,130px));letter-spacing:.13em;font-size:15px}}
+
+
+/* Final login + opening-sequence polish. */
+.cosmic-intro{
+  z-index:11000;
+  background:
+    radial-gradient(ellipse at 50% 46%,rgba(188,103,57,.14),transparent 35%),
+    radial-gradient(ellipse at 50% 50%,#0b0b0e 0%,#020306 72%);
+}
+.cosmic-intro:before,.cosmic-intro:after{
+  content:"";
+  position:absolute;
+  border:1px solid rgba(232,193,132,.10);
+  border-radius:50%;
+  width:min(76vw,650px);
+  aspect-ratio:1;
+  pointer-events:none;
+  animation:introHaloPulse 7s ease-in-out infinite;
+}
+.cosmic-intro:after{width:min(94vw,820px);animation-delay:-3.5s;opacity:.55}
+.intro-black-hole{width:clamp(190px,34vw,340px);z-index:1}
+.intro-hole-core{inset:35%;box-shadow:0 0 28px 16px rgba(0,0,0,.98),0 0 68px 26px rgba(229,126,64,.34)}
+.intro-copy{
+  position:absolute;
+  top:calc(50% + clamp(145px,19vw,205px));
+  display:grid;
+  justify-items:center;
+  gap:10px;
+  width:min(90vw,420px);
+  z-index:2;
+}
+.cosmic-intro .intro-brand{
+  color:#f7e3cb;
+  font:800 clamp(15px,2vw,20px)/1 Manrope,sans-serif;
+  letter-spacing:.34em;
+  text-indent:.34em;
+  text-shadow:0 0 16px rgba(242,166,111,.5),0 0 34px rgba(212,103,54,.28);
+  animation:introBrandReveal .9s ease .3s both;
+}
+.cosmic-intro .intro-tagline{
+  color:rgba(245,224,203,.66);
+  font:500 10px/1.5 "DM Sans",sans-serif;
+  letter-spacing:.13em;
+  text-align:center;
+  animation:introBrandReveal 1s ease .65s both;
+}
+@keyframes introBrandReveal{
+  from{opacity:0;filter:blur(7px);transform:translateY(10px)}
+  to{opacity:1;filter:blur(0);transform:translateY(0)}
+}
+.login-stage.login-only-layout{
+  width:min(1120px,100%);
+  min-height:min(760px,calc(100svh - 64px));
+  grid-template-columns:minmax(0,1.1fr) minmax(340px,.9fr);
+  grid-template-rows:1fr auto;
+  align-items:center;
+  gap:22px clamp(30px,5vw,76px);
+}
+.login-top-copy{grid-column:1;grid-row:1;align-self:end;max-width:550px;margin:0 0 18px}
+.login-top-copy .eyebrow{font-size:10px;letter-spacing:.28em}
+.login-top-copy h1{font:800 clamp(54px,7vw,82px)/.98 Manrope,sans-serif;letter-spacing:-.065em;margin:13px 0 14px}
+.login-top-copy .top-description{max-width:430px;font-size:15px;line-height:1.7}
+.login-top-copy .brand-description{margin:15px 0 0;font-size:10px;letter-spacing:.10em}
+.login-panel{grid-column:2;grid-row:1 / span 2;align-self:center;max-width:460px}
+.login-panel .glass-card{padding:clamp(30px,4vw,44px);border-radius:30px}
+.card-heading{margin:31px 0 27px}
+.card-heading h2{font-size:38px}
+.field{margin-bottom:20px}
+.field input{height:54px;border-radius:14px}
+#loginButton{height:55px;border-radius:14px;font-size:13px}
+#loginButton:focus-visible,.field input:focus-visible{
+  outline:2px solid rgba(241,197,142,.88);
+  outline-offset:3px;
+}
+#loginButton[aria-busy="true"]{filter:saturate(.82);cursor:wait}
+.brand-footer{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:5px;align-self:end;margin-top:10px}
+.brand-footer-name{font:800 27px/1 Manrope,sans-serif;letter-spacing:.24em}
+.brand-footer-tagline{font-size:10px;letter-spacing:.10em}
+@media(max-width:850px){
+  .login-stage.login-only-layout{width:min(600px,100%);min-height:0;grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:14px;padding:20px 0}
+  .login-top-copy{grid-column:1;grid-row:1;align-self:center;text-align:center;margin:0 auto;max-width:480px}
+  .login-top-copy h1{font-size:clamp(38px,8vw,54px)}
+  .login-panel{grid-column:1;grid-row:2;width:100%;max-width:460px}
+  .brand-footer{grid-column:1;grid-row:3;align-items:center;margin-top:4px}
+  .solar-scene{left:50%;top:48%;width:118vw;height:78vh;opacity:.52}
+}
+@media(max-width:520px){
+  .login-stage.login-only-layout{min-height:calc(100svh - 28px);gap:8px;padding:8px 0}
+  .login-top-copy h1{font-size:34px;margin:8px 0}
+  .login-top-copy .top-description{font-size:12px}
+  .login-top-copy .brand-description{font-size:8px;letter-spacing:.04em}
+  .login-panel .glass-card{padding:25px 21px;border-radius:24px}
+  .card-heading{margin:25px 0 21px}
+  .card-heading h2{font-size:32px}
+  .brand-footer-name{font-size:22px}
+  .brand-footer-tagline{font-size:9px}
+  .intro-black-hole{width:min(68vw,280px)}
+  .intro-copy{top:calc(50% + min(35vw,125px))}
+  .cosmic-intro .intro-tagline{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cosmic-intro:before,.cosmic-intro:after,.intro-black-hole,.intro-hole-halo,.intro-hole-ring,.cosmic-intro .intro-brand,.cosmic-intro .intro-tagline{animation:none!important}
+}

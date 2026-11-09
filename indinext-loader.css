@@ -15,3 +15,60 @@
 @keyframes indinextFrame{to{transform:rotate(360deg)}}
 @keyframes indinextShimmer{to{background-position:-220% 0}}
 @media(prefers-reduced-motion:reduce){.indinext-frame:before,.indinext-frame:after,.indinext-skeleton-line{animation:none!important}}
+
+
+/* Consistent INDINEXT loading experience across sign-in and workspace entry. */
+.indinext-loader{
+  z-index:10000;
+  background:
+    radial-gradient(ellipse at 50% 42%,rgba(166,91,53,.16),transparent 42%),
+    radial-gradient(ellipse at 50% 100%,rgba(85,72,108,.12),transparent 48%),
+    rgba(3,5,8,.96);
+}
+.indinext-loader-card{
+  position:relative;
+  gap:19px;
+  padding:34px 30px 30px;
+  border:1px solid rgba(232,193,132,.18);
+  border-radius:26px;
+  background:linear-gradient(145deg,rgba(36,31,29,.82),rgba(8,10,14,.88));
+  box-shadow:0 28px 90px rgba(0,0,0,.58),inset 0 1px rgba(255,255,255,.12),0 0 55px rgba(190,107,61,.08);
+  -webkit-backdrop-filter:blur(24px) saturate(135%);
+  backdrop-filter:blur(24px) saturate(135%);
+}
+.indinext-frame{width:62px;height:62px}
+.indinext-frame:before{border-width:2px;border-radius:17px}
+.indinext-frame:after{inset:10px;border-radius:12px}
+.indinext-loader-brand{font-size:14px;letter-spacing:.34em;text-shadow:0 0 22px rgba(232,193,132,.24)}
+.indinext-loader-message{max-width:270px;font-size:12px;line-height:1.65}
+.indinext-loader-progress{
+  display:block;
+  width:min(230px,100%);
+  height:3px;
+  overflow:hidden;
+  border-radius:10px;
+  background:rgba(255,255,255,.10);
+}
+.indinext-loader-progress:after{
+  content:"";
+  display:block;
+  width:42%;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#a95e38,#f1c58e,#d88a53);
+  box-shadow:0 0 14px rgba(220,145,89,.46);
+  animation:indinextProgress 1.45s ease-in-out infinite;
+}
+.dashboard-loader .indinext-loader-card{width:min(410px,90vw)}
+.dashboard-loader .indinext-loader-skeleton{margin-top:2px}
+@keyframes indinextProgress{
+  0%{transform:translateX(-110%)}
+  100%{transform:translateX(250%)}
+}
+@media(max-width:480px){
+  .indinext-loader{padding:18px}
+  .indinext-loader-card{padding:29px 22px 25px}
+}
+@media(prefers-reduced-motion:reduce){
+  .indinext-loader-progress:after{animation:none!important;width:100%}
+}
