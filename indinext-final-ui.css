@@ -125,3 +125,19 @@ body.password-workspace > main.panel input {
   display: block !important;
   width: 100% !important;
 }
+
+
+/* Root viewport guard: Change Password had an 8px document-level overflow
+   even after its body and card were constrained. Clip at the root and keep
+   the page's intrinsic width tied to the viewport. */
+html:has(> body.password-workspace) {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: clip !important;
+}
+html:has(> body.password-workspace) > body.password-workspace {
+  width: auto !important;
+  max-width: 100% !important;
+  overflow-x: clip !important;
+  box-sizing: border-box !important;
+}
