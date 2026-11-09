@@ -1,11 +1,14 @@
 (() => {
   "use strict";
   const intro = document.getElementById("cosmicIntro");
-  if (intro) {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (intro && !reduceMotion) {
     window.setTimeout(() => {
       intro.classList.add("is-hidden");
       window.setTimeout(() => intro.remove(), 1100);
     }, 4100);
+  } else {
+    intro?.remove();
   }
   const starfield = document.getElementById("starfield");
   if (starfield) {
@@ -53,7 +56,11 @@
       return;
     }
     button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    loaderMessage && (loaderMessage.textContent = "Verifying credentials and preparing your workspace…");
+    loader?.classList.remove("is-hidden");
     showMessage("Signing in securely…", "success");
+    let redirecting = false;
     try {
       const response = await fetch("https://indiframe-helpdesk-api.mukuls2302.workers.dev/api/login", {
         method: "POST",
@@ -67,6 +74,8 @@
       sessionStorage.setItem("indiframe_token", data.token);
       const forceChange = data.mustChangePassword === true;
       sessionStorage.setItem("forcePasswordChange", forceChange ? "true" : "false");
+      redirecting = true;
+      if (loaderMessage) loaderMessage.textContent = forceChange ? "Secure password update required…" : "Access verified. Opening your workspace…";
       showMessage(forceChange ? "Password update required. Redirecting…" : "Login successful. Opening your workspace…", "success");
       window.setTimeout(() => {
         window.location.href = forceChange ? "change-password.html" : "dashboard.html";
@@ -75,8 +84,11 @@
       showMessage(error.message === "Failed to fetch" ? "Server se connect nahi ho raha. API connection check karein." : error.message);
       loader?.classList.add("is-hidden");
     } finally {
-      button.disabled = false;
-      if (!message.classList.contains("success")) loader?.classList.add("is-hidden");
+      if (!redirecting) {
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+        loader?.classList.add("is-hidden");
+      }
     }
   });
 })();
