@@ -316,7 +316,7 @@ async function acwStart(env,u) {
     const r=await env.DB.prepare("INSERT INTO agent_acw_sessions(employee_id,agent_id,started_at,created_at) SELECT ?,?,?,? WHERE EXISTS (SELECT 1 FROM attendance WHERE employee_id=? AND check_out_at IS NULL)").bind(u.employeeId,u.agentId,t,t,u.employeeId).run();
     if(!r.meta.changes) bad("Check in before starting ACW.",409);
     return {id:r.meta.last_row_id,startedAt:t};
-  } catch(e) { bad("An active break or ACW session already exists.",409); }
+  } catch(e) { if(e instanceof HttpError) throw e; bad("An active break or ACW session already exists.",409); }
 }
 async function acwEnd(env,u) {
   const active=await env.DB.prepare("SELECT id,started_at FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
@@ -363,7 +363,7 @@ async function agentOverviewLive(url, env, u) {
   const end = new Date(startMs + 86400000).toISOString();
   const [attendance, breaks] = await Promise.all([
     env.DB.prepare("SELECT check_in_at,check_out_at FROM attendance WHERE employee_id=? AND work_date=? ORDER BY check_in_at DESC LIMIT 1").bind(u.employeeId, date).first(),
-    env.DB.prepare("SELECT started_at,ended_at,duration_seconds FROM agent_breaks WHERE agent_id=? AND break_type IN ('tea','lunch','bio') AND started_at> AND started_at<? ORDER BY started_at").bind(u.agentId, start, end).all()
+    env.DB.prepare("SELECT started_at,ended_at,duration_seconds FROM agent_breaks WHERE agent_id=? AND break_type IN ('tea','lunch','bio') AND started_at>=? AND started_at<? ORDER BY started_at").bind(u.agentId, start, end).all()
   ]);
   const currentMs = Date.now();
   let breakSeconds = 0;
