@@ -65,3 +65,27 @@ body.if-app-shell>.if-left-sidebar button[data-view="kpis"]::before{content:"KP"
 body.if-app-shell>.if-left-sidebar button[data-view="attendance"]::before{content:"AT"}
 body.if-app-shell>.if-left-sidebar button[data-view="quiz"]::before{content:"QZ"}
 body.if-app-shell>.if-left-sidebar button[data-view="admin"]::before{content:"AD"}
+
+/* Auth pages use a legacy centered grid; the shared app shell must explicitly replace it. */
+body.if-app-shell {
+  display: block !important;
+  place-items: initial !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+body.if-app-shell > main.panel {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+}
+body.if-app-shell > main.panel form,
+body.if-app-shell > main.panel label,
+body.if-app-shell > main.panel input,
+body.if-app-shell > main.panel button {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+body.if-app-shell > main.panel input { width: 100% !important; }
