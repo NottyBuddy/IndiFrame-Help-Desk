@@ -34,8 +34,8 @@ body.helpdesk-login .intro-hole-logo{position:relative!important;z-index:4!impor
 @keyframes ifHoleLogoPulse{from{opacity:.82;filter:brightness(.9);transform:scale(.90)}to{opacity:1;filter:brightness(1.22);transform:scale(1)}}
 body.helpdesk-login .cosmic-intro .intro-brand{display:none!important}
 body.helpdesk-login *{border:0!important;outline:0!important}
-body.helpdesk-login .field input{border:0!important;background:rgba(4,6,10,.52)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.055),0 8px 24px rgba(0,0,0,.12)!important}
-body.helpdesk-login .field input:focus{border:0!important;outline:0!important;box-shadow:inset 0 0 0 1px rgba(240,200,143,.32),0 0 0 3px rgba(215,166,108,.12),0 8px 24px rgba(0,0,0,.12)!important}
+body.helpdesk-login .field input{border:0!important;background:rgba(4,6,10,.52)!important;box-shadow:none!important}
+body.helpdesk-login .field input:focus{border:0!important;outline:0!important;box-shadow:0 0 0 3px rgba(215,166,108,.18),0 8px 24px rgba(0,0,0,.12)!important}
 body.helpdesk-login #loginButton,body.helpdesk-login :is(.glass-card,.login-panel,.login-stage,.login-top-copy){border:0!important;outline:0!important}
 body.helpdesk-login :focus-visible{outline:0!important;box-shadow:0 0 0 3px rgba(240,200,143,.24)!important}
 
@@ -57,3 +57,11 @@ body.if-app-shell main :is(.overview-metric-grid,.attendance-summary-grid){grid-
 }
 @media(max-width:420px){body.if-app-shell>.topbar{padding-inline:10px!important}body.if-app-shell>.topbar .subtitle{display:none!important}body.if-app-shell>.topbar .logout-btn{padding-inline:8px!important}body.if-app-shell main :is(.overview-metric-grid,.attendance-summary-grid){gap:8px!important}}
 @media(prefers-reduced-motion:reduce){body.if-app-shell *,body.helpdesk-login .intro-hole-logo{transition:none!important;animation-duration:.01ms!important}}
+
+/* Compact wayfinding marks for the in-page dashboard tabs. */
+body.if-app-shell>.if-left-sidebar button[data-view]::before{display:inline-flex;flex:0 0 30px;width:30px;height:30px;align-items:center;justify-content:center;border-radius:9px;background:rgba(215,166,108,.12);color:#e9c18d;font:800 9px/1 Manrope,sans-serif;letter-spacing:.03em}
+body.if-app-shell>.if-left-sidebar button[data-view="overview"]::before{content:"OV"}
+body.if-app-shell>.if-left-sidebar button[data-view="kpis"]::before{content:"KP"}
+body.if-app-shell>.if-left-sidebar button[data-view="attendance"]::before{content:"AT"}
+body.if-app-shell>.if-left-sidebar button[data-view="quiz"]::before{content:"QZ"}
+body.if-app-shell>.if-left-sidebar button[data-view="admin"]::before{content:"AD"}
