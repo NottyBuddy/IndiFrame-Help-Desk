@@ -1,15 +1,5 @@
 (() => {
   "use strict";
-  const intro = document.getElementById("cosmicIntro");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (intro && !reduceMotion) {
-    window.setTimeout(() => {
-      intro.classList.add("is-hidden");
-      window.setTimeout(() => intro.remove(), 1100);
-    }, 4100);
-  } else {
-    intro?.remove();
-  }
   const starfield = document.getElementById("starfield");
   if (starfield) {
     let seed = 92741;
