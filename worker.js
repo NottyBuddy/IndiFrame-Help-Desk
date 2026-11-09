@@ -278,17 +278,12 @@ async function coreRoute(request, env, url) {
     if(!target)return json(request,{error:"Employee record nahi mila."},404);
     if(Number(target.is_super_admin)===1)return json(request,{error:"Super Admin account protected hai; is account ko edit, deactivate ya archive nahi kar sakte."},403);
     if(method==="DELETE"){
-      // Preserve quiz history: the existing quiz-attempt schema is legacy-managed,
-      // and its FK definition is not owned by this repository. Refuse deletion
-      // rather than silently lose history or leave orphaned rows.
-      const quizHistory=await env.DB.prepare("SELECT COUNT(*) AS total FROM quiz_attempts WHERE agent_id=?").bind(id).first();
-      if(Number(quizHistory?.total||0)>0){
-        return json(request,{error:"Is account ki quiz history maujood hai. History preserve karne ke liye permanent delete block kiya gaya hai. Pehle quiz-history retention/reassignment approve karein."},409);
-      }
-      // Remove login sessions and account-bound break/ACW rows. Employee-ID based
-      // attendance/KPI history and project records are retained.
+      // Permanent account deletion also removes account-owned quiz attempts.
+      // Employee-ID based attendance/KPI history, project records, and the
+      // audit trail are retained.
       const statements=[
-        env.DB.prepare("DELETE FROM sessions WHERE agent_id=?").bind(id)
+        env.DB.prepare("DELETE FROM sessions WHERE agent_id=?").bind(id),
+        env.DB.prepare("DELETE FROM quiz_attempts WHERE agent_id=?").bind(id)
       ];
       const optionalAcw=await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='agent_acw_sessions'").first();
       if(optionalAcw){
