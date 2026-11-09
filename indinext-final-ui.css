@@ -62,3 +62,7 @@ html:has(> body.password-workspace){
   overflow-x: clip !important;
   box-sizing: border-box !important;
 }
+
+
+/* Remove legacy intro-hole artwork from all login variants. */
+html body.helpdesk-login .intro-hole,html body.helpdesk-login .intro-hole-core,html body.helpdesk-login .intro-hole-ring,html body.helpdesk-login .black-hole,html body.helpdesk-login .solar-scene .black-hole{display:none!important;visibility:hidden!important;opacity:0!important;animation:none!important;content:none!important}
