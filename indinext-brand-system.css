@@ -121,26 +121,26 @@ body.helpdesk-login.intro-complete .login-stage{animation:if-login-enter .55s ea
 }
 .indinext-intro:before,.indinext-intro:after{content:"";position:absolute;width:min(76vw,620px);aspect-ratio:1;border-radius:50%;border:1px solid rgba(67,217,207,.12);box-shadow:0 0 90px rgba(19,184,166,.10),inset 0 0 90px rgba(19,184,166,.06)}
 .indinext-intro:after{width:min(94vw,780px);border-color:rgba(214,174,98,.10);transform:rotate(-22deg) scaleY(.36)}
-.intro-hole{
+.indinext-hole{
   position:relative;width:min(64vw,430px);aspect-ratio:1;display:grid;place-items:center;
   opacity:0;transform:scale(.34);animation:if-hole-reveal 1.1s .35s cubic-bezier(.18,.8,.2,1) forwards;
 }
-.intro-hole:before{content:"";position:absolute;inset:13%;border-radius:50%;background:radial-gradient(circle,transparent 34%,rgba(19,184,166,.15) 48%,rgba(214,174,98,.10) 60%,transparent 72%);filter:blur(12px);animation:if-hole-pulse 3s ease-in-out infinite}
-.intro-ring{position:absolute;border-radius:50%;border:7px solid transparent;filter:drop-shadow(0 0 14px rgba(67,217,207,.45))}
-.intro-ring-outer{inset:17%;border-top-color:rgba(67,217,207,.88);border-bottom-color:rgba(214,174,98,.85);transform:rotate(-26deg) scaleY(.38);animation:if-hole-spin 8s linear infinite}
-.intro-ring-inner{inset:28%;border-width:4px;border-left-color:rgba(214,174,98,.92);border-right-color:rgba(19,184,166,.9);transform:rotate(34deg) scaleY(.44);animation:if-hole-spin 5.6s linear infinite reverse}
-.intro-core{position:absolute;inset:37%;border-radius:50%;background:#01050A;box-shadow:0 0 24px 14px rgba(0,0,0,.96),0 0 58px 22px rgba(19,184,166,.17)}
-.intro-wordmark{position:relative;z-index:2;color:#F4F7FA;font:800 clamp(22px,4vw,42px) Manrope,sans-serif;letter-spacing:.20em;text-indent:.20em;text-shadow:0 0 22px rgba(67,217,207,.65);opacity:0;animation:if-logo-reveal .85s 1.55s ease-out forwards}
-.intro-tagline{position:absolute;bottom:12vh;margin:0;color:var(--if-gold);font:700 11px Manrope,sans-serif;letter-spacing:.38em;text-align:center;opacity:0;animation:if-tagline-reveal .7s 2.55s ease-out forwards}
+.indinext-hole:before{content:"";position:absolute;inset:13%;border-radius:50%;background:radial-gradient(circle,transparent 34%,rgba(19,184,166,.15) 48%,rgba(214,174,98,.10) 60%,transparent 72%);filter:blur(12px);animation:if-hole-pulse 3s ease-in-out infinite}
+.indinext-ring{position:absolute;border-radius:50%;border:7px solid transparent;filter:drop-shadow(0 0 14px rgba(67,217,207,.45))}
+.indinext-ring-outer{inset:17%;border-top-color:rgba(67,217,207,.88);border-bottom-color:rgba(214,174,98,.85);transform:rotate(-26deg) scaleY(.38);animation:if-hole-spin 8s linear infinite}
+.indinext-ring-inner{inset:28%;border-width:4px;border-left-color:rgba(214,174,98,.92);border-right-color:rgba(19,184,166,.9);transform:rotate(34deg) scaleY(.44);animation:if-hole-spin 5.6s linear infinite reverse}
+.indinext-core{position:absolute;inset:37%;border-radius:50%;background:#01050A;box-shadow:0 0 24px 14px rgba(0,0,0,.96),0 0 58px 22px rgba(19,184,166,.17)}
+.indinext-wordmark{position:relative;z-index:2;color:#F4F7FA;font:800 clamp(22px,4vw,42px) Manrope,sans-serif;letter-spacing:.20em;text-indent:.20em;text-shadow:0 0 22px rgba(67,217,207,.65);opacity:0;animation:if-logo-reveal .85s 1.55s ease-out forwards}
+.indinext-tagline{position:absolute;bottom:12vh;margin:0;color:var(--if-gold);font:700 11px Manrope,sans-serif;letter-spacing:.38em;text-align:center;opacity:0;animation:if-tagline-reveal .7s 2.55s ease-out forwards}
 @keyframes if-hole-reveal{to{opacity:1;transform:scale(1)}}
 @keyframes if-hole-spin{to{rotate:360deg}}
 @keyframes if-hole-pulse{50%{opacity:.72;transform:scale(1.06)}}
 @keyframes if-logo-reveal{from{opacity:0;filter:blur(8px);transform:scale(.88)}to{opacity:1;filter:blur(0);transform:scale(1)}}
 @keyframes if-tagline-reveal{to{opacity:1;transform:translateY(0)}}
 @keyframes if-intro-exit{to{opacity:0;visibility:hidden}}
-@media(max-width:600px){.intro-hole{width:min(82vw,360px)}.intro-tagline{bottom:10vh;font-size:9px;letter-spacing:.24em}}
+@media(max-width:600px){.indinext-hole{width:min(82vw,360px)}.indinext-tagline{bottom:10vh;font-size:9px;letter-spacing:.24em}}
 @media(prefers-reduced-motion:reduce){
-  body:not(.helpdesk-login):before,.intro-hole,.intro-ring,.intro-wordmark,.intro-tagline{animation:none!important}
+  body:not(.helpdesk-login):before,.indinext-hole,.indinext-ring,.indinext-wordmark,.indinext-tagline{animation:none!important}
   .indinext-intro{display:none!important}
   body.helpdesk-login.intro-running .login-stage{opacity:1!important;visibility:visible!important;transform:none!important}
 }
