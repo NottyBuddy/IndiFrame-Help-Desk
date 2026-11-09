@@ -89,3 +89,39 @@ body.if-app-shell > main.panel button {
   max-width: 100% !important;
 }
 body.if-app-shell > main.panel input { width: 100% !important; }
+
+
+/* Change Password: responsive even when JavaScript is disabled (static layout validation). */
+body.password-workspace {
+  display: block !important;
+  place-items: initial !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding: 24px 14px !important;
+  overflow-x: clip !important;
+}
+body.password-workspace.if-app-shell {
+  padding-top: calc(var(--if-final-header) + 24px) !important;
+}
+body.password-workspace > main.panel {
+  display: block !important;
+  width: min(100%, 680px) !important;
+  max-width: 680px !important;
+  min-width: 0 !important;
+  margin: 24px auto !important;
+  padding: clamp(20px, 5vw, 34px) !important;
+  box-sizing: border-box !important;
+}
+body.password-workspace > main.panel form,
+body.password-workspace > main.panel label,
+body.password-workspace > main.panel input,
+body.password-workspace > main.panel button {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+body.password-workspace > main.panel input {
+  display: block !important;
+  width: 100% !important;
+}
