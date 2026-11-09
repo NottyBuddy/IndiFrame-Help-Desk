@@ -24,9 +24,14 @@ async function boxesDoNotOverlap(first, second) {
 for (const viewport of viewports) {
   test(`login layout has no horizontal overflow or card collisions at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    await page.goto("/index.html");
-    await expect(page.getByRole("heading", { name: "Help Desk" })).toBeVisible();
+    await page.goto("/index.html", { waitUntil: "domcontentloaded" });
+    const loader = page.locator("#indinextLoader");
+    await expect(loader).toBeVisible();
+    await expect(loader.getByRole("heading", { name: "Help Desk" })).toBeVisible();
+    await expect(loader).toHaveAttribute("aria-label", "Loading workspace");
+    await expect(loader).toHaveClass(/is-hidden/, { timeout: 10000 });
     await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
+    await expect(page.locator(".login-top-copy")).toHaveCount(0);
 
     const dimensions = await page.evaluate(() => ({
       viewport: window.innerWidth,
@@ -36,7 +41,6 @@ for (const viewport of viewports) {
     expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport);
     expect(dimensions.body).toBeLessThanOrEqual(dimensions.viewport);
 
-    await boxesDoNotOverlap(page.locator(".login-top-copy"), page.locator(".login-panel"));
     await boxesDoNotOverlap(page.locator(".login-panel"), page.locator(".brand-footer"));
     await boxesDoNotOverlap(page.locator("#employeeId"), page.locator("#password"));
     await boxesDoNotOverlap(page.locator("#password"), page.locator("#loginButton"));
