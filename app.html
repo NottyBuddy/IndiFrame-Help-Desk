@@ -242,10 +242,9 @@ function calculateAttendance(){
   $('attendanceStatus').textContent = status;
   $('todayAttendanceValue').textContent = formatDuration(netMinutes);
 
-  const monthlyRecords = loadStoredAttendanceRecords();
   const persisted = persistAttendanceRecord(attendanceRecord);
   saveAttendanceToBackend(persisted).catch(()=>{});
-  const monthlyCount = getMonthlyPresentDays([...monthlyRecords, persisted]);
+  const monthlyCount = getMonthlyPresentDays(loadStoredAttendanceRecords());
   $('monthlyPresentDaysValue').textContent = String(monthlyCount);
 }
 
