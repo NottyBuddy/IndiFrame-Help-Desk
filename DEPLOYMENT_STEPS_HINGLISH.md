@@ -1,6 +1,6 @@
 # IndiFrame Help Desk — Live setup checklist (Hinglish)
 
-Ye branch development ke liye hai: `feat/isolated-call-performance`. Is branch ko abhi production mein merge/deploy nahi kiya gaya hai.
+Ye document deployment checklist hai, live environment status ka source of truth nahi. Git branch, Cloudflare Worker deployment aur D1 migration history ko deployment se pehle independently verify karein.
 
 ## Is update mein kya add hua
 
@@ -19,33 +19,15 @@ Ye branch development ke liye hai: `feat/isolated-call-performance`. Is branch k
 
 1. Cloudflare D1 ka backup/export zaroor lein.
 2. Confirm karein ki Worker ka D1 binding naam exactly `DB` hai.
-3. SQL migrations isi order mein apply karein:
-   - `001_attendance.sql`
-   - `002_quiz_questions.sql`
-   - `003_kpi_daily.sql`
-   - `004_audit_log.sql`
-   - `005_breaks_superadmin.sql`
-   - `007_call_performance.sql`
-   - `008_weekly_source_data.sql`
-4. `005_breaks_superadmin.sql` mein `ALTER TABLE agents ADD COLUMN` hai. Is migration ko dobara run na karein.
-5. `007_call_performance.sql` sirf nayi Call Performance tables aur indexes banata hai. Ye `weekly_kpis`, `kpi_daily`, `kpi_imports` ya existing KPI APIs ko alter nahi karta.
-6. Migration ke baad existing approved Admin account ko Super Admin mark karne ke liye sirf confirmed Employee ID par one-time update run hoga. Is file mein kisi account ko automatic Super Admin nahi banaya gaya.
+3. Repository mein root-level SQL files aur `migrations/` folder dono hain. Inmein overlapping numeric prefixes (jaise `008_*`) bhi hain; filename ke basis par inhe ek single ordered migration sequence na samjhein.
+4. D1 ki applied-migration history aur current schema inspect karke har SQL file ki applicability confirm karein. Kisi `ALTER TABLE ... ADD COLUMN` statement ko existing column par dobara run na karein.
+5. `005_breaks_superadmin.sql` mein `agents` table par schema change aur single-Super-Admin unique index hai. Isse pehle current schema, existing Super Admin state aur rollback/backup plan verify karein.
+6. Call Performance, weekly source data, quiz seed, projects aur ACW ke SQL files alag features ke liye hain. Sirf wahi statements apply karein jo deployed Worker code aur target environment ke schema se match karte hon.
+7. Migration ke baad Super Admin assignment sirf owner-approved, independently verified account par karein. Employee IDs ya credentials ko documentation, chat ya public logs mein hardcode na karein.
 
 ## Super Admin account assignment — approval required
 
-Database inspection mein existing Admin Employee ID `Hrhca27558` mila tha. Is account ko Super Admin banane se pehle account owner ki explicit confirmation zaroori hai.
-
-Confirmation ke baad one-time SQL:
-
-```sql
-UPDATE agents
-SET is_super_admin = 1
-WHERE employee_id = 'Hrhca27558'
-  AND role = 'admin'
-  AND active = 1;
-```
-
-Unique partial index ensure karta hai ki ek hi Super Admin ho.
+Kisi account ko Super Admin banane se pehle owner ki explicit approval, Employee ID ki independent verification, aur existing Super Admin uniqueness check zaroori hai. Account identifier ko is document ya shared logs mein hardcode na karein.
 
 ## Password hash compatibility check — deployment blocker
 
@@ -65,10 +47,8 @@ Password ya poora password_hash kisi ke saath share na karein.
 
 ## Deployment status
 
-- Code GitHub development branch par hai.
-- Migrations abhi live D1 par execute nahi ki gayi hain.
-- Worker abhi Cloudflare par deploy nahi kiya gaya hai.
-- GitHub Pages production branch abhi change nahi hui.
+- Is checklist se current production deployment status establish nahi hota.
+- GitHub merge status, Cloudflare Worker version, Pages deployment aur D1 applied-migration history ko deployment ke waqt verify karein.
 
 Live deployment tabhi karein jab backup, hash format aur Super Admin account confirmation complete ho jaaye.
 
