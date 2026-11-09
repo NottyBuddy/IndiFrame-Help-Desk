@@ -295,9 +295,9 @@ body.admin-mode .nav button.active,body.admin-mode .nav .admin-side-link.active{
 body.admin-mode #view-admin .section.card{box-shadow:var(--shadow)}
 body.admin-mode #view-admin th{color:#77758d}
 body.admin-mode #view-admin td,body.admin-mode #view-admin th{border-bottom-color:#efedf3}
-.project-table th,.break-list th,.sa-table th{color:#77758d}
-.project-table td,.break-list td,.sa-table td{border-bottom-color:#efedf3}
-.project-status{background:#eeecff;color:#5149c5;border-radius:7px}
+.break-list th,.sa-table th{color:#77758d}
+.break-list td,.sa-table td{border-bottom-color:#efedf3}
+
 .break-card{box-shadow:var(--shadow)}
 .break-time{color:#635bdb}
 @media(max-width:640px){.wrap{padding:20px 14px 32px}.card,.break-card{padding:16px}.topbar{gap:12px}}
