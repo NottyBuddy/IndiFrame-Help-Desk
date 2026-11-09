@@ -72,3 +72,36 @@
 @media(prefers-reduced-motion:reduce){
   .indinext-loader-progress:after{animation:none!important;width:100%}
 }
+
+/* Workspace identity belongs to the loading screen, not the sign-in form. */
+.indinext-loader-card{
+  width:min(440px,90vw);
+  gap:15px;
+  text-align:center;
+}
+.indinext-loader-eyebrow{
+  margin:0;
+  color:#d49a6c;
+  font:700 10px/1.4 "DM Sans",sans-serif;
+  letter-spacing:.24em;
+}
+.indinext-loader-heading{
+  margin:-7px 0 0;
+  color:#f5e8d8;
+  font:800 clamp(27px,5vw,34px)/1.1 Manrope,sans-serif;
+  letter-spacing:-.035em;
+}
+.indinext-loader-description{
+  max-width:340px;
+  margin:0;
+  color:rgba(245,230,211,.82);
+  font:500 13px/1.6 "DM Sans",sans-serif;
+}
+.indinext-loader-journey{
+  max-width:360px;
+  margin:0 0 3px;
+  color:rgba(221,181,145,.82);
+  font:600 10px/1.8 "DM Sans",sans-serif;
+  letter-spacing:.035em;
+}
+.indinext-loader-brand{margin-top:3px}
