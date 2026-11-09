@@ -31,7 +31,7 @@ body:not(:has(.login-layout)) :is(
  .cp-card,.cp-section,.cp-kpi,.cp-chart-panel,.cp-detail-card,
  .dp-hero,.dp-filter-panel,.dp-card,.dp-metric,.dp-footer-panel,
  .weekly-upload-card,.weekly-preview,.break-card,.break-monitoring-panel,
- .break-acw-panel,.project-card,.project-panel,.project-form,.project-toolbar,
+ .break-acw-panel,
  .section-hero,.section-filters,.section-data,.section-metric,.summary-chip,
  .admin-chart-card,.admin-module-card,.admin-detail-bar,.sa-stat,.sa-grid>.card,
  #adminOverviewNew .adm-period-card,#adminOverviewNew .adm-panel,
@@ -50,7 +50,7 @@ body:not(:has(.login-layout)) :is(
  .cp-card,.cp-section,.cp-kpi,.cp-chart-panel,.cp-detail-card,
  .dp-hero,.dp-filter-panel,.dp-card,.dp-metric,.dp-footer-panel,
  .weekly-upload-card,.weekly-preview,.break-card,.break-monitoring-panel,
- .break-acw-panel,.project-card,.project-panel,.section-hero,.section-filters,
+ .break-acw-panel,.section-hero,.section-filters,
  .section-data,.section-metric,.summary-chip,.admin-chart-card,.admin-module-card,
  .admin-detail-bar,.sa-stat,.sa-grid>.card,#adminOverviewNew .adm-period-card,
  #adminOverviewNew .adm-panel,#adminOverviewNew .adm-mini-stat
@@ -72,26 +72,24 @@ body:not(:has(.login-layout)) :is(
 body:not(:has(.login-layout)) :is(
  .cp-toolbar input,.cp-toolbar select,.dp-filters input,.dp-filters select,
  .weekly-controls input,.weekly-controls select,.sa-form input,.sa-form select,
- .break-controls select,.project-toolbar input,.project-toolbar select,
- .project-form input,.project-form select,.project-form textarea,
+ .break-controls select,
  .adm-custom-controls input
 ){color:#f3eee8!important;background:rgba(5,8,12,.82)!important;border-color:rgba(255,255,255,.16)!important}
 body:not(:has(.login-layout)) :is(
  .overview-login-table th,.overview-login-table td,.adm-table th,.adm-table td,
  .dp-table th,.dp-table td,.cp-table th,.cp-table td,.weekly-preview th,
- .weekly-preview td,.break-list th,.break-list td,.project-table th,.project-table td
+ .weekly-preview td,.break-list th,.break-list td
 ){color:#e8e2db!important;border-color:rgba(255,255,255,.09)!important}
 body:not(:has(.login-layout)) :is(
  .overview-login-table th,.adm-table th,.dp-table th,.cp-table th,
- .weekly-preview th,.break-list th,.project-table th
+ .weekly-preview th,.break-list th
 ){background:rgba(25,28,34,.96)!important;color:#f3c29b!important}
 body:not(:has(.login-layout)) :is(
  .overview-login-table td,.adm-table td,.dp-table td,.cp-table td,
- .weekly-preview td,.break-list td,.project-table td
+ .weekly-preview td,.break-list td
 ){background:rgba(5,8,12,.24)!important}
 body:not(:has(.login-layout)) :is(
  .overview-login-table tbody tr:hover td,.adm-table tbody tr:hover td,
  .dp-table tbody tr:hover td,.cp-table tbody tr:hover td,
  .weekly-preview tbody tr:hover td,.break-list tbody tr:hover td,
- .project-table tbody tr:hover td
-){background:rgba(221,139,85,.075)!important}
+ ){background:rgba(221,139,85,.075)!important}
