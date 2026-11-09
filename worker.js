@@ -205,6 +205,32 @@ async function coreRoute(request, env, url) {
     const rows=(await env.DB.prepare("SELECT id,employee_id employeeId,full_name fullName,role,active,is_super_admin isSuperAdmin,created_at createdAt FROM agents ORDER BY role DESC,full_name").all()).results;
     return json(request,{agents:rows});
   }
+  const adminAgentPrefix="/api/admin/agents/";
+  const adminAgentId=path.startsWith(adminAgentPrefix)?Number(path.slice(adminAgentPrefix.length)):0;
+  if(Number.isSafeInteger(adminAgentId)&&adminAgentId>0&&method==="PUT"){
+    requireRole(user,"admin");
+    const b=await body(request);
+    const target=await env.DB.prepare("SELECT id,employee_id,role,is_super_admin FROM agents WHERE id=?").bind(adminAgentId).first();
+    if(!target)return json(request,{error:"Agent account not found."},404);
+    if(String(target.role).toLowerCase()!=="agent"||Number(target.is_super_admin)===1)return json(request,{error:"Admin can manage Agent accounts only."},403);
+    const sets=[],args=[];
+    if(typeof b?.active==="boolean")sets.push("active=?"),args.push(b.active?1:0);
+    if(b?.password!==undefined&&String(b.password).length){
+      const password=String(b.password);
+      if(password.length<10)return json(request,{error:"Password must contain at least 10 characters."},400);
+      sets.push("password_hash=?","must_change_password=1");
+      args.push(await hashPassword(password));
+    }
+    if(!sets.length)return json(request,{error:"Provide active status or a temporary password."},400);
+    args.push(adminAgentId);
+    await env.DB.prepare("UPDATE agents SET "+sets.join(",")+" WHERE id=?").bind(...args).run();
+    if(typeof b?.active==="boolean"&&!b.active||b?.password!==undefined&&String(b.password).length){
+      await env.DB.prepare("DELETE FROM sessions WHERE agent_id=?").bind(adminAgentId).run();
+    }
+    await audit(env,user,b?.password!==undefined&&String(b.password).length?"agent_password_reset":"agent_status_changed","Agent account updated by Admin: "+target.employee_id);
+    return json(request,{success:true,mustChangePassword:b?.password!==undefined&&String(b.password).length>0});
+  }
+
   if (path === "/api/admin/kpis" && method === "GET") {
     requireRole(user,"admin");
     const rows=(await env.DB.prepare("SELECT a.employee_id employeeId,a.full_name fullName,w.week_start weekStart,w.week_end weekEnd,w.metrics_json metricsJson,w.created_at createdAt FROM weekly_kpis w JOIN agents a ON a.id=w.agent_id ORDER BY w.week_start DESC,a.full_name LIMIT 2000").all()).results;
