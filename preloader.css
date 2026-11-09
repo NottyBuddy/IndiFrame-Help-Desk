@@ -96,3 +96,7 @@
 
 /* Permanently disable the retired full-screen product-word preloader. */
 #if-loader,.if-loader-stage,.if-loader-exit{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+
+
+/* Retired full-screen loader must never render, including when an old cached script inserts its markup. */
+html body #if-loader,html body .if-loader-stage,html body #if-loader *{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;animation:none!important}
