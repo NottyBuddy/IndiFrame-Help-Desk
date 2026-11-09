@@ -1,0 +1,146 @@
+/* INDINEXT approved navy / teal / gold design system.
+   Shared visual layer only: preserves page structure, routes, and feature handlers. */
+:root{
+  color-scheme:dark;
+  --if-bg:#07111F;
+  --if-bg-deep:#050B14;
+  --if-navy:#0B1B2B;
+  --if-navy-2:#10283A;
+  --if-glass:rgba(15,35,51,.62);
+  --if-glass-2:rgba(20,48,64,.48);
+  --if-teal:#13B8A6;
+  --if-teal-bright:#43D9CF;
+  --if-gold:#D6AE62;
+  --if-copper:#C47B4D;
+  --if-text:#F4F7FA;
+  --if-text-secondary:#A7B7C7;
+  --if-muted:#71869A;
+  --if-border:rgba(190,220,230,.16);
+  --if-success:#22C55E;
+  --if-warning:#F5B942;
+  --if-error:#EF6461;
+}
+html{min-height:100%;background:var(--if-bg-deep)!important}
+body:not(.helpdesk-login){
+  color:var(--if-text)!important;
+  background:
+    radial-gradient(ellipse at 16% 12%,rgba(19,184,166,.13),transparent 34rem),
+    radial-gradient(ellipse at 84% 76%,rgba(67,217,207,.075),transparent 38rem),
+    linear-gradient(145deg,var(--if-bg-deep),var(--if-bg) 52%,#0A1C2B)!important;
+}
+body:not(.helpdesk-login):before{
+  background:
+    radial-gradient(ellipse at 18% 18%,rgba(19,184,166,.14),transparent 28%),
+    radial-gradient(ellipse at 82% 72%,rgba(67,217,207,.09),transparent 30%),
+    linear-gradient(135deg,#050B14 0%,#0B1B2B 55%,#10283A 100%)!important;
+  animation:if-nebula-drift 58s ease-in-out infinite alternate!important;
+}
+@keyframes if-nebula-drift{from{background-position:0 30%;transform:scale(1)}to{background-position:100% 70%;transform:scale(1.045)}}
+body:not(.helpdesk-login) :is(.topbar,.nav,.sidebar,.admin-sidebar,.card,.stat-card,.agent-info-card,.break-card,.admin-chart-card,.admin-module-card,.cp-section,.cp-chart-panel,.cp-kpi,.cp-detail-card,.section-data,.section-card,.table-wrap,.cp-table-wrap,.profile,.modal,.modal-content,.admin-panel,.panel,.sa-card,.sa-stat,.section-table,.quiz-card,.report-card,.attendance-card,.history-card,.break-history-card,.form-card,.data-card,.overview-block,.overview-panel,.overview-metric-card,.adm-period-card,.adm-panel,.adm-mini-stat,.dp-card,.dp-metric,.weekly-upload-card,.weekly-preview,.break-monitoring-panel,.break-acw-panel,.section-hero,.section-filters,.section-metric,.summary-chip,.admin-detail-bar){
+  color:var(--if-text)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.075),var(--if-glass) 44%,rgba(5,11,20,.88))!important;
+  border:1px solid var(--if-border)!important;
+  border-radius:18px!important;
+  box-shadow:0 18px 48px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.10)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(145%);
+  backdrop-filter:blur(22px) saturate(145%);
+}
+body:not(.helpdesk-login) :is(.topbar,.nav,.sidebar,.admin-sidebar){
+  background:linear-gradient(110deg,rgba(5,11,20,.94),rgba(11,27,43,.9))!important;
+  border-color:rgba(67,217,207,.18)!important;
+}
+body:not(.helpdesk-login) :is(h1,h2,h3,h4,h5,h6,.brand,.head h1,.label,label,strong,b,.value){color:var(--if-text)!important}
+body:not(.helpdesk-login) :is(p,.muted,.note,.subtitle,.footer,small,.cp-muted,.cp-status,.chart-caption,.section-status,.record-count,.empty,.section-empty){color:var(--if-text-secondary)!important}
+body:not(.helpdesk-login) :is(a,.text-link){color:var(--if-teal-bright)!important}
+body:not(.helpdesk-login) :is(input,select,textarea){
+  color:var(--if-text)!important;background:rgba(5,11,20,.72)!important;
+  border:1px solid rgba(190,220,230,.20)!important;border-radius:12px!important;
+  caret-color:var(--if-teal-bright);
+}
+body:not(.helpdesk-login) :is(input,textarea)::placeholder{color:var(--if-muted)!important;opacity:1}
+body:not(.helpdesk-login) :is(input,select,textarea):focus{
+  outline:none!important;border-color:var(--if-teal)!important;
+  box-shadow:0 0 0 3px rgba(19,184,166,.16),0 0 20px rgba(19,184,166,.10)!important;
+}
+body:not(.helpdesk-login) :is(button,.button,.nav-link,.section-action,.sa-small){
+  color:var(--if-text)!important;border-radius:12px!important;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease!important;
+}
+body:not(.helpdesk-login) :is(.primary-btn,button.primary-btn,.break-btn,button[type=submit],.section-action.primary,.sa-primary){
+  color:#041513!important;background:linear-gradient(110deg,var(--if-teal),var(--if-teal-bright))!important;
+  border:1px solid rgba(67,217,207,.42)!important;
+  box-shadow:0 10px 26px rgba(19,184,166,.18),inset 0 1px rgba(255,255,255,.32)!important;
+  font-weight:750!important;
+}
+body:not(.helpdesk-login) :is(.secondary-btn,.logout-btn,.section-action,.sa-small){
+  background:rgba(255,255,255,.055)!important;border:1px solid var(--if-border)!important;
+}
+@media(hover:hover){body:not(.helpdesk-login) :is(button,.button,.nav-link,.card,.stat-card,.admin-module-card,.cp-detail-card,.sa-stat):hover{transform:translateY(-2px);border-color:rgba(67,217,207,.38)!important;box-shadow:0 18px 42px rgba(0,0,0,.32),0 0 18px rgba(19,184,166,.09)!important}}
+body:not(.helpdesk-login) :is(.nav button.active,.nav-link.active,.admin-side-link.active){color:#041513!important;background:linear-gradient(110deg,var(--if-teal),var(--if-teal-bright))!important;border-color:rgba(67,217,207,.48)!important}
+body:not(.helpdesk-login) th{color:#F4E4BE!important;background:rgba(16,40,58,.92)!important}
+body:not(.helpdesk-login) td{color:var(--if-text-secondary)!important;border-bottom:1px solid rgba(190,220,230,.10)!important}
+body:not(.helpdesk-login) tr:hover td{background:rgba(19,184,166,.055)!important}
+body:not(.helpdesk-login) :is(.success,.status-success){color:#86E6A8!important}
+body:not(.helpdesk-login) :is(.error,.status-error){color:#FFAAA5!important}
+body:not(.helpdesk-login) :is(.warning,.status-warning){color:#F5D184!important}
+
+/* Login backdrop and secure glass card */
+body.helpdesk-login{
+  min-height:100vh;color:var(--if-text)!important;
+  background:radial-gradient(ellipse at 50% 45%,#10283A 0%,#07111F 55%,#050B14 100%)!important;
+}
+body.helpdesk-login .space-nebula{
+  background:radial-gradient(ellipse at 23% 30%,rgba(19,184,166,.20),transparent 30%),radial-gradient(ellipse at 78% 68%,rgba(67,217,207,.13),transparent 34%)!important;
+}
+body.helpdesk-login .ambient-blue{background:radial-gradient(circle,rgba(19,184,166,.34),transparent 68%)!important}
+body.helpdesk-login .ambient-peach{background:radial-gradient(circle,rgba(214,174,98,.18),transparent 68%)!important}
+body.helpdesk-login .solar-scene{filter:drop-shadow(0 18px 48px rgba(0,0,0,.35))}
+body.helpdesk-login .glass-card{
+  border:1px solid var(--if-border)!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(15,35,51,.76) 48%,rgba(5,11,20,.9))!important;
+  box-shadow:0 34px 100px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.16)!important;
+}
+body.helpdesk-login :is(.card-topline,.card-footer){color:var(--if-text-secondary)!important}
+body.helpdesk-login :is(.card-kicker,.eyebrow,.footer-shield){color:var(--if-gold)!important}
+body.helpdesk-login .status-dot{background:var(--if-teal-bright)!important;box-shadow:0 0 12px rgba(67,217,207,.75)!important}
+body.helpdesk-login .field label{color:var(--if-text-secondary)!important}
+body.helpdesk-login .field input{color:var(--if-text)!important;background:rgba(5,11,20,.66)!important;border-color:var(--if-border)!important}
+body.helpdesk-login .field input:focus{border-color:var(--if-teal)!important;box-shadow:0 0 0 3px rgba(19,184,166,.16)!important}
+body.helpdesk-login #loginButton{color:#041513!important;background:linear-gradient(110deg,var(--if-teal),var(--if-teal-bright))!important;border-color:rgba(67,217,207,.5)!important}
+body.helpdesk-login .brand-footer-name{color:var(--if-gold)!important}
+body.helpdesk-login .brand-footer-tagline{color:var(--if-text-secondary)!important}
+
+/* 4.1-second black-hole brand reveal */
+body.helpdesk-login.intro-running .login-stage{opacity:0!important;visibility:hidden!important;transform:translateY(12px)}
+body.helpdesk-login.intro-complete .login-stage{animation:if-login-enter .55s ease both}
+@keyframes if-login-enter{to{opacity:1;visibility:visible;transform:translateY(0)}}
+.indinext-intro{
+  position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 50%,#10283A 0%,#07111F 52%,#050B14 100%);
+  pointer-events:none;animation:if-intro-exit .7s 3.4s ease-in forwards;
+}
+.indinext-intro:before,.indinext-intro:after{content:"";position:absolute;width:min(76vw,620px);aspect-ratio:1;border-radius:50%;border:1px solid rgba(67,217,207,.12);box-shadow:0 0 90px rgba(19,184,166,.10),inset 0 0 90px rgba(19,184,166,.06)}
+.indinext-intro:after{width:min(94vw,780px);border-color:rgba(214,174,98,.10);transform:rotate(-22deg) scaleY(.36)}
+.indinext-hole{
+  position:relative;width:min(64vw,430px);aspect-ratio:1;display:grid;place-items:center;
+  opacity:0;transform:scale(.34);animation:if-hole-reveal 1.1s .35s cubic-bezier(.18,.8,.2,1) forwards;
+}
+.indinext-hole:before{content:"";position:absolute;inset:13%;border-radius:50%;background:radial-gradient(circle,transparent 34%,rgba(19,184,166,.15) 48%,rgba(214,174,98,.10) 60%,transparent 72%);filter:blur(12px);animation:if-hole-pulse 3s ease-in-out infinite}
+.indinext-ring{position:absolute;border-radius:50%;border:7px solid transparent;filter:drop-shadow(0 0 14px rgba(67,217,207,.45))}
+.indinext-ring-outer{inset:17%;border-top-color:rgba(67,217,207,.88);border-bottom-color:rgba(214,174,98,.85);transform:rotate(-26deg) scaleY(.38);animation:if-hole-spin 8s linear infinite}
+.indinext-ring-inner{inset:28%;border-width:4px;border-left-color:rgba(214,174,98,.92);border-right-color:rgba(19,184,166,.9);transform:rotate(34deg) scaleY(.44);animation:if-hole-spin 5.6s linear infinite reverse}
+.indinext-core{position:absolute;inset:37%;border-radius:50%;background:#01050A;box-shadow:0 0 24px 14px rgba(0,0,0,.96),0 0 58px 22px rgba(19,184,166,.17)}
+.indinext-wordmark{position:relative;z-index:2;color:#F4F7FA;font:800 clamp(22px,4vw,42px) Manrope,sans-serif;letter-spacing:.20em;text-indent:.20em;text-shadow:0 0 22px rgba(67,217,207,.65);opacity:0;animation:if-logo-reveal .85s 1.55s ease-out forwards}
+.indinext-tagline{position:absolute;bottom:12vh;margin:0;color:var(--if-gold);font:700 11px Manrope,sans-serif;letter-spacing:.38em;text-align:center;opacity:0;animation:if-tagline-reveal .7s 2.55s ease-out forwards}
+@keyframes if-hole-reveal{to{opacity:1;transform:scale(1)}}
+@keyframes if-hole-spin{to{rotate:360deg}}
+@keyframes if-hole-pulse{50%{opacity:.72;transform:scale(1.06)}}
+@keyframes if-logo-reveal{from{opacity:0;filter:blur(8px);transform:scale(.88)}to{opacity:1;filter:blur(0);transform:scale(1)}}
+@keyframes if-tagline-reveal{to{opacity:1;transform:translateY(0)}}
+@keyframes if-intro-exit{to{opacity:0;visibility:hidden}}
+@media(max-width:600px){.indinext-hole{width:min(82vw,360px)}.indinext-tagline{bottom:10vh;font-size:9px;letter-spacing:.24em}}
+@media(prefers-reduced-motion:reduce){
+  body:not(.helpdesk-login):before,.indinext-hole,.indinext-ring,.indinext-wordmark,.indinext-tagline{animation:none!important}
+  .indinext-intro{display:none!important}
+  body.helpdesk-login.intro-running .login-stage{opacity:1!important;visibility:visible!important;transform:none!important}
+}

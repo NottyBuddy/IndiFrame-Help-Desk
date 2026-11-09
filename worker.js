@@ -279,7 +279,7 @@ async function coreRoute(request, env, url) {
     if(Number(target.is_super_admin)===1)return json(request,{error:"Super Admin account protected hai; is account ko edit, deactivate ya archive nahi kar sakte."},403);
     if(method==="DELETE"){
       // Permanent account deletion also removes account-owned quiz attempts.
-      // Employee-ID based attendance/KPI history, project records, and the
+      // Employee-ID based attendance/KPI history and the
       // audit trail are retained.
       const statements=[
         env.DB.prepare("DELETE FROM sessions WHERE agent_id=?").bind(id),

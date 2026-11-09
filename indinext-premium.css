@@ -567,7 +567,7 @@ body:before{
 body:not(:has(.login-layout)) :is(.topbar,.nav,.card,.stat-card,.agent-info-card,.break-card,
 .admin-chart-card,.admin-module-card,.cp-section,.cp-chart-panel,.cp-kpi,.section-data,
 .section-card,.cp-detail-card,.table-wrap,.cp-table-wrap,.profile,.modal,.modal-content,
-.admin-panel,.panel,.sa-card,.sa-stat,.section-table,.quiz-card,.report-card,.project-card,
+.admin-panel,.panel,.sa-card,.sa-stat,.section-table,.quiz-card,.report-card,
 .attendance-card,.history-card,.break-history-card,.form-card,.data-card){
   color:var(--if-text)!important;
   background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035) 36%,rgba(13,12,11,.78) 100%)!important;
