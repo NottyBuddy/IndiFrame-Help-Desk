@@ -26,8 +26,6 @@
 body> :not(.indinext-solar-bg){position:relative;z-index:1}
 @keyframes indinextOrbit{to{transform:rotate(360deg)}}
 @keyframes indinextCounterOrbit{to{transform:rotate(-360deg)}}
-}
-50%{transform:scale(1.06);opacity:1}}
 @keyframes indinextNebulaDrift{from{transform:translate3d(-2%,1%,0) scale(.94)}to{transform:translate3d(3%,-3%,0) scale(1.08)}}
 @media(max-width:760px){.indinext-solar-scene{width:120vw;height:74vh;min-height:400px;opacity:.46}.indinext-solar-scene .planet-label{font-size:7px;letter-spacing:.12em}.indinext-solar-bg:after{background:linear-gradient(90deg,rgba(5,6,9,.55),rgba(5,6,9,.12),rgba(5,6,9,.48)),linear-gradient(0deg,rgba(5,6,9,.5),transparent 35%,transparent 65%,rgba(5,6,9,.4))}}
 @media(max-width:480px){.indinext-solar-scene{width:138vw;height:66vh;min-height:360px;opacity:.38}.indinext-solar-scene .planet-label{font-size:6px}}
