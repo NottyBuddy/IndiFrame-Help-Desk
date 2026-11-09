@@ -19,7 +19,9 @@ async function loadAnalytics(){
  const attendance=data(3)?.records||[],breakData=data(4)||{},breaks=breakData.breaks||[];
  const calls=data(5)?.totals||{};
  const active=agents.filter(a=>Number(a.active)===1);
- const today=new Date();\n const localToday=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");\n const checked=attendance.filter(a=>String(a.workDate||a.work_date||"").slice(0,10)===localToday&&!(a.checkOutAt||a.check_out_at));
+ const today=new Date();
+ const localToday=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");
+ const checked=attendance.filter(a=>String(a.workDate||a.work_date||"").slice(0,10)===localToday&&!(a.checkOutAt||a.check_out_at));
  const activeBreaks=Array.isArray(breakData.activeBreaks)?breakData.activeBreaks:breaks.filter(b=>!b.ended_at);
  const quizScore=quiz.reduce((n,a)=>n+Number(a.score||0),0);
  const quizTotal=quiz.reduce((n,a)=>n+Number(a.totalQuestions||a.total_questions||a.total||0),0);
