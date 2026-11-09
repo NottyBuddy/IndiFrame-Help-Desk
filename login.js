@@ -1,5 +1,16 @@
 (() => {
   "use strict";
+  const intro = document.getElementById("indinextIntro");
+  const finishIntro = () => {
+    document.body.classList.remove("intro-running");
+    document.body.classList.add("intro-complete");
+    intro?.setAttribute("aria-hidden", "true");
+  };
+  if (intro) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) finishIntro();
+    else window.setTimeout(finishIntro, 4100);
+  }
+
   const starfield = document.getElementById("starfield");
   if (starfield) {
     let seed = 92741;
