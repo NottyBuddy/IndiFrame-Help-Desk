@@ -278,13 +278,21 @@ async function breakStart(req,env,u) {
   const b=await req.json().catch(()=>({}));
   const type=String(b.break_type||"").toLowerCase();
   if(!BREAK_TYPES.has(type)) bad("Select a valid break type.");
+  const activeAttendance=await env.DB.prepare("SELECT id FROM attendance WHERE employee_id=? AND check_out_at IS NULL").bind(u.employeeId).first();
+  if(!activeAttendance) bad("Check in before starting a break.",409);
   const activeAcw=await env.DB.prepare("SELECT id FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
   if(activeAcw) bad("End your ACW session before starting a break.",409);
   const t=now();
   try {
-    const r=await env.DB.prepare("INSERT INTO agent_breaks(employee_id,agent_id,break_type,started_at,created_at) VALUES(?,?,?,?,?)").bind(u.employeeId,u.agentId,type,t,t).run();
+    // Keep the attendance check in the INSERT itself so a concurrent check-out cannot
+    // create a break after the agent's attendance session has already closed.
+    const r=await env.DB.prepare("INSERT INTO agent_breaks(employee_id,agent_id,break_type,started_at,created_at) SELECT ?,?,?,?,? WHERE EXISTS (SELECT 1 FROM attendance WHERE employee_id=? AND check_out_at IS NULL)").bind(u.employeeId,u.agentId,type,t,t,u.employeeId).run();
+    if(!r.meta.changes) bad("Check in before starting a break.",409);
     return { id:r.meta.last_row_id, breakType:type, startedAt:t };
-  } catch(e) { bad("An active break or ACW session already exists. End it before starting a new activity.",409); }
+  } catch(e) {
+    if(e instanceof HttpError) throw e;
+    bad("An active break or ACW session already exists. End it before starting a new activity.",409);
+  }
 }
 async function breakEnd(env,u) {
   const active=await env.DB.prepare("SELECT id,break_type,started_at FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
@@ -398,8 +406,11 @@ async function checkOut(env, u) {
   if (!a) bad("No active check-in to check out from.", 409);
   const activeAcw=await env.DB.prepare("SELECT id FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
   if(activeAcw) bad("End your ACW session before checking out.",409);
+  const activeBreak=await env.DB.prepare("SELECT id FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL").bind(u.agentId).first();
+  if(activeBreak) bad("End your active break before checking out.",409);
   const t = new Date(), mins = Math.max(0, Math.round((t - new Date(a.check_in_at)) / 60000));
-  await env.DB.prepare("UPDATE attendance SET check_out_at=?, duration_minutes=? WHERE id=? AND check_out_at IS NULL").bind(t.toISOString(), mins, a.id).run();
+  const result=await env.DB.prepare("UPDATE attendance SET check_out_at=?, duration_minutes=? WHERE id=? AND check_out_at IS NULL AND NOT EXISTS (SELECT 1 FROM agent_breaks WHERE agent_id=? AND ended_at IS NULL) AND NOT EXISTS (SELECT 1 FROM agent_acw_sessions WHERE agent_id=? AND ended_at IS NULL)").bind(t.toISOString(), mins, a.id, u.agentId, u.agentId).run();
+  if(!result.meta.changes) bad("End your active break or ACW session before checking out.",409);
   return { checkInAt: a.check_in_at, checkOutAt: t.toISOString(), durationMinutes: mins };
 }
 async function attHistory(url, env, u, admin) {
