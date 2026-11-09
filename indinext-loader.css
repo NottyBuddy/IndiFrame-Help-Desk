@@ -105,3 +105,7 @@
   letter-spacing:.035em;
 }
 .indinext-loader-brand{margin-top:3px}
+
+
+/* Initial page-load overlay must sit above the cinematic intro and login UI. */
+.indinext-loader{z-index:12000}
