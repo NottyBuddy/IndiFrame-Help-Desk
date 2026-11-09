@@ -318,3 +318,7 @@ body.helpdesk-login{
 }
 @media(prefers-reduced-motion:reduce){
 }
+
+
+/* Retire every legacy black-hole intro layer; the login now uses only the INDINEXT workspace loader. */
+html body .black-hole,html body .black-hole-halo,html body .black-hole-ring,html body .black-hole-core,html body .black-hole-label,html body .intro-hole,html body .intro-hole-core,html body .intro-hole-ring,html body .solar-scene .black-hole{display:none!important;visibility:hidden!important;opacity:0!important;animation:none!important;content:none!important}
