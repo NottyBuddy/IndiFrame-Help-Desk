@@ -22,8 +22,15 @@ Ye document deployment checklist hai, live environment status ka source of truth
 3. Repository mein root-level SQL files aur `migrations/` folder dono hain. Inmein overlapping numeric prefixes (jaise `008_*`) bhi hain; filename ke basis par inhe ek single ordered migration sequence na samjhein.
 4. D1 ki applied-migration history aur current schema inspect karke har SQL file ki applicability confirm karein. Kisi `ALTER TABLE ... ADD COLUMN` statement ko existing column par dobara run na karein.
 5. `005_breaks_superadmin.sql` mein `agents` table par schema change aur single-Super-Admin unique index hai. Isse pehle current schema, existing Super Admin state aur rollback/backup plan verify karein.
-6. Call Performance, weekly source data, quiz seed, projects aur ACW ke SQL files alag features ke liye hain. Sirf wahi statements apply karein jo deployed Worker code aur target environment ke schema se match karte hon.
+6. Call Performance, weekly source data, quiz seed aur ACW ke SQL files alag features ke liye hain. Projects feature retire ho chuka hai: `006_projects.sql` aur historical `migrations/006-live-d1-schema-compatibility.sql` ko naye environment par apply na karein.
 7. Migration ke baad Super Admin assignment sirf owner-approved, independently verified account par karein. Employee IDs ya credentials ko documentation, chat ya public logs mein hardcode na karein.
+
+## Projects retirement — backup and migration approval required
+
+- Projects UI, navigation aur application references retire kiye ja rahe hain.
+- Existing D1 mein 2 project records aur 2 project activity records mile. Migration `migrations/010-retire-projects.sql` in rows ko `retired_*_archive` tables mein preserve karke active Projects tables drop karegi.
+- Migration ko production par tabhi run karein jab D1 backup/export verify ho aur owner explicitly approve kare. Archive tables ko normal application feature ke roop mein use nahi kiya jayega.
+- Fresh database setup `safe-production-d1-setup.sql` ab Projects tables create nahi karta.
 
 ## Super Admin account assignment — approval required
 
