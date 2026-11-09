@@ -91,5 +91,5 @@ body:not(:has(.login-layout)) :is(
 body:not(:has(.login-layout)) :is(
  .overview-login-table tbody tr:hover td,.adm-table tbody tr:hover td,
  .dp-table tbody tr:hover td,.cp-table tbody tr:hover td,
- .weekly-preview tbody tr:hover td,.break-list tbody tr:hover td,
- ){background:rgba(221,139,85,.075)!important}
+ .weekly-preview tbody tr:hover td,.break-list tbody tr:hover td
+){background:rgba(221,139,85,.075)!important}
