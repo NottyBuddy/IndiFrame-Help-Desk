@@ -36,11 +36,21 @@
     starfield.appendChild(fragment);
   }
 
+  const loader = document.getElementById("indinextLoader");
+  // Show the workspace loader on the very first page paint, before login is available.
+  if (loader) {
+    const dismissInitialLoader = () => window.setTimeout(() => {
+      loader.classList.add("is-hidden");
+      loader.setAttribute("aria-label", "Signing in");
+    }, 1600);
+    if (document.readyState === "complete") dismissInitialLoader();
+    else window.addEventListener("load", dismissInitialLoader, { once: true });
+  }
+
   const form = document.getElementById("loginForm");
   if (!form) return;
   const message = document.getElementById("message");
   const button = document.getElementById("loginButton");
-  const loader = document.getElementById("indinextLoader");
   const loaderMessage = document.getElementById("indinextLoaderMessage");
   const showMessage = (text, type = "error") => {
     message.textContent = text;
