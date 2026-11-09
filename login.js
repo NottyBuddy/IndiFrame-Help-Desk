@@ -5,7 +5,7 @@
     window.setTimeout(() => {
       intro.classList.add("is-hidden");
       window.setTimeout(() => intro.remove(), 1100);
-    }, 15500);
+    }, 6500);
   }
   const starfield = document.getElementById("starfield");
   if (starfield) {

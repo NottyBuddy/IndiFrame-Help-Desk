@@ -78,3 +78,25 @@ html body.admin-mode #view-admin :is(.section.card,.stat-card,.admin-module-card
     background:linear-gradient(90deg,rgba(5,6,9,.34),rgba(5,6,9,.08),rgba(5,6,9,.30)),linear-gradient(0deg,rgba(5,6,9,.32),transparent 35%,transparent 65%,rgba(5,6,9,.26))!important;
   }
 }
+
+
+/* Central INDINEXT Sun + restore motion after legacy page-level animation resets. */
+.indinext-solar-scene{opacity:.78!important}
+.indinext-solar-scene .sun-core{position:absolute;left:50%;top:50%;width:clamp(68px,8vw,112px);aspect-ratio:1;transform:translate(-50%,-50%);display:grid;place-items:center;z-index:3;border-radius:50%;background:radial-gradient(circle at 34% 30%,#fff7d7 0%,#ffdb91 15%,#f4a34f 43%,#bc5e32 72%,#351817 100%);box-shadow:0 0 28px 10px rgba(255,185,105,.46),0 0 88px 28px rgba(229,135,67,.30),0 0 170px 54px rgba(211,111,49,.18);animation:indinextSunPulse 7s ease-in-out infinite!important}
+.indinext-solar-scene .sun-core:before,.indinext-solar-scene .sun-core:after{content:"";position:absolute;inset:-16%;border:1px solid rgba(255,203,145,.42);border-radius:50%;transform:rotate(-22deg) scaleY(.42)}
+.indinext-solar-scene .sun-core:after{inset:-29%;border-color:rgba(255,195,128,.22);transform:rotate(24deg) scaleY(.42)}
+.indinext-solar-scene .sun-label{position:relative;color:#321d14;font:900 clamp(7px,.72vw,10px) Manrope,sans-serif;letter-spacing:.10em;text-align:center}
+@keyframes indinextSunPulse{0%,100%{filter:brightness(.96);box-shadow:0 0 24px 8px rgba(255,185,105,.38),0 0 78px 24px rgba(229,135,67,.25),0 0 150px 48px rgba(211,111,49,.15)}50%{filter:brightness(1.12);box-shadow:0 0 34px 13px rgba(255,195,118,.58),0 0 104px 34px rgba(229,135,67,.38),0 0 190px 62px rgba(211,111,49,.22)}}
+.indinext-solar-nebula{animation:indinextNebulaDrift 34s ease-in-out infinite alternate!important}
+.indinext-solar-scene .planet-orbit{animation:indinextOrbit var(--speed) linear infinite!important}
+.indinext-solar-scene .planet-wrap{animation:indinextCounterOrbit var(--speed) linear infinite!important}
+/* Premium transparent smoked-glass surfaces; keep content and data readable. */
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.topbar,.nav,.if-left-sidebar,.if-workspace-nav,.sidebar,.admin-sidebar,.card,.panel,.section,.section-hero,.section-filters,.section-data,.section-metric,.section-metrics,.stat-card,.metric-card,.kpi-card,.agent-info-card,.break-card,.break-live-card,.admin-chart-card,.admin-module-card,.cp-card,.cp-section,.cp-kpi,.cp-chart-panel,.dp-card,.sa-stat,.sa-edit-dialog,.admin-detail-bar,.summary-chip,.chart-card,.report-card,.module-card,.overview-block,.overview-panel,.section-card,.weekly-upload-card,.break-profile,.break-message,.glass-card,.glass-panel,.liquid-glass){background:linear-gradient(145deg,rgba(37,48,58,.25),rgba(9,15,22,.19) 58%,rgba(5,9,14,.25))!important;border:1px solid rgba(226,207,188,.19)!important;box-shadow:0 14px 38px rgba(0,0,0,.20),inset 0 1px rgba(255,255,255,.10)!important;-webkit-backdrop-filter:blur(18px) saturate(135%)!important;backdrop-filter:blur(18px) saturate(135%)!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.wrap,main,.main-content,.content,.workspace-content,.page-content){background:transparent!important}
+html body.admin-mode #view-admin :is(.card,.admin-chart-card,.admin-module-card,.stat-card,.admin-detail-bar),html body.admin-mode #view-admin :is(.card,.admin-chart-card,.admin-module-card,.stat-card,.admin-detail-bar) :is(div,section){background-color:transparent!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.card,.panel,.section,.section-hero,.section-filters,.section-data,.stat-card,.metric-card,.kpi-card,.agent-info-card,.break-card,.admin-chart-card,.admin-module-card,.cp-kpi,.cp-chart-panel,.cp-section,.dp-card,.sa-stat,.overview-block,.overview-panel) :is(h1,h2,h3,h4,h5,h6,p,label,small,strong,span,th,td){color:#f4f0eb!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(.muted,.subtle,.hint,.note,.description,.subtitle,.profile,.section-status){color:rgba(232,226,218,.78)!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(input,select,textarea){background:rgba(5,10,16,.42)!important;color:#fff!important;border-color:rgba(230,215,198,.24)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+html body:not(.helpdesk-login):not(#unused-specificity) :is(table,thead,tbody,tr,th,td){background-color:rgba(7,12,18,.18)!important;color:#f3eee8!important}
+@media(max-width:760px){.indinext-solar-scene{opacity:.56!important}.indinext-solar-scene .sun-core{width:clamp(58px,12vw,88px)}}
+@media(prefers-reduced-motion:reduce){.indinext-solar-nebula,.indinext-solar-scene .planet-orbit,.indinext-solar-scene .planet-wrap,.indinext-solar-scene .sun-core{animation:none!important}}
