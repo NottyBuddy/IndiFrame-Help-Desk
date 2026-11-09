@@ -67,7 +67,7 @@ $("accountList").addEventListener("click",async e=>{
   }
   if(b.dataset.toggle){const active=Number(b.dataset.active)===1;await request("/api/superadmin/agents/"+b.dataset.toggle,{method:"PUT",body:JSON.stringify({active:!active})});msg(active?"Account set to Inactive; active sessions revoked.":"Account activated.");}
   if(b.dataset.password){const password=prompt("Naya temporary password enter karein (minimum 10 characters):");if(password===null)return;if(password.length<10){msg("Password minimum 10 characters ka hona chahiye.",true);return}await request("/api/superadmin/agents/"+b.dataset.password,{method:"PUT",body:JSON.stringify({password})});msg("Password reset ho gaya. Existing sessions revoked; next login par password change required.");}
-  if(b.dataset.delete){const id=b.dataset.delete;if(!confirm("PERMANENT DELETE: Is employee account ko permanently delete karna hai? Ye action undo nahi ho sakta. Account sessions aur linked break/ACW history delete honge. Attendance/KPI, project aur audit history preserve rahegi. Quiz history hone par server deletion block karega."))return;await request("/api/superadmin/agents/"+id,{method:"DELETE"});msg("Account permanently deleted.");}
+  if(b.dataset.delete){const id=b.dataset.delete;if(!confirm("PERMANENT DELETE: Is employee account ko permanently delete karna hai? Ye action undo nahi ho sakta. Account sessions, linked break/ACW history aur quiz attempts permanently delete honge. Attendance/KPI, project aur audit history preserve rahegi."))return;await request("/api/superadmin/agents/"+id,{method:"DELETE"});msg("Account permanently deleted.");}
   await load();
  }catch(err){msg(err.message,true)}
 });
