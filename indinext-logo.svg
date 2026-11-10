@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 90" role="img" aria-labelledby="title">
+  <title id="title">INDINEXT</title>
+  <g fill="none" stroke="#B9793F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 74V16h62v58"/>
+    <path d="M28 60V31l34 31V31"/>
+    <path d="M14 74h62"/>
+  </g>
+  <path d="M94 25h7v40h-7z" fill="#17110D"/>
+  <text x="116" y="62" fill="#17110D" font-family="Arial,Helvetica,sans-serif" font-size="43" font-weight="800" letter-spacing="2">INDINEXT</text>
+</svg>
