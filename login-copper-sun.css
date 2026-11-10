@@ -1,0 +1,87 @@
+/* INDINEXT login + loading intro: restore the approved copper / warm-sun accent.
+   Scoped only to the login page; inner dashboard theme remains navy / teal. */
+body.helpdesk-login .space-nebula{
+  background:
+    radial-gradient(ellipse at 24% 28%,rgba(196,123,77,.22),transparent 31%),
+    radial-gradient(ellipse at 78% 68%,rgba(214,174,98,.16),transparent 34%),
+    radial-gradient(ellipse at 52% 52%,rgba(151,75,42,.10),transparent 46%)!important;
+}
+body.helpdesk-login .ambient-blue{
+  background:radial-gradient(circle,rgba(196,123,77,.30),rgba(196,123,77,0) 68%)!important;
+}
+body.helpdesk-login .ambient-peach{
+  background:radial-gradient(circle,rgba(214,174,98,.26),rgba(214,174,98,0) 68%)!important;
+}
+body.helpdesk-login .solar-scene{filter:drop-shadow(0 18px 48px rgba(0,0,0,.42))!important}
+body.helpdesk-login .sun-core{
+  background:radial-gradient(circle at 36% 32%,#fff2cf 0%,#ffd18f 13%,#e99a58 38%,#bd693c 65%,#3b2019 100%)!important;
+  box-shadow:0 0 24px 8px rgba(255,176,91,.34),0 0 90px 28px rgba(221,133,66,.24),0 0 190px 58px rgba(198,116,55,.12)!important;
+}
+body.helpdesk-login .sun-core .sun-logo{display:none!important}
+body.helpdesk-login .sun-core:before{
+  border-color:rgba(255,190,116,.44)!important;
+  box-shadow:0 0 28px rgba(255,165,91,.16)!important;
+}
+body.helpdesk-login .sun-core:after{border-color:rgba(255,196,126,.24)!important}
+body.helpdesk-login .planet-orbit:before{
+  border-color:rgba(225,166,112,.22)!important;
+  box-shadow:0 0 20px rgba(206,147,93,.06)!important;
+}
+body.helpdesk-login .planet-label{color:#e9c49f!important;text-shadow:0 1px 8px rgba(0,0,0,.75)!important}
+body.helpdesk-login .glass-card{
+  border-color:rgba(214,174,98,.20)!important;
+  box-shadow:0 34px 100px rgba(0,0,0,.58),inset 0 1px rgba(255,235,214,.12)!important;
+}
+body.helpdesk-login .status-dot{
+  background:#e7a06a!important;
+  box-shadow:0 0 12px rgba(231,160,106,.78)!important;
+}
+body.helpdesk-login :is(.card-kicker,.eyebrow,.footer-shield,.brand-footer-name){color:#e5b879!important}
+body.helpdesk-login .field input:focus{
+  border-color:#d58a58!important;
+  box-shadow:0 0 0 3px rgba(196,123,77,.18),0 0 24px rgba(196,123,77,.12)!important;
+}
+body.helpdesk-login #loginButton{
+  color:#24140e!important;
+  background:linear-gradient(110deg,#a9552d 0%,#c47b4d 48%,#e7ad72 100%)!important;
+  border:1px solid rgba(255,209,170,.52)!important;
+  box-shadow:0 12px 28px rgba(9,5,4,.38),inset 0 1px rgba(255,235,214,.58)!important;
+}
+@media(hover:hover){body.helpdesk-login #loginButton:hover{
+  filter:brightness(1.08)!important;
+  box-shadow:0 16px 34px rgba(9,5,4,.42),0 0 28px rgba(229,143,86,.24)!important;
+}}
+/* 4.1-second loading intro: copper orbit instead of cool blue/teal. */
+body.helpdesk-login .indinext-intro{
+  background:radial-gradient(ellipse at 50% 50%,#24170f 0%,#0c1118 43%,#050B14 100%)!important;
+}
+body.helpdesk-login .indinext-intro:before,
+body.helpdesk-login .indinext-intro:after{
+  border-color:rgba(196,123,77,.22)!important;
+  box-shadow:0 0 90px rgba(196,123,77,.12),inset 0 0 90px rgba(214,174,98,.08)!important;
+}
+body.helpdesk-login .indinext-hole:before{
+  background:radial-gradient(circle,transparent 32%,rgba(196,123,77,.22) 48%,rgba(214,174,98,.16) 60%,transparent 73%)!important;
+}
+body.helpdesk-login .indinext-ring{
+  filter:drop-shadow(0 0 14px rgba(229,143,86,.52))!important;
+}
+body.helpdesk-login .indinext-ring-outer{
+  border-top-color:rgba(231,160,106,.96)!important;
+  border-bottom-color:rgba(214,174,98,.94)!important;
+}
+body.helpdesk-login .indinext-ring-inner{
+  border-left-color:rgba(255,193,138,.98)!important;
+  border-right-color:rgba(196,123,77,.96)!important;
+}
+body.helpdesk-login .indinext-core{
+  box-shadow:0 0 24px 14px rgba(0,0,0,.98),0 0 58px 22px rgba(196,123,77,.22)!important;
+}
+body.helpdesk-login .indinext-wordmark{
+  color:#fff4e8!important;
+  text-shadow:0 0 22px rgba(229,143,86,.68)!important;
+}
+body.helpdesk-login .indinext-tagline{color:#e5b879!important}
+@media(prefers-reduced-motion:reduce){
+  body.helpdesk-login .sun-core{animation:none!important}
+}
