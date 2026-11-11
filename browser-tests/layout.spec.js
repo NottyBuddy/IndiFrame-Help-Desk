@@ -26,11 +26,10 @@ for (const viewport of viewports) {
     await page.setViewportSize(viewport);
     await page.goto("/index.html", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#indinextLoader")).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: /MOVE WITH PURPOSE/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /CRAFTED TO FIT\. INSTALLED TO LAST\./i })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Good to see you." })).toBeVisible();
     await expect(page.locator(".night-scene")).toBeAttached();
-    await expect(page.locator(".vehicle-car")).toHaveCount(2);
-    await expect(page.locator(".vehicle-bike")).toHaveCount(1);
+    await expect(page.locator(".vehicle, .vehicle-car, .vehicle-bike")).toHaveCount(0);
     await expect(page.locator("#employeeId")).toBeVisible();
     await expect(page.locator("#password")).toBeVisible();
     await expect(page.locator("#loginButton")).toBeVisible();
@@ -74,13 +73,12 @@ for (const viewport of viewports) {
   });
 }
 
-test("night-drive traffic stays decorative and respects reduced motion", async ({ page }) => {
+test("night-drive light effects stay decorative and respect reduced motion", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/index.html");
-  await expect(page.locator(".vehicle-car")).toHaveCount(2);
-  await expect(page.locator(".vehicle-bike")).toHaveCount(1);
-  const animationNames = await page.locator(".vehicle, .light-streak, .lane, .night-brand, .night-login-panel").evaluateAll(nodes =>
+  await expect(page.locator(".vehicle, .vehicle-car, .vehicle-bike")).toHaveCount(0);
+  const animationNames = await page.locator(".light-streak, .lane, .night-brand, .night-login-panel").evaluateAll(nodes =>
     nodes.map(node => getComputedStyle(node).animationName)
   );
   expect(animationNames.every(name => name === "none")).toBe(true);
