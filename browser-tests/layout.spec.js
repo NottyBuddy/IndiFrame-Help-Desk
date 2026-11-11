@@ -22,14 +22,19 @@ async function boxesDoNotOverlap(first, second) {
 }
 
 for (const viewport of viewports) {
-  test(`login layout has no full-screen loader, horizontal overflow or card collisions at ${viewport.width}px`, async ({ page }) => {
+  test(`night-drive login has no horizontal overflow or card collisions at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto("/index.html", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#indinextLoader")).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
-    await expect(page.locator(".sun-core .sun-logo")).toBeVisible();
-    await expect(page.locator(".sun-core .sun-label")).toHaveCount(0);
-    await expect(page.locator(".login-top-copy")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: /MOVE WITH PURPOSE/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Good to see you." })).toBeVisible();
+    await expect(page.locator(".night-scene")).toBeAttached();
+    await expect(page.locator(".vehicle-car")).toHaveCount(2);
+    await expect(page.locator(".vehicle-bike")).toHaveCount(1);
+    await expect(page.locator("#employeeId")).toBeVisible();
+    await expect(page.locator("#password")).toBeVisible();
+    await expect(page.locator("#loginButton")).toBeVisible();
+    await expect(page.locator(".indinext-intro, .space-backdrop, .solar-scene, .starfield, .star, .indinext-hole")).toHaveCount(0);
 
     const dimensions = await page.evaluate(() => ({
       viewport: window.innerWidth,
@@ -46,16 +51,17 @@ for (const viewport of viewports) {
   });
 }
 
-test("login starfield stays decorative and respects reduced motion", async ({ page }) => {
+test("night-drive traffic stays decorative and respects reduced motion", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/index.html");
-  await expect(page.locator(".star")).toHaveCount(72);
-  const animationNames = await page.locator(".star, .orbit-track, .orbit-card").evaluateAll(nodes =>
+  await expect(page.locator(".vehicle-car")).toHaveCount(2);
+  await expect(page.locator(".vehicle-bike")).toHaveCount(1);
+  const animationNames = await page.locator(".vehicle, .light-streak, .lane, .night-brand, .night-login-panel").evaluateAll(nodes =>
     nodes.map(node => getComputedStyle(node).animationName)
   );
   expect(animationNames.every(name => name === "none")).toBe(true);
-  expect(await page.locator(".starfield").evaluate(node => getComputedStyle(node).pointerEvents)).toBe("none");
+  expect(await page.locator(".night-scene").evaluate(node => getComputedStyle(node).pointerEvents)).toBe("none");
 });
 
 // Layout smoke tests for every portal screen. JavaScript is disabled intentionally so
