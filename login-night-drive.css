@@ -59,9 +59,9 @@ body.helpdesk-login.night-drive-login{min-height:100vh;display:block;position:re
 .night-brand-footer .brand-footer-tagline{color:rgba(186,205,216,.54);font-size:8px;letter-spacing:.16em}
 @keyframes laneFlow{to{background-position:0 82px}}
 @keyframes streakPass{0%{transform:translate3d(-10vw,0,0) rotate(-8deg);opacity:0}12%{opacity:.85}78%{opacity:.65}100%{transform:translate3d(160vw,0,0) rotate(-8deg);opacity:0}}
-@keyframes carPass{0%{transform:translate3d(0,0,0) scale(.48);opacity:0}10%{opacity:.85}52%{transform:translate3d(100vw,-8vh,0) scale(1.18);opacity:.92}100%{transform:translate3d(170vw,-13vh,0) scale(1.42);opacity:0}}
-@keyframes carPassTwo{0%{transform:translate3d(0,0,0) scale(.55);opacity:0}15%{opacity:.52}65%{transform:translate3d(120vw,-4vh,0) scale(1.05);opacity:.5}100%{transform:translate3d(170vw,-8vh,0) scale(1.2);opacity:0}}
-@keyframes bikePass{0%{transform:translate3d(0,0,0) scale(.62);opacity:0}14%{opacity:.82}58%{transform:translate3d(-115vw,-5vh,0) scale(1.14);opacity:.9}100%{transform:translate3d(-175vw,-9vh,0) scale(1.35);opacity:0}}
+10%{opacity:.85}52%{transform:translate3d(100vw,-8vh,0) scale(1.18);opacity:.92}100%{transform:translate3d(170vw,-13vh,0) scale(1.42);opacity:0}}
+15%{opacity:.52}65%{transform:translate3d(120vw,-4vh,0) scale(1.05);opacity:.5}100%{transform:translate3d(170vw,-8vh,0) scale(1.2);opacity:0}}
+14%{opacity:.82}58%{transform:translate3d(-115vw,-5vh,0) scale(1.14);opacity:.9}100%{transform:translate3d(-175vw,-9vh,0) scale(1.35);opacity:0}}
 @keyframes headlightPulse{from{opacity:.45;transform:scaleX(.96)}to{opacity:.9;transform:scaleX(1.04)}}
 @keyframes brandReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes panelReveal{from{opacity:0;transform:translateY(22px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
