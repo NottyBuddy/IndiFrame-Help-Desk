@@ -116,7 +116,7 @@ for (const path of portalPages) {
       await page.goto(path);
       const visualTheme = await page.evaluate(() => ({
         backgroundImage: getComputedStyle(document.body).backgroundImage,
-        solarBackground: getComputedStyle(document.querySelector(".indinext-solar-bg") || document.body).display
+        solarBackground: document.querySelector(".indinext-solar-bg") ? getComputedStyle(document.querySelector(".indinext-solar-bg")).display : "none"
       }));
       expect(visualTheme.backgroundImage).toContain("gradient");
       expect(visualTheme.solarBackground).toBe("none");
