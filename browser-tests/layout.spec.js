@@ -114,6 +114,12 @@ for (const path of portalPages) {
       const context = await browser.newContext({ viewport, javaScriptEnabled: false });
       const page = await context.newPage();
       await page.goto(path);
+      const visualTheme = await page.evaluate(() => ({
+        backgroundImage: getComputedStyle(document.body).backgroundImage,
+        solarBackground: getComputedStyle(document.querySelector(".indinext-solar-bg") || document.body).display
+      }));
+      expect(visualTheme.backgroundImage).toContain("gradient");
+      expect(visualTheme.solarBackground).toBe("none");
       const dimensions = await page.evaluate(() => ({
         viewport: window.innerWidth,
         document: document.documentElement.scrollWidth,
