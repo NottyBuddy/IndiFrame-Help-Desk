@@ -88,3 +88,24 @@ html,body{margin:0!important;padding:0!important;width:100%!important;max-width:
 body.helpdesk-login.night-drive-login{box-sizing:border-box!important;overflow:clip!important}
 .night-login-stage{width:100%!important;max-width:1240px;min-width:0;box-sizing:border-box!important;margin-inline:auto}
 .night-scene{contain:strict;max-width:100vw}
+
+/* The legacy .brand-footer sets width:100%; offset both edges when absolutely positioned. */
+body.helpdesk-login.night-drive-login .night-brand-footer{
+  left:clamp(24px,5vw,72px)!important;
+  right:clamp(24px,5vw,72px)!important;
+  width:auto!important;
+  max-width:none!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:700px){
+  body.helpdesk-login.night-drive-login .night-brand-footer{
+    left:20px!important;
+    right:20px!important;
+  }
+}
+@media(max-width:390px){
+  body.helpdesk-login.night-drive-login .night-brand-footer{
+    left:14px!important;
+    right:14px!important;
+  }
+}
