@@ -82,3 +82,9 @@ body.helpdesk-login.night-drive-login{width:100%;max-width:100%;box-sizing:borde
 .night-login-stage>*{min-width:0;max-width:100%;box-sizing:border-box}
 .night-login-panel,.night-brand,.night-glass-card{min-width:0;max-width:100%;box-sizing:border-box}
 .night-glass-card .field,.night-glass-card form,.night-glass-card .field input,.night-glass-card #loginButton{min-width:0;max-width:100%;box-sizing:border-box}
+
+/* Final viewport guard: legacy login styles must not add body gutters or scroll width. */
+html,body{margin:0!important;padding:0!important;width:100%!important;max-width:100%!important}
+body.helpdesk-login.night-drive-login{box-sizing:border-box!important;overflow:clip!important}
+.night-login-stage{width:100%!important;max-width:1240px;min-width:0;box-sizing:border-box!important;margin-inline:auto}
+.night-scene{contain:strict;max-width:100vw}
