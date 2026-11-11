@@ -114,6 +114,26 @@ for (const path of portalPages) {
       const context = await browser.newContext({ viewport, javaScriptEnabled: false });
       const page = await context.newPage();
       await page.goto(path);
+      const visualTheme = await page.evaluate(() => {
+        const body = document.body;
+        const workspaceStylesheet = [...document.styleSheets].some(sheet =>
+          sheet.href && new URL(sheet.href).pathname.endsWith("/workspace-night-drive.css")
+        );
+        return {
+          workspaceStylesheet,
+          backgroundImage: getComputedStyle(body).backgroundImage,
+          roadOverlay: getComputedStyle(body, "::before").content !== "none",
+          roadSurface: getComputedStyle(body, "::after").content !== "none",
+          solarBackground: document.querySelector(".indinext-solar-bg")
+            ? getComputedStyle(document.querySelector(".indinext-solar-bg")).display
+            : "none"
+        };
+      });
+      expect(visualTheme.workspaceStylesheet, `${path} must load the shared night-drive stylesheet`).toBe(true);
+      expect(visualTheme.backgroundImage).toContain("gradient");
+      expect(visualTheme.roadOverlay).toBe(true);
+      expect(visualTheme.roadSurface).toBe(true);
+      expect(visualTheme.solarBackground).toBe("none");
       const dimensions = await page.evaluate(() => ({
         viewport: window.innerWidth,
         document: document.documentElement.scrollWidth,

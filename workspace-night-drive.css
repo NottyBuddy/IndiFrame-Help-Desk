@@ -1,0 +1,32 @@
+/* Shared night-drive canvas for authenticated INDINEXT workspace pages.
+   The login page keeps its dedicated .night-scene and is not affected. */
+html,body{min-height:100%;background:#05080d!important}
+body:not(.helpdesk-login){
+  background-color:#05080d!important;
+  background-image:
+    radial-gradient(ellipse at 74% 27%,rgba(69,112,142,.24),transparent 34%),
+    radial-gradient(ellipse at 16% 49%,rgba(190,104,67,.11),transparent 32%),
+    radial-gradient(ellipse at 52% 100%,rgba(116,153,174,.10),transparent 48%),
+    linear-gradient(180deg,#060b12 0%,#111c29 43%,#090e15 69%,#030508 100%)!important;
+  background-attachment:fixed!important;
+  color:#edf3f7;
+}
+body:not(.helpdesk-login)::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,transparent 0 35%,rgba(5,9,14,.15) 43%,rgba(3,5,8,.72) 100%),
+    repeating-linear-gradient(90deg,transparent 0 38px,rgba(238,177,117,.10) 39px 41px,transparent 42px 78px);
+  opacity:.72;
+}
+body:not(.helpdesk-login)::after{
+  content:"";position:fixed;left:-25%;right:-25%;bottom:-42%;height:82%;z-index:0;
+  pointer-events:none;transform:perspective(440px) rotateX(57deg);transform-origin:50% 0;
+  background:
+    linear-gradient(90deg,transparent 0 24%,rgba(210,133,85,.09) 31%,transparent 43% 58%,rgba(97,168,198,.10) 70%,transparent 82%),
+    repeating-linear-gradient(180deg,transparent 0 42px,rgba(211,225,235,.22) 43px 45px,transparent 46px 110px),
+    linear-gradient(180deg,rgba(20,30,41,.88),#030508 85%);
+  border-top:1px solid rgba(181,201,216,.18);
+  box-shadow:0 -25px 90px rgba(0,0,0,.38);
+}
+body:not(.helpdesk-login)>.indinext-solar-bg{display:none!important}
+@media(prefers-reduced-motion:reduce){body:not(.helpdesk-login)::before,body:not(.helpdesk-login)::after{scroll-behavior:auto}}
