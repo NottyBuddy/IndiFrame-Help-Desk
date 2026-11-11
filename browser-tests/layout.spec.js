@@ -36,13 +36,36 @@ for (const viewport of viewports) {
     await expect(page.locator("#loginButton")).toBeVisible();
     await expect(page.locator(".indinext-intro, .space-backdrop, .solar-scene, .starfield, .star, .indinext-hole")).toHaveCount(0);
 
-    const dimensions = await page.evaluate(() => ({
-      viewport: window.innerWidth,
-      document: document.documentElement.scrollWidth,
-      body: document.body.scrollWidth
-    }));
-    expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport);
-    expect(dimensions.body).toBeLessThanOrEqual(dimensions.viewport);
+    const dimensions = await page.evaluate(() => {
+      const body = document.body;
+      const offenders = [...body.querySelectorAll("*")].map(node => {
+        const rect = node.getBoundingClientRect();
+        const style = getComputedStyle(node);
+        return {
+          tag: node.tagName.toLowerCase(),
+          className: typeof node.className === "string" ? node.className : "",
+          id: node.id || "",
+          x: Math.round(rect.x * 10) / 10,
+          right: Math.round(rect.right * 10) / 10,
+          width: Math.round(rect.width * 10) / 10,
+          position: style.position,
+          transform: style.transform,
+          overflowX: style.overflowX
+        };
+      }).filter(item => item.right > window.innerWidth + 1 || item.x < -1)
+        .sort((a, b) => b.right - a.right).slice(0, 15);
+      return {
+        viewport: window.innerWidth,
+        document: document.documentElement.scrollWidth,
+        body: body.scrollWidth,
+        bodyClient: body.clientWidth,
+        bodyRect: body.getBoundingClientRect().toJSON(),
+        bodyPadding: getComputedStyle(body).padding,
+        offenders
+      };
+    });
+    expect(dimensions.document, JSON.stringify(dimensions)).toBeLessThanOrEqual(dimensions.viewport);
+    expect(dimensions.body, JSON.stringify(dimensions)).toBeLessThanOrEqual(dimensions.viewport);
 
     await boxesDoNotOverlap(page.locator(".login-panel"), page.locator(".brand-footer"));
     await boxesDoNotOverlap(page.locator("#employeeId"), page.locator("#password"));
