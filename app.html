@@ -138,8 +138,10 @@ function loadStoredAttendanceRecords(){
 function saveStoredAttendanceRecords(records){
   try {
     localStorage.setItem(ATTENDANCE_STORAGE_KEY, JSON.stringify(records));
+    return true;
   } catch (error) {
     console.warn('Attendance save failed:', error);
+    return false;
   }
 }
 
@@ -158,46 +160,13 @@ function getMonthlyPresentDays(records){
   }).length;
 }
 
-async function saveAttendanceToBackend(record){
-  const payload = {
-    ...record,
-    employeeId: state.user?.employeeId || state.user?.employee_id || state.user?.id || 'unknown',
-    employeeName: state.user?.fullName || state.user?.full_name || state.user?.name || 'Employee',
-    createdAt: new Date().toISOString()
-  };
-
-  try {
-    if (window.IndiFrameAPI && typeof window.IndiFrameAPI.apiRequest === 'function') {
-      return await window.IndiFrameAPI.apiRequest('/api/attendance', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    if (typeof fetch === 'function') {
-      const response = await fetch('/api/attendance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(payload)
-      });
-      if (response.ok) return await response.json();
-    }
-  } catch (error) {
-    console.warn('Backend attendance save failed, retaining local record:', error);
-  }
-
-  return { savedLocally: true };
-}
-
 function persistAttendanceRecord(record){
   const records = loadStoredAttendanceRecords();
   const dateKey = record.date;
   const idx = records.findIndex(item => item.date === dateKey && (item.employeeId === record.employeeId || !item.employeeId));
   if (idx >= 0) records[idx] = record;
   else records.push(record);
-  saveStoredAttendanceRecords(records);
+  if(!saveStoredAttendanceRecords(records)) return null;
   return record;
 }
 
@@ -243,7 +212,18 @@ function calculateAttendance(){
   $('todayAttendanceValue').textContent = formatDuration(netMinutes);
 
   const persisted = persistAttendanceRecord(attendanceRecord);
-  saveAttendanceToBackend(persisted).catch(()=>{});
+  const saveStatus = $('attendanceSaveStatus');
+  if(!persisted){
+    if(saveStatus){
+      saveStatus.textContent = 'Attendance could not be saved on this device. Check browser storage settings and try again.';
+      saveStatus.className = 'status error';
+    }
+    return;
+  }
+  if(saveStatus){
+    saveStatus.textContent = 'Saved on this device only. This calculator is not connected to the server attendance API.';
+    saveStatus.className = 'status';
+  }
   const monthlyCount = getMonthlyPresentDays(loadStoredAttendanceRecords());
   $('monthlyPresentDaysValue').textContent = String(monthlyCount);
 }
@@ -312,6 +292,8 @@ if(typeof window !== 'undefined') window.IndiFrameAPI.KPI = { arr, parseJsonObje
       <button id="calculateAttendanceBtn" class="btn btn-primary" type="button">Calculate Attendance</button>
       <button id="resetAttendanceBtn" class="btn btn-outline" type="button">Reset</button>
     </div>
+
+    <div id="attendanceSaveStatus" class="status" role="status" aria-live="polite" style="margin-top:10px;"></div>
 
     <div id="attendanceResult" style="margin-top:18px;padding:14px;border:1px solid #e3e9f2;border-radius:10px;background:#f9fbff;">
       <div><strong>Total Login Hours:</strong> <span id="totalLoginHours">00:00:00</span></div>
