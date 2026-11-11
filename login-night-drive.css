@@ -1,0 +1,77 @@
+/* INDINEXT NIGHT DRIVE — cinematic moving traffic login experience */
+:root{--nd-ink:#06090e;--nd-panel:rgba(8,15,23,.78);--nd-line:rgba(190,213,229,.18);--nd-text:#f3f7fa;--nd-muted:#a5b3bf;--nd-cyan:#8ed8ee;--nd-amber:#f0b36f;--nd-red:#ff6d59}
+html,body{min-height:100%;margin:0}
+body.helpdesk-login.night-drive-login{min-height:100vh;display:block;position:relative;isolation:isolate;overflow-x:hidden;padding:0;background:#05080d!important;color:var(--nd-text)!important;font-family:"DM Sans",sans-serif}
+.night-scene{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,#060b12 0%,#111c29 45%,#090e15 72%,#030508 100%)}
+.scene-sky{position:absolute;inset:0;background:radial-gradient(ellipse at 75% 32%,rgba(69,112,142,.25),transparent 36%),radial-gradient(ellipse at 17% 58%,rgba(190,104,67,.12),transparent 34%),linear-gradient(180deg,rgba(3,7,12,.12),rgba(4,8,13,.4))}
+.cityline{position:absolute;left:-5%;right:-5%;bottom:39%;height:25%;opacity:.72;background-repeat:repeat-x;background-size:740px 100%;filter:blur(1px)}
+.cityline-back{opacity:.45;transform:scale(1.15);background-image:linear-gradient(90deg,transparent 0 4%,#0b131d 4% 8%,transparent 8% 11%,#101a26 11% 16%,transparent 16% 20%,#0c1722 20% 24%,transparent 24% 28%,#101a25 28% 34%,transparent 34% 39%,#0c1722 39% 43%,transparent 43% 47%,#111c28 47% 53%,transparent 53% 57%,#0b141f 57% 62%,transparent 62% 67%,#101a25 67% 72%,transparent 72% 77%,#0c1722 77% 82%,transparent 82% 87%,#111b27 87% 92%,transparent 92%)}
+.cityline-front{height:19%;bottom:39%;background-image:linear-gradient(90deg,transparent 0 3%,#080f18 3% 9%,transparent 9% 12%,#0b1520 12% 18%,transparent 18% 22%,#09121c 22% 28%,transparent 28% 31%,#0d1722 31% 39%,transparent 39% 43%,#09121c 43% 49%,transparent 49% 53%,#0b1520 53% 60%,transparent 60% 64%,#09121c 64% 70%,transparent 70% 74%,#0d1722 74% 82%,transparent 82% 86%,#09121c 86% 93%,transparent 93%)}
+.cityline:after{content:"";position:absolute;inset:20% 0 0;background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(245,183,116,.32) 23px 25px,transparent 26px 52px);mask-image:linear-gradient(transparent,#000)}
+.distant-headlights{position:absolute;left:0;right:0;bottom:39%;height:18%;background:radial-gradient(ellipse at 20% 80%,rgba(255,174,103,.45),transparent 3%),radial-gradient(ellipse at 67% 75%,rgba(255,245,220,.5),transparent 2%),radial-gradient(ellipse at 82% 60%,rgba(255,100,79,.36),transparent 3%);filter:blur(9px);animation:headlightPulse 5s ease-in-out infinite alternate}
+.road-horizon{position:absolute;left:0;right:0;bottom:38%;height:2px;background:linear-gradient(90deg,transparent,rgba(241,174,111,.5),rgba(155,204,224,.4),transparent);box-shadow:0 0 32px rgba(199,151,109,.26)}
+.road-surface{position:absolute;left:-30%;right:-30%;bottom:-35%;height:77%;transform:perspective(430px) rotateX(56deg);transform-origin:50% 0;background:linear-gradient(180deg,#111923 0%,#080c12 40%,#030508 100%);border-top:1px solid rgba(181,201,216,.18);box-shadow:0 -25px 90px rgba(0,0,0,.5)}
+.road-glow{position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 22%,rgba(210,133,85,.08) 30%,transparent 43% 58%,rgba(97,168,198,.09) 70%,transparent 82%)}
+.lane{position:absolute;top:0;bottom:0;width:3px;background:repeating-linear-gradient(180deg,rgba(214,226,235,.7) 0 32px,transparent 32px 82px);filter:drop-shadow(0 0 9px rgba(181,220,239,.45));animation:laneFlow .7s linear infinite}
+.lane-one{left:36%;transform:skewX(-8deg);opacity:.42}.lane-two{left:62%;transform:skewX(8deg);opacity:.55}.lane-three{left:50%;width:2px;opacity:.18}
+.light-streak{position:absolute;height:2px;width:42vw;min-width:240px;filter:blur(3px);opacity:0;transform:rotate(-8deg);animation:streakPass 5s linear infinite}
+.streak-a{top:37%;left:-50%;background:linear-gradient(90deg,transparent,rgba(255,177,113,.9),rgba(255,225,188,.7),transparent);animation-delay:-1s}
+.streak-b{top:48%;left:-55%;height:3px;background:linear-gradient(90deg,transparent,rgba(105,199,228,.8),rgba(219,245,255,.8),transparent);animation-delay:-3.2s}
+.streak-c{top:57%;left:-55%;height:2px;background:linear-gradient(90deg,transparent,rgba(255,93,76,.9),rgba(255,184,132,.6),transparent);animation-delay:-4.1s}
+.vehicle{position:absolute;z-index:2;will-change:transform;filter:drop-shadow(0 10px 24px rgba(0,0,0,.65))}
+.vehicle svg{display:block;width:100%;height:auto;overflow:visible}
+.vehicle-car{width:clamp(190px,25vw,340px);bottom:16%;opacity:.9}
+.vehicle-car-one{left:-38%;animation:carPass 12s cubic-bezier(.35,.05,.7,.95) infinite}
+.vehicle-car-two{width:clamp(120px,17vw,220px);bottom:29%;opacity:.55;filter:blur(1.2px) drop-shadow(0 0 18px rgba(255,178,115,.25));animation:carPassTwo 16s linear -7s infinite}
+.vehicle-bike{width:clamp(125px,16vw,210px);bottom:19%;left:110%;filter:blur(.35px) drop-shadow(0 0 22px rgba(255,109,89,.2));animation:bikePass 9.5s cubic-bezier(.2,.1,.8,.9) -4s infinite}
+.road-vignette{position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,5,9,.82),rgba(2,5,9,.35) 38%,rgba(2,5,9,.12) 65%,rgba(2,5,9,.5)),linear-gradient(0deg,rgba(1,3,6,.58),transparent 40%,rgba(1,4,8,.2));}
+.night-login-stage{position:relative;z-index:3;width:min(1240px,100%);min-height:100vh;margin:0 auto;padding:clamp(34px,6vh,72px) clamp(24px,5vw,72px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.8fr);align-items:center;gap:clamp(32px,7vw,112px)}
+.night-brand{align-items:flex-start;text-align:left;max-width:600px;padding:24px 0 70px;animation:brandReveal 1s .2s both}
+.brand-mark{width:54px;height:54px;display:grid;place-items:center;position:relative;margin-bottom:42px;border:1px solid rgba(142,216,238,.46);border-radius:16px;background:linear-gradient(145deg,rgba(142,216,238,.17),rgba(8,15,23,.36));box-shadow:0 0 38px rgba(96,180,210,.12),inset 0 1px rgba(255,255,255,.18);font:900 17px Manrope,sans-serif;letter-spacing:-.1em;color:#eaf8ff}
+.brand-mark-line{position:absolute;width:25px;height:2px;right:-10px;bottom:11px;background:var(--nd-amber);box-shadow:0 0 12px rgba(240,179,111,.8);transform:rotate(-48deg)}
+.night-brand .eyebrow{margin:0 0 20px;color:var(--nd-cyan);font-size:10px;letter-spacing:.28em;font-weight:800}
+.night-brand h1{margin:0;color:#f3f7fa;font:900 clamp(48px,6.8vw,88px)/.98 Manrope,sans-serif;letter-spacing:-.065em;text-shadow:0 10px 40px rgba(0,0,0,.38)}
+.night-brand h1 span{color:#d3e9f1;text-shadow:0 0 34px rgba(142,216,238,.18)}
+.night-brand .brand-description{max-width:440px;margin:24px 0 0;color:rgba(222,234,241,.76);font-size:14px;line-height:1.85;letter-spacing:.01em}
+.brand-proof{display:flex;align-items:center;gap:11px;margin-top:42px;color:rgba(192,213,226,.7);font-size:9px;font-weight:800;letter-spacing:.2em}
+.proof-pulse{width:7px;height:7px;border-radius:50%;background:#7de2c0;box-shadow:0 0 14px rgba(125,226,192,.9)}
+.night-login-panel{width:100%;max-width:460px;justify-self:end;animation:panelReveal .9s .12s both}
+.night-glass-card{position:relative;overflow:hidden;padding:clamp(30px,4vw,48px);border:1px solid rgba(174,207,225,.2);border-radius:26px;background:linear-gradient(145deg,rgba(17,31,43,.82),rgba(6,12,19,.88) 58%,rgba(9,17,26,.82));box-shadow:0 35px 110px rgba(0,0,0,.56),inset 0 1px rgba(255,255,255,.13),0 0 55px rgba(72,147,177,.08);backdrop-filter:blur(28px) saturate(145%);-webkit-backdrop-filter:blur(28px) saturate(145%)}
+.night-glass-card:before{content:"";position:absolute;inset:1px;border-radius:25px;pointer-events:none;background:linear-gradient(125deg,rgba(214,238,248,.09),transparent 27%,transparent 70%,rgba(240,179,111,.07))}
+.night-glass-card>*{position:relative;z-index:1}
+.night-glass-card .card-topline{display:flex;align-items:center;gap:10px;color:rgba(205,223,233,.68);font-size:9px;font-weight:800;letter-spacing:.18em}
+.night-glass-card .status-dot{width:7px;height:7px;background:#7de2c0;box-shadow:0 0 12px rgba(125,226,192,.85)}
+.topline-rule{height:1px;flex:1;background:linear-gradient(90deg,rgba(142,216,238,.35),transparent)}
+.night-glass-card .card-heading{margin:42px 0 32px}
+.night-glass-card .card-kicker{margin:0 0 12px;color:var(--nd-amber);font-size:9px;font-weight:800;letter-spacing:.24em}
+.night-glass-card .card-heading h2{margin:0 0 9px;color:#f5f8fa;font:800 clamp(27px,3vw,36px)/1.12 Manrope,sans-serif;letter-spacing:-.045em}
+.night-glass-card .card-heading>p:last-child{margin:0;color:rgba(194,211,222,.7);font-size:12px;line-height:1.65}
+.night-glass-card .field{margin:0 0 22px}
+.night-glass-card .field label{display:block;margin:0 0 9px;color:#c8d7e0;font-size:9px;font-weight:800;letter-spacing:.16em}
+.night-glass-card .field input{width:100%;height:54px;padding:0 16px;border:1px solid rgba(174,207,225,.2);border-radius:12px;outline:0;background:rgba(2,7,12,.55);color:#f4f8fb;font:500 13px "DM Sans",sans-serif;transition:border-color .2s,box-shadow .2s,background .2s}
+.night-glass-card .field input::placeholder{color:rgba(166,187,201,.43)}
+.night-glass-card .field input:focus{border-color:rgba(142,216,238,.78);background:rgba(2,7,12,.78);box-shadow:0 0 0 3px rgba(142,216,238,.12),0 0 26px rgba(91,181,211,.12)}
+.night-glass-card #loginButton{width:100%;height:55px;margin-top:7px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(210,238,247,.38);border-radius:12px;background:linear-gradient(105deg,#d9eff6,#91cbdc 62%,#e9b77e);color:#08131b;font:800 12px Manrope,sans-serif;letter-spacing:.04em;cursor:pointer;box-shadow:0 12px 30px rgba(4,11,17,.4),inset 0 1px rgba(255,255,255,.75);transition:transform .22s,filter .22s,box-shadow .22s}
+.night-glass-card #loginButton:hover{transform:translateY(-2px);filter:brightness(1.07);box-shadow:0 17px 38px rgba(4,11,17,.5),0 0 26px rgba(142,216,238,.15)}
+.night-glass-card #loginButton:active{transform:translateY(0)}
+.night-glass-card #loginButton:disabled{opacity:.62;cursor:wait;transform:none}
+.night-glass-card .button-arrow{font-size:19px;line-height:1}
+.night-glass-card .message{min-height:21px;margin-top:14px;color:#ffb4a8;font-size:11px;line-height:1.5}
+.night-glass-card .message.success{color:#9de4c8}
+.night-glass-card .card-footer{display:flex;align-items:center;gap:9px;margin-top:23px;padding-top:18px;border-top:1px solid rgba(174,207,225,.13);color:rgba(174,195,208,.62);font-size:9px;letter-spacing:.025em}
+.night-glass-card .footer-shield{color:var(--nd-cyan);font-size:11px}
+.night-brand-footer{position:absolute;left:clamp(24px,5vw,72px);bottom:24px;display:flex;gap:12px;align-items:center}
+.night-brand-footer .brand-footer-name{color:#e5f1f5;font:800 10px Manrope,sans-serif;letter-spacing:.2em}
+.night-brand-footer .brand-footer-tagline{color:rgba(186,205,216,.54);font-size:8px;letter-spacing:.16em}
+@keyframes laneFlow{to{background-position:0 82px}}
+@keyframes streakPass{0%{transform:translate3d(-10vw,0,0) rotate(-8deg);opacity:0}12%{opacity:.85}78%{opacity:.65}100%{transform:translate3d(160vw,0,0) rotate(-8deg);opacity:0}}
+@keyframes carPass{0%{transform:translate3d(0,0,0) scale(.48);opacity:0}10%{opacity:.85}52%{transform:translate3d(100vw,-8vh,0) scale(1.18);opacity:.92}100%{transform:translate3d(170vw,-13vh,0) scale(1.42);opacity:0}}
+@keyframes carPassTwo{0%{transform:translate3d(0,0,0) scale(.55);opacity:0}15%{opacity:.52}65%{transform:translate3d(120vw,-4vh,0) scale(1.05);opacity:.5}100%{transform:translate3d(170vw,-8vh,0) scale(1.2);opacity:0}}
+@keyframes bikePass{0%{transform:translate3d(0,0,0) scale(.62);opacity:0}14%{opacity:.82}58%{transform:translate3d(-115vw,-5vh,0) scale(1.14);opacity:.9}100%{transform:translate3d(-175vw,-9vh,0) scale(1.35);opacity:0}}
+@keyframes headlightPulse{from{opacity:.45;transform:scaleX(.96)}to{opacity:.9;transform:scaleX(1.04)}}
+@keyframes brandReveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes panelReveal{from{opacity:0;transform:translateY(22px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:900px){.night-login-stage{grid-template-columns:minmax(0,1fr) minmax(330px,.9fr);gap:26px;padding-inline:28px}.night-brand h1{font-size:clamp(46px,6vw,66px)}.night-glass-card{padding:30px}}
+@media(max-width:700px){.night-login-stage{min-height:100svh;grid-template-columns:1fr;align-content:center;gap:22px;padding:34px 20px 76px}.night-brand{padding:0;max-width:520px}.brand-mark{width:42px;height:42px;border-radius:13px;margin-bottom:18px}.night-brand .eyebrow{font-size:8px;margin-bottom:10px}.night-brand h1{font-size:clamp(38px,10vw,58px)}.night-brand .brand-description{font-size:11px;margin-top:12px}.brand-proof{margin-top:16px;font-size:8px}.night-login-panel{max-width:520px;justify-self:stretch}.night-glass-card{padding:25px 22px;border-radius:21px}.night-glass-card .card-heading{margin:26px 0 23px}.night-glass-card .card-heading h2{font-size:28px}.night-glass-card .field{margin-bottom:16px}.night-glass-card .field input{height:50px}.night-glass-card #loginButton{height:51px}.night-brand-footer{left:20px;bottom:17px}.cityline{bottom:28%;height:19%}.road-horizon{bottom:28%}.road-surface{height:76%;bottom:-48%}.vehicle-car{bottom:10%}.vehicle-car-two{bottom:22%}.vehicle-bike{bottom:12%}.road-vignette{background:linear-gradient(90deg,rgba(2,5,9,.7),rgba(2,5,9,.18)),linear-gradient(0deg,rgba(1,3,6,.65),transparent 42%,rgba(1,4,8,.25)}}}
+@media(max-width:390px){.night-login-stage{padding-inline:14px;gap:17px}.night-glass-card{padding:22px 18px}.night-brand h1{font-size:38px}.night-brand .brand-description br{display:none}.night-brand-footer .brand-footer-tagline{display:none}}
+@media(prefers-reduced-motion:reduce){.night-scene *,.night-brand,.night-login-panel{animation:none!important;transition:none!important}.vehicle-car-one{left:22%;transform:scale(.7);opacity:.35}.vehicle-car-two,.vehicle-bike,.light-streak{display:none}}
