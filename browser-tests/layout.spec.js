@@ -22,22 +22,50 @@ async function boxesDoNotOverlap(first, second) {
 }
 
 for (const viewport of viewports) {
-  test(`login layout has no full-screen loader, horizontal overflow or card collisions at ${viewport.width}px`, async ({ page }) => {
+  test(`night-drive login has no horizontal overflow or card collisions at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto("/index.html", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#indinextLoader")).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "Sign in" })).toBeVisible();
-    await expect(page.locator(".sun-core .sun-logo")).toBeVisible();
-    await expect(page.locator(".sun-core .sun-label")).toHaveCount(0);
-    await expect(page.locator(".login-top-copy")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: /MOVE WITH PURPOSE/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Good to see you." })).toBeVisible();
+    await expect(page.locator(".night-scene")).toBeAttached();
+    await expect(page.locator(".vehicle-car")).toHaveCount(2);
+    await expect(page.locator(".vehicle-bike")).toHaveCount(1);
+    await expect(page.locator("#employeeId")).toBeVisible();
+    await expect(page.locator("#password")).toBeVisible();
+    await expect(page.locator("#loginButton")).toBeVisible();
+    await expect(page.locator(".indinext-intro, .space-backdrop, .solar-scene, .starfield, .star, .indinext-hole")).toHaveCount(0);
 
-    const dimensions = await page.evaluate(() => ({
-      viewport: window.innerWidth,
-      document: document.documentElement.scrollWidth,
-      body: document.body.scrollWidth
-    }));
-    expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport);
-    expect(dimensions.body).toBeLessThanOrEqual(dimensions.viewport);
+    const dimensions = await page.evaluate(() => {
+      const body = document.body;
+      const offenders = [...body.querySelectorAll("*")].map(node => {
+        const rect = node.getBoundingClientRect();
+        const style = getComputedStyle(node);
+        return {
+          tag: node.tagName.toLowerCase(),
+          className: typeof node.className === "string" ? node.className : "",
+          id: node.id || "",
+          x: Math.round(rect.x * 10) / 10,
+          right: Math.round(rect.right * 10) / 10,
+          width: Math.round(rect.width * 10) / 10,
+          position: style.position,
+          transform: style.transform,
+          overflowX: style.overflowX
+        };
+      }).filter(item => item.right > window.innerWidth + 1 || item.x < -1)
+        .sort((a, b) => b.right - a.right).slice(0, 15);
+      return {
+        viewport: window.innerWidth,
+        document: document.documentElement.scrollWidth,
+        body: body.scrollWidth,
+        bodyClient: body.clientWidth,
+        bodyRect: body.getBoundingClientRect().toJSON(),
+        bodyPadding: getComputedStyle(body).padding,
+        offenders
+      };
+    });
+    expect(dimensions.document, JSON.stringify(dimensions)).toBeLessThanOrEqual(dimensions.viewport);
+    expect(dimensions.body, JSON.stringify(dimensions)).toBeLessThanOrEqual(dimensions.viewport);
 
     await boxesDoNotOverlap(page.locator(".login-panel"), page.locator(".brand-footer"));
     await boxesDoNotOverlap(page.locator("#employeeId"), page.locator("#password"));
@@ -46,16 +74,17 @@ for (const viewport of viewports) {
   });
 }
 
-test("login starfield stays decorative and respects reduced motion", async ({ page }) => {
+test("night-drive traffic stays decorative and respects reduced motion", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/index.html");
-  await expect(page.locator(".star")).toHaveCount(72);
-  const animationNames = await page.locator(".star, .orbit-track, .orbit-card").evaluateAll(nodes =>
+  await expect(page.locator(".vehicle-car")).toHaveCount(2);
+  await expect(page.locator(".vehicle-bike")).toHaveCount(1);
+  const animationNames = await page.locator(".vehicle, .light-streak, .lane, .night-brand, .night-login-panel").evaluateAll(nodes =>
     nodes.map(node => getComputedStyle(node).animationName)
   );
   expect(animationNames.every(name => name === "none")).toBe(true);
-  expect(await page.locator(".starfield").evaluate(node => getComputedStyle(node).pointerEvents)).toBe("none");
+  expect(await page.locator(".night-scene").evaluate(node => getComputedStyle(node).pointerEvents)).toBe("none");
 });
 
 // Layout smoke tests for every portal screen. JavaScript is disabled intentionally so
