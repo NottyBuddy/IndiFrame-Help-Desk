@@ -400,7 +400,15 @@ async function checkIn(req, env, u) {
   const workDate = new Date(t.getTime() - off * 60000).toISOString().slice(0, 10); // JS getTimezoneOffset semantics
   try {
     await env.DB.prepare("INSERT INTO attendance(employee_id,work_date,check_in_at) VALUES(?,?,?)").bind(u.employeeId, workDate, t.toISOString()).run();
-  } catch (e) { bad("You are already checked in.", 409); } // unique partial index guards races
+  } catch (e) {
+    // The partial unique index is the final guard against concurrent check-in requests.
+    // Only translate that specific conflict to 409; surface unrelated D1 failures as 500s.
+    const message = String(e?.message || e || "");
+    if (/unique constraint failed:\s*attendance\.employee_id/i.test(message)) {
+      bad("You are already checked in.", 409);
+    }
+    throw e;
+  }
   return { checkInAt: t.toISOString(), workDate };
 }
 async function checkOut(env, u) {
