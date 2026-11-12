@@ -146,9 +146,13 @@ for (const path of portalPages) {
         );
         const strictOverride = document.querySelector("#strict-sitewide-transparent-black-ui");
         const sitewideStylesheet = Boolean(strictOverride);
-        const sitewideLast = Boolean(strictOverride && strictOverride.compareDocumentPosition(
-          [...document.querySelectorAll("style,link[rel='stylesheet']")].at(-1)
-        ) & Node.DOCUMENT_POSITION_FOLLOWING);
+        const stylesAfterOverride = strictOverride
+          ? [...document.querySelectorAll("style,link[rel='stylesheet']")].filter(element =>
+              element !== strictOverride &&
+              Boolean(strictOverride.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING)
+            )
+          : [];
+        const sitewideLast = Boolean(strictOverride && stylesAfterOverride.length === 0);
         return {
           workspaceStylesheet,
           transparentStylesheet,
