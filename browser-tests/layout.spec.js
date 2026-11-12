@@ -144,12 +144,19 @@ for (const path of portalPages) {
         const transparentStylesheet = [...document.styleSheets].some(sheet =>
           sheet.href && new URL(sheet.href).pathname.endsWith("/workspace-transparent.css")
         );
+        const sitewideIndex = [...document.styleSheets].findIndex(sheet =>
+          sheet.href && new URL(sheet.href).pathname.endsWith("/sitewide-transparent.css")
+        );
+        const sitewideStylesheet = sitewideIndex >= 0;
+        const sitewideLast = sitewideIndex === document.styleSheets.length - 1;
         const sitewideStylesheet = [...document.styleSheets].some(sheet =>
           sheet.href && new URL(sheet.href).pathname.endsWith("/sitewide-transparent.css")
         );
         return {
           workspaceStylesheet,
           transparentStylesheet,
+          sitewideStylesheet,
+          sitewideLast,
           sitewideStylesheet,
           backgroundImage: getComputedStyle(body).backgroundImage,
           backgroundColor: getComputedStyle(body).backgroundColor,
@@ -161,6 +168,8 @@ for (const path of portalPages) {
         };
       });
       expect(visualTheme.workspaceStylesheet, `${path} must load the shared workspace stylesheet`).toBe(true);
+      expect(visualTheme.sitewideStylesheet, `${path} must load the strict site-wide reset`).toBe(true);
+      expect(visualTheme.sitewideLast, `${path} must load the strict reset after all other styles`).toBe(true);
       expect(visualTheme.sitewideStylesheet, `${path} must load the site-wide transparent reset`).toBe(true);
       if (["/dashboard.html", "/admin-section.html", "/superadmin.html"].includes(path)) {
         expect(visualTheme.transparentStylesheet, `${path} must load the transparent workspace override`).toBe(true);
@@ -168,9 +177,9 @@ for (const path of portalPages) {
         expect(visualTheme.roadOverlay).toBe(false);
         expect(visualTheme.roadSurface).toBe(false);
       } else {
-        expect(visualTheme.backgroundImage).toContain("gradient");
-        expect(visualTheme.roadOverlay).toBe(true);
-        expect(visualTheme.roadSurface).toBe(true);
+        expect(visualTheme.backgroundImage).toBe("none");
+        expect(visualTheme.roadOverlay).toBe(false);
+        expect(visualTheme.roadSurface).toBe(false);
       }
       expect(visualTheme.solarBackground).toBe("none");
       const dimensions = await page.evaluate(() => ({
