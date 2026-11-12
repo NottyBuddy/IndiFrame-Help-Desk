@@ -22,7 +22,7 @@ async function boxesDoNotOverlap(first, second) {
 }
 
 for (const viewport of viewports) {
-  test(`night-drive login has no horizontal overflow or card collisions at ${viewport.width}px`, async ({ page }) => {
+  test(`transparent login has no horizontal overflow or card collisions at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto("/index.html", { waitUntil: "domcontentloaded" });
     await expect(page.locator("#indinextLoader")).toHaveCount(0);
@@ -30,8 +30,11 @@ for (const viewport of viewports) {
     await expect(page.getByRole("heading", { name: "Good to see you." })).toBeVisible();
     await expect(page.locator(".brand-footer-tagline")).toHaveText("Crafted to Fit. Installed to Last.");
     await expect(page.locator(".night-scene")).toBeAttached();
+    await expect(page.locator(".night-scene")).toBeHidden();
+    await expect(page.locator("link[href*=\"sitewide-transparent.css\"]")).toHaveCount(1);
     await expect(page.locator(".vehicle-car")).toHaveCount(0);
     await expect(page.locator(".vehicle-bike")).toHaveCount(0);
+  await expect(page.locator(".night-scene")).toBeHidden();
     await expect(page.locator("#employeeId")).toBeVisible();
     await expect(page.locator("#password")).toBeVisible();
     await expect(page.locator("#loginButton")).toBeVisible();
@@ -75,7 +78,7 @@ for (const viewport of viewports) {
   });
 }
 
-test("night-drive background stays decorative without vehicles and respects reduced motion", async ({ page }) => {
+test("site-wide visual reset removes login backgrounds and motion", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/index.html");
@@ -141,9 +144,13 @@ for (const path of portalPages) {
         const transparentStylesheet = [...document.styleSheets].some(sheet =>
           sheet.href && new URL(sheet.href).pathname.endsWith("/workspace-transparent.css")
         );
+        const sitewideStylesheet = [...document.styleSheets].some(sheet =>
+          sheet.href && new URL(sheet.href).pathname.endsWith("/sitewide-transparent.css")
+        );
         return {
           workspaceStylesheet,
           transparentStylesheet,
+          sitewideStylesheet,
           backgroundImage: getComputedStyle(body).backgroundImage,
           backgroundColor: getComputedStyle(body).backgroundColor,
           roadOverlay: getComputedStyle(body, "::before").content !== "none",
@@ -154,6 +161,7 @@ for (const path of portalPages) {
         };
       });
       expect(visualTheme.workspaceStylesheet, `${path} must load the shared workspace stylesheet`).toBe(true);
+      expect(visualTheme.sitewideStylesheet, `${path} must load the site-wide transparent reset`).toBe(true);
       if (["/dashboard.html", "/admin-section.html", "/superadmin.html"].includes(path)) {
         expect(visualTheme.transparentStylesheet, `${path} must load the transparent workspace override`).toBe(true);
         expect(visualTheme.backgroundImage).toBe("none");
