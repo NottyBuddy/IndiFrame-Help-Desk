@@ -1,24 +1,27 @@
-/* Site-wide neutral transparent mode: remove decorative backgrounds, imagery, borders and motion. */
+/* Strict site-wide flat mode: no surfaces, colors, imagery, borders or motion. */
 :root{color-scheme:light!important}
-html,body{background:transparent!important;background-image:none!important;color:#202124!important}
-body{background-color:transparent!important}
-*,*::before,*::after{
-  animation:none!important;
-  transition:none!important;
-  scroll-behavior:auto!important;
+html,body{background:transparent!important;background-color:transparent!important;background-image:none!important;color:#000!important}
+html *,body *,*::before,*::after{
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
   box-shadow:none!important;
   text-shadow:none!important;
+  filter:none!important;
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
+  animation:none!important;
+  transition:none!important;
+  color:#000!important;
 }
-*,*::before,*::after{border:0!important;outline:0!important}
-body,body *{background-color:transparent!important;background-image:none!important}
-body{color:#202124!important}
-body :is(h1,h2,h3,h4,h5,h6,p,span,strong,b,em,label,small,th,td,li,a,button,input,select,textarea,summary,div,section,article,header,footer){color:#202124!important}
-body :is(img,picture,video,.night-scene,.starfield,.ambient,.indinext-solar-bg,.indinext-solar-nebula,.indinext-solar-scene,.road-surface,.road-glow,.road-vignette,.light-streak,.cityline,.distant-headlights,.scene-sky,.vehicle,.brand-orbit-scene,.orbit-track,.hero-emblem,.emblem-halo,.emblem-spark,.proof-pulse,.status-dot){display:none!important}
-body :is(button,a,[role=button]){background:transparent!important;border:0!important;outline:0!important}
-body :is(input,select,textarea){background:transparent!important;border:0!important;outline-offset:2px!important}
-body :is(table,thead,tbody,tr,th,td){background:transparent!important;border-color:transparent!important}
-body :is(svg){filter:grayscale(1)!important}
+*::before,*::after{background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;animation:none!important;transition:none!important}
+html,body{min-height:100%;background:transparent!important}
+body :is(img,picture,video,canvas,svg,iframe,.night-scene,.starfield,.ambient,.indinext-solar-bg,.indinext-solar-nebula,.indinext-solar-scene,.road-surface,.road-glow,.road-vignette,.light-streak,.cityline,.distant-headlights,.scene-sky,.vehicle,.brand-orbit-scene,.orbit-track,.hero-emblem,.emblem-halo,.emblem-spark,.proof-pulse,.status-dot){display:none!important}
+body :is(a,button,[role=button],input,select,textarea){background:transparent!important;color:#000!important;border:0!important;box-shadow:none!important}
+body :is(table,thead,tbody,tr,th,td){background:transparent!important;border:0!important;box-shadow:none!important}
+body :is(header,footer,nav,aside,main,section,article,form,fieldset,details,summary,div){background:transparent!important;border:0!important;box-shadow:none!important}
 ::backdrop{background:transparent!important}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
