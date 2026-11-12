@@ -18,7 +18,7 @@ const aliases={
  inMissed:["Incoming Missed","Missed Incoming","Incoming Not Connected","Incoming Not Answered"],
  outMissed:["Outgoing Not Connected","Outgoing Missed","Outgoing Not Answered"]
 };
-let agents=[],rawRows=[],attendance=[],breaks=[],uniqueRows=[],selectedAgent="",lastRefresh=null;
+let agents=[],rawRows=[],attendance=[],breaks=[],uniqueRows=[],selectedAgent="",lastRefresh=null,callRowsLoaded=false;
 function field(source,names){const wanted=names.map(norm);for(const [k,v] of Object.entries(source||{})){if(wanted.includes(norm(k))&&v!==""&&v!==null&&v!==undefined)return v;}return null;}
 function num(v){if(v===null||v===undefined||v==="")return null;const n=Number(String(v).replace(/[,% ]/g,""));return Number.isFinite(n)?n:null;}
 function dateOf(v){const s=String(v??"").slice(0,10);return /^\d{4}-\d{2}-\d{2}$/.test(s)?s:"";}
@@ -54,10 +54,11 @@ function aggregate(rows){
 }
 function set(id,value){const e=$(id);if(e)e.textContent=value;}
 function renderPeriod(prefix,kind){
- const [from,to]=period(kind),a=aggregate(filterRows(from,to));
- set(prefix+"Calls",a.known.calls?a.sums.calls.toLocaleString():"—");
- set(prefix+"Connected",a.known.connected?a.sums.connected.toLocaleString():"—");
- set(prefix+"Rate",a.rate===null?"—":a.rate.toFixed(1)+"%");
+ const [from,to]=period(kind),rows=filterRows(from,to),a=aggregate(rows);
+ const unavailable=callRowsLoaded?"Not provided":"Unavailable";
+ set(prefix+"Calls",a.known.calls?a.sums.calls.toLocaleString():rows.length===0&&callRowsLoaded?"0":unavailable);
+ set(prefix+"Connected",a.known.connected?a.sums.connected.toLocaleString():unavailable);
+ set(prefix+"Rate",a.rate===null?unavailable:a.rate.toFixed(1)+"%");
 }
 function renderFixed(){renderPeriod("admToday","today");renderPeriod("admWeek","week");renderPeriod("admMonth","month");}
 function renderAttendanceAndBreaks(){
@@ -94,7 +95,7 @@ function renderCustom(){
  const query=norm($("admAgentSearch").value),rows=filterRows(from,to,selectedAgent).filter(r=>!query||norm(r.agent.name).includes(query)),a=aggregate(rows),daily=new Map();
  for(const r of rows){const x=daily.get(r.date)||{calls:0,known:false,rows:0};const n=num(field(r.source,aliases.calls));if(n!==null){x.calls+=n;x.known=true;}x.rows++;daily.set(r.date,x);}
  const days=[...daily.entries()].sort((x,y)=>x[0].localeCompare(y[0]));
- $("admCustomSummary").innerHTML='<div><span>Calls</span><strong>'+(a.known.calls?a.sums.calls.toLocaleString():"Not provided")+'</strong></div><div><span>Connect calls</span><strong>'+(a.known.connected?a.sums.connected.toLocaleString():"Not provided")+'</strong></div><div><span>Connect rate</span><strong>'+(a.rate===null?"Not provided":a.rate.toFixed(1)+"%")+'</strong></div><div><span>Unique agent-date records</span><strong>'+rows.length.toLocaleString()+'</strong></div>';
+ $("admCustomSummary").innerHTML='<div><span>Calls</span><strong>'+(a.known.calls?a.sums.calls.toLocaleString():rows.length===0&&callRowsLoaded?"0":"Not provided")+'</strong></div><div><span>Connect calls</span><strong>'+(a.known.connected?a.sums.connected.toLocaleString():"Not provided")+'</strong></div><div><span>Connect rate</span><strong>'+(a.rate===null?"Not provided":a.rate.toFixed(1)+"%")+'</strong></div><div><span>Unique agent-date records</span><strong>'+rows.length.toLocaleString()+'</strong></div>';
  $("admCustomTable").innerHTML=days.length?'<div class="adm-table-scroll"><table class="adm-table"><thead><tr><th>Date</th><th>Unique agent-date records</th><th>Total calls</th></tr></thead><tbody>'+days.map(([d,x])=>'<tr><td>'+d+'</td><td>'+x.rows+'</td><td>'+(x.known?x.calls.toLocaleString():"Not provided")+'</td></tr>').join("")+'</tbody></table></div>':'<div class="adm-empty">No published records for this custom range.</div>';
  renderDispositions(rows);renderDirection(rows);set("admCustomStatus",rows.length+" unique agent-date records · "+(lastRefresh?"Refreshed "+lastRefresh:""));
 }
@@ -117,6 +118,7 @@ async function load(){
    api.apiRequest("/api/hd/admin/breaks/status?from="+d+"&to="+d)
   ]);
   const [mResult,aResult,cResult,tResult,bResult]=results;
+  callRowsLoaded=cResult.status==="fulfilled";
   if(mResult.status!=="fulfilled")throw new Error("Unable to verify Admin session: "+(mResult.reason?.message||"API request failed"));
   const m=mResult.value,u=m.user||m,role=String(u.role||u.userRole||"").toLowerCase().replace(/[\\s-]+/g,"_");
   const isAdmin=["admin","superadmin","super_admin"].includes(role)||u.isSuperAdmin===true||u.is_super_admin===true;
