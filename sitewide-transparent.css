@@ -1,8 +1,10 @@
-/* Shared MP4 background with transparent content surfaces. Preserve each page's typography and text colors. */
+/* Shared MP4 background. Preserve each page's existing typography and text colors. */
 html,body{background:transparent!important;background-color:transparent!important;background-image:none!important}
 body{position:relative;isolation:isolate}
 .site-background-video{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;object-fit:cover!important;display:block!important;z-index:-1!important;pointer-events:none!important;opacity:1!important}
 body>*:not(.site-background-video){position:relative}
-body :is(.card,.panel,.sidebar,.workspace,.modal,.dialog,.tile,.widget,.cp-card,.cp-detail-card,.break-card,.sa-stat,section,article,aside,header,footer,nav,main){background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-color:transparent!important}
-body :is(table,thead,tbody,tr,th,td){background:transparent!important;background-color:transparent!important;border-color:transparent!important}
+body::before,body::after,.night-scene,.indinext-solar-bg,.indinext-solar-nebula,.indinext-solar-scene,.starfield,.space-backdrop,.indinext-intro,.road-surface,.road-glow,.road-vignette,.light-streak,.cityline,.distant-headlights,.scene-sky,.vehicle-car,.vehicle-bike,.brand-orbit-scene,.orbit-track,.hero-emblem,.emblem-halo,.emblem-spark,.proof-pulse,.status-dot{display:none!important;content:none!important}
+body *{border-color:transparent!important;outline-color:transparent!important;box-shadow:none!important;text-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body :is(.card,.panel,.sidebar,.workspace,.modal,.dialog,.tile,.widget,.cp-card,.cp-detail-card,.break-card,.sa-stat,section,article,aside,header,footer,nav,main){background:transparent!important;background-color:transparent!important;background-image:none!important}
+body :is(table,thead,tbody,tr,th,td){background:transparent!important;background-color:transparent!important}
 body :is(button,a,[role=button],input,select,textarea){box-shadow:none!important}
