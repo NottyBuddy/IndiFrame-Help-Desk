@@ -103,14 +103,18 @@ const portalPages = [
 ];
 
 
-test("all portal pages load their local CSS, JavaScript and image assets", async ({ page, request }) => {
+test("all portal pages load their local CSS, JavaScript and image assets", async ({ request, baseURL }) => {
   for (const path of portalPages) {
-    await page.goto(path, { waitUntil: "domcontentloaded" });
-    const assets = await page.locator('link[rel="stylesheet"], script[src], img[src], source[src], link[rel="icon"]').evaluateAll(nodes =>
-      nodes.map(node => node.href || node.src)
-        .filter(url => url && new URL(url).origin === window.location.origin)
-    );
-    for (const asset of [...new Set(assets)]) {
+    const pageUrl = new URL(path, baseURL).toString();
+    const pageResponse = await request.get(pageUrl);
+    expect(pageResponse.status(), `Portal page ${path} should load`).toBe(200);
+    const html = await pageResponse.text();
+    const references = [...html.matchAll(/<(?:link|script|img|source)\\b[^>]*?(?:href|src)=["']([^"']+)["'][^>]*>/gi)]
+      .map(match => match[1]);
+    const assets = [...new Set(references.map(reference => new URL(reference, pageUrl))
+      .filter(url => url.origin === new URL(baseURL).origin)
+      .map(url => url.toString()))];
+    for (const asset of assets) {
       const response = await request.get(asset);
       expect(response.status(), `Broken local asset ${asset} referenced by ${path}`).toBe(200);
     }
