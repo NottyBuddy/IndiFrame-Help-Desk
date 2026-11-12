@@ -136,3 +136,9 @@ body:after{
  .cp-table-wrap{max-width:100%;overscroll-behavior-x:contain}
 }
 @media(prefers-reduced-motion:reduce){.cp-kpi-link:hover{transform:none}}
+
+/* Consistent report-table alignment and readable dense summaries */
+.cp-table th,.cp-table td{vertical-align:middle!important;line-height:1.45!important}
+.cp-table th.num,.cp-table td.num{text-align:right!important;font-variant-numeric:tabular-nums!important}
+.cp-table th:first-child,.cp-table td:first-child{text-align:left!important}
+.cp-table-wrap{max-width:100%;overscroll-behavior-x:contain}
