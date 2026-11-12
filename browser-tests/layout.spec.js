@@ -144,11 +144,14 @@ for (const path of portalPages) {
         const transparentStylesheet = [...document.styleSheets].some(sheet =>
           sheet.href && new URL(sheet.href).pathname.endsWith("/workspace-transparent.css")
         );
-        const sitewideIndex = [...document.styleSheets].findIndex(sheet =>
-          sheet.href && new URL(sheet.href).pathname.endsWith("/sitewide-transparent.css")
+        const stylesheetLinks = [...document.querySelectorAll('link[rel="stylesheet"]')];
+        const sitewideStylesheet = stylesheetLinks.some(link =>
+          new URL(link.href).pathname.endsWith("/sitewide-transparent.css")
         );
-        const sitewideStylesheet = sitewideIndex >= 0;
-        const sitewideLast = sitewideIndex === document.styleSheets.length - 1;
+        const lastStylesheetLink = stylesheetLinks.at(-1);
+        const sitewideLast = Boolean(lastStylesheetLink &&
+          new URL(lastStylesheetLink.href).pathname.endsWith("/sitewide-transparent.css")
+        );
         return {
           workspaceStylesheet,
           transparentStylesheet,
