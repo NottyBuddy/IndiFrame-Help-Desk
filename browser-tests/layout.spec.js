@@ -33,7 +33,7 @@ for (const viewport of viewports) {
     await expect(page.locator(".night-scene")).toBeHidden();
     await expect(page.locator('link[rel="stylesheet"][href*="sitewide-transparent.css"]')).toHaveCount(1);
     await expect(page.locator(".site-background-video")).toBeAttached();
-    await expect(page.locator(".site-background-video source")).toHaveAttribute("src", "/Anime-bg.mp4");
+    await expect(page.locator(".site-background-video source")).toHaveAttribute("src", "Anime-bg.mp4");
     await expect(page.locator(".vehicle-car")).toBeHidden();
     await expect(page.locator(".vehicle-bike")).toBeHidden();
   await expect(page.locator(".night-scene")).toBeHidden();
@@ -174,7 +174,7 @@ for (const path of portalPages) {
       expect(visualTheme.workspaceStylesheet, `${path} must load the shared workspace stylesheet`).toBe(true);
       expect(visualTheme.sitewideStylesheet, `${path} must include the strict site-wide reset`).toBe(true);
       expect(visualTheme.sitewideLast, `${path} must place the shared reset after all linked styles`).toBe(true);
-      expect(visualTheme.backgroundVideo, `${path} must use the shared MP4 background`).toBe("/Anime-bg.mp4");
+      expect(visualTheme.backgroundVideo, `${path} must use the shared MP4 background`).toBe("Anime-bg.mp4");
       if (["/dashboard.html", "/admin-section.html", "/superadmin.html"].includes(path)) {
         expect(visualTheme.transparentStylesheet, `${path} must load the transparent workspace override`).toBe(true);
         expect(visualTheme.backgroundImage).toBe("none");
