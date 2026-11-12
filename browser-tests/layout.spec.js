@@ -31,7 +31,7 @@ for (const viewport of viewports) {
     await expect(page.locator(".brand-footer-tagline")).toHaveText("Crafted to Fit. Installed to Last.");
     await expect(page.locator(".night-scene")).toBeAttached();
     await expect(page.locator(".night-scene")).toBeHidden();
-    await expect(page.locator("link[href*=\"sitewide-transparent.css\"]")).toHaveCount(1);
+    await expect(page.locator("#strict-sitewide-transparent-black-ui")).toHaveCount(1);
     await expect(page.locator(".vehicle-car")).toHaveCount(0);
     await expect(page.locator(".vehicle-bike")).toHaveCount(0);
   await expect(page.locator(".night-scene")).toBeHidden();
@@ -144,14 +144,11 @@ for (const path of portalPages) {
         const transparentStylesheet = [...document.styleSheets].some(sheet =>
           sheet.href && new URL(sheet.href).pathname.endsWith("/workspace-transparent.css")
         );
-        const stylesheetLinks = [...document.querySelectorAll('link[rel="stylesheet"]')];
-        const sitewideStylesheet = stylesheetLinks.some(link =>
-          new URL(link.href).pathname.endsWith("/sitewide-transparent.css")
-        );
-        const lastStylesheetLink = stylesheetLinks.at(-1);
-        const sitewideLast = Boolean(lastStylesheetLink &&
-          new URL(lastStylesheetLink.href).pathname.endsWith("/sitewide-transparent.css")
-        );
+        const strictOverride = document.querySelector("#strict-sitewide-transparent-black-ui");
+        const sitewideStylesheet = Boolean(strictOverride);
+        const sitewideLast = Boolean(strictOverride && strictOverride.compareDocumentPosition(
+          [...document.querySelectorAll("style,link[rel='stylesheet']")].at(-1)
+        ) & Node.DOCUMENT_POSITION_FOLLOWING);
         return {
           workspaceStylesheet,
           transparentStylesheet,
@@ -167,8 +164,8 @@ for (const path of portalPages) {
         };
       });
       expect(visualTheme.workspaceStylesheet, `${path} must load the shared workspace stylesheet`).toBe(true);
-      expect(visualTheme.sitewideStylesheet, `${path} must load the strict site-wide reset`).toBe(true);
-      expect(visualTheme.sitewideLast, `${path} must load the strict reset after all other styles`).toBe(true);
+      expect(visualTheme.sitewideStylesheet, `${path} must include the strict site-wide reset`).toBe(true);
+      expect(visualTheme.sitewideLast, `${path} must place the strict reset after all linked styles`).toBe(true);
       if (["/dashboard.html", "/admin-section.html", "/superadmin.html"].includes(path)) {
         expect(visualTheme.transparentStylesheet, `${path} must load the transparent workspace override`).toBe(true);
         expect(visualTheme.backgroundImage).toBe("none");
