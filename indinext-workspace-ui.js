@@ -54,7 +54,7 @@
       const payload = await response.json();
       const user = payload.user || payload;
       const role = String(user.role || user.userRole || "").toLowerCase().replace(/[ _-]/g, "");
-      const isSuper = role === "superadmin" || user.isSuperAdmin === true || Number(user.isSuperAdmin) === 1;
+      const isSuper = role === "superadmin" || [true,1,"1","true"].includes(user.isSuperAdmin);
       const isAdmin = isSuper || role === "admin";
       const allowed = new Set(["dashboard.html", "call-performance.html", "change-password.html"]);
       if (!isAdmin) allowed.add("breaks.html");
