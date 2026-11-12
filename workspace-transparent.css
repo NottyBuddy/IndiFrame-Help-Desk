@@ -1,0 +1,31 @@
+/* Neutral transparent workspace surfaces. Background media can sit behind this shell. */
+html,body{min-height:100%;background:transparent!important}
+body:not(.helpdesk-login){background:transparent!important;background-image:none!important;color:rgba(255,255,255,.92)!important}
+body:not(.helpdesk-login)::before,body:not(.helpdesk-login)::after,
+body:not(.helpdesk-login)>.indinext-solar-bg{display:none!important;content:none!important;background:none!important;animation:none!important}
+body:not(.helpdesk-login) :is(.topbar,.nav,.if-left-sidebar,.if-workspace-nav,.head,.profile,.card,.stat-card,.agent-info-card,.overview-block,.overview-panel,.overview-heading,.overview-metric-card,.adm-hero,.adm-period-card,.adm-panel,.adm-mini-stat,.section-data,.section-card,.section-hero,.section-filters,.section-metric,.summary-chip,.admin-detail-bar,.admin-panel,.panel,.sa-stat,.sa-edit-dialog,.cp-section,.cp-chart-panel,.cp-kpi,.cp-detail-card,.dp-card,.dp-metric,.weekly-upload-card,.break-monitoring-panel,.break-acw-panel,.table-wrap,.tablewrap,.section-table,.cp-table-wrap,.sa-table-wrap,.weekly-preview){
+ background:transparent!important;background-image:none!important;border:0!important;outline:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important
+}
+body:not(.helpdesk-login) :is(.topbar,.nav,.if-left-sidebar,.if-workspace-nav){border-radius:0!important}
+body:not(.helpdesk-login) :is(.nav button,.nav .nav-link,.admin-side-link,.if-workspace-link,.logout-btn,.badge,.primary-btn,.secondary-btn,.sa-btn,.sa-small,.section-action,.section-delete){
+ color:rgba(255,255,255,.86)!important;background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;
+ transition:background-color .28s ease,color .28s ease,transform .28s cubic-bezier(.2,.75,.25,1),opacity .28s ease!important
+}
+@media(hover:hover){
+ body:not(.helpdesk-login) :is(.nav button,.nav .nav-link,.admin-side-link,.if-workspace-link,.logout-btn,.badge,.primary-btn,.secondary-btn,.sa-btn,.sa-small,.section-action,.section-delete):hover{
+  background:rgba(255,255,255,.075)!important;color:#fff!important;transform:translateY(-1px)
+ }
+ body:not(.helpdesk-login) :is(.card,.stat-card,.agent-info-card,.overview-metric-card,.overview-panel,.overview-block,.sa-stat,.section-data,.admin-panel,.panel):hover{
+  transform:translateY(-2px);transition:transform .32s cubic-bezier(.2,.75,.25,1)!important
+ }
+}
+body:not(.helpdesk-login) :is(.nav button.active,.nav .nav-link.active,.admin-side-link.active,.if-workspace-link.is-current,[aria-current="page"]){
+ background:rgba(255,255,255,.12)!important;color:#fff!important
+}
+body:not(.helpdesk-login) :is(button,a,[role=button]):active{background:rgba(255,255,255,.16)!important;transform:scale(.985)}
+body:not(.helpdesk-login) :is(h1,h2,h3,h4,h5,h6,.brand,strong,b,.value,.label,th){color:rgba(255,255,255,.94)!important}
+body:not(.helpdesk-login) :is(p,small,.muted,.note,.subtitle,.footer,label,.profile){color:rgba(255,255,255,.68)!important}
+body:not(.helpdesk-login) :is(input,select,textarea){background:rgba(255,255,255,.055)!important;border:0!important;box-shadow:none!important;color:rgba(255,255,255,.94)!important}
+body:not(.helpdesk-login) :is(th,td){border-color:transparent!important;background:transparent!important}
+body:not(.helpdesk-login) :is(.nav,.if-left-sidebar,.if-workspace-nav){scrollbar-color:rgba(255,255,255,.2) transparent}
+@media(prefers-reduced-motion:reduce){body:not(.helpdesk-login) *{transition:none!important;animation:none!important}}
