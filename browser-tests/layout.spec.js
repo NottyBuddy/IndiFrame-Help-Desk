@@ -138,9 +138,14 @@ for (const path of portalPages) {
         const workspaceStylesheet = [...document.styleSheets].some(sheet =>
           sheet.href && new URL(sheet.href).pathname.endsWith("/workspace-night-drive.css")
         );
+        const transparentStylesheet = [...document.styleSheets].some(sheet =>
+          sheet.href && new URL(sheet.href).pathname.endsWith("/workspace-transparent.css")
+        );
         return {
           workspaceStylesheet,
+          transparentStylesheet,
           backgroundImage: getComputedStyle(body).backgroundImage,
+          backgroundColor: getComputedStyle(body).backgroundColor,
           roadOverlay: getComputedStyle(body, "::before").content !== "none",
           roadSurface: getComputedStyle(body, "::after").content !== "none",
           solarBackground: document.querySelector(".indinext-solar-bg")
@@ -148,10 +153,17 @@ for (const path of portalPages) {
             : "none"
         };
       });
-      expect(visualTheme.workspaceStylesheet, `${path} must load the shared night-drive stylesheet`).toBe(true);
-      expect(visualTheme.backgroundImage).toContain("gradient");
-      expect(visualTheme.roadOverlay).toBe(true);
-      expect(visualTheme.roadSurface).toBe(true);
+      expect(visualTheme.workspaceStylesheet, `${path} must load the shared workspace stylesheet`).toBe(true);
+      if (["/dashboard.html", "/admin-section.html", "/superadmin.html"].includes(path)) {
+        expect(visualTheme.transparentStylesheet, `${path} must load the transparent workspace override`).toBe(true);
+        expect(visualTheme.backgroundImage).toBe("none");
+        expect(visualTheme.roadOverlay).toBe(false);
+        expect(visualTheme.roadSurface).toBe(false);
+      } else {
+        expect(visualTheme.backgroundImage).toContain("gradient");
+        expect(visualTheme.roadOverlay).toBe(true);
+        expect(visualTheme.roadSurface).toBe(true);
+      }
       expect(visualTheme.solarBackground).toBe("none");
       const dimensions = await page.evaluate(() => ({
         viewport: window.innerWidth,
