@@ -6,3 +6,14 @@ body>*:not(.site-background-video){position:relative}
 *,*::before,*::after{background-image:none!important;box-shadow:none!important;text-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 body *{background-color:transparent!important;border-color:transparent!important;outline-color:transparent!important}
 body::before,body::after,.night-scene,.indinext-solar-bg,.indinext-solar-nebula,.indinext-solar-scene,.starfield,.space-backdrop,.indinext-intro,.road-surface,.road-glow,.road-vignette,.light-streak,.cityline,.distant-headlights,.scene-sky,.vehicle-car,.vehicle-bike,.brand-orbit-scene,.orbit-track,.hero-emblem,.emblem-halo,.emblem-spark,.proof-pulse,.status-dot{display:none!important;content:none!important}
+/* Win the cascade against page-scoped body classes (e.g. .password-workspace). */
+html body[class] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+html body[class]::before,
+html body[class]::after {
+  display: none !important;
+  content: none !important;
+}
