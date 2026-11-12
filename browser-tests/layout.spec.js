@@ -102,6 +102,21 @@ const portalPages = [
   "/change-password.html"
 ];
 
+
+test("all portal pages load their local CSS, JavaScript and image assets", async ({ page, request }) => {
+  for (const path of portalPages) {
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const assets = await page.locator('link[rel="stylesheet"], script[src], img[src], source[src], link[rel="icon"]').evaluateAll(nodes =>
+      nodes.map(node => node.href || node.src)
+        .filter(url => url && new URL(url).origin === window.location.origin)
+    );
+    for (const asset of [...new Set(assets)]) {
+      const response = await request.get(asset);
+      expect(response.status(), `Broken local asset ${asset} referenced by ${path}`).toBe(200);
+    }
+  }
+});
+
 for (const path of portalPages) {
   for (const viewport of [
     { width: 320, height: 740 },
